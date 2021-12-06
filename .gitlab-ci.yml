@@ -41,4 +41,4 @@ deploy-job:       # This job runs in the build stage, which runs first.
   stage: deploy
   script:
     - docker build -t open-insight-front:0.1 .
-    - docker run -it -d -p 9000:5000 --name=open-insight-front open-insight-front:0.1
+    - docker run -it -d -p 9000:3000 --name=open-insight-front open-insight-front:0.1
