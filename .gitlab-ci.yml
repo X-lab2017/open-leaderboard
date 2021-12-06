@@ -20,29 +20,16 @@ cache:
       - node_modules
       
 stages:          # List of stages for jobs, and their order of execution
-  - build
-  - test
   - deploy
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
+before_script:
+  - echo "Delete old version"
+  - docker rm -f open-insight-front
+  - docker rmi open-insight-front:0.1
+
+
+deploy-job:       # This job runs in the build stage, which runs first.
+  stage: deploy
   script:
-    - npm install
-    - npm run build
-    - echo "Compile complete."
-
-
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  script:
-    - echo "Deploying application..."
-    - npm install -g serve
-    - serve -s build
-    - echo "Application successfully deployed."
-  cache:
-    key:
-      files:
-        - package.json
-    paths:
-      - node_modules
-
+    - docker build -t open-insight-front:0.1 .
+    - docker run -it -d -p 9000:3000 --name=open-insight-front open-insight-front:0.1
