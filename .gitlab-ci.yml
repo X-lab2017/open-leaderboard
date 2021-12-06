@@ -20,8 +20,15 @@ cache:
       - node_modules
       
 stages:          # List of stages for jobs, and their order of execution
+  - build
   - deploy
 
+build-job:
+  stage: build
+  script:
+    - docker rm -f open-insight-front
+    - docker rmi open-insight-front:0.1
+  allow_failure: true
 
 deploy-job:       # This job runs in the build stage, which runs first.
   stage: deploy
