@@ -4,7 +4,7 @@ WORKDIR /home/Service
 
 COPY . /home/Service
 RUN npm install \
-    && npm build
+    && npm run build
 
 EXPOSE 3000
 
