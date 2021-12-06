@@ -30,6 +30,13 @@ build-job:
     - docker rmi open-insight-front:0.1
   allow_failure: true
 
+build-job2:
+  stage: build
+  script:
+    - echo 'Hi~'
+  allow_failure: true
+
+
 deploy-job:       # This job runs in the build stage, which runs first.
   stage: deploy
   script:
