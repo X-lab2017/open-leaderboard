@@ -16,12 +16,12 @@ default:
   image: node:latest
   
 stages:          # List of stages for jobs, and their order of execution
-  - run
+  - build
   - test
   - deploy
 
 build-job:       # This job runs in the build stage, which runs first.
-  stage: run
+  stage: build
   script:
     - npm install
     - npm run build
