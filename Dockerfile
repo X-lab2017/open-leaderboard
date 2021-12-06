@@ -6,6 +6,6 @@ COPY . /home/Service
 RUN npm install \
     && npm run build
 
-EXPOSE 3000
+EXPOSE 5000
 
-CMD ["serve","-s","build"]
+# CMD ["serve","-s","build"]
