@@ -2,6 +2,30 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). But we eject the configuration to support multi entries.
 
+## Getting Started
+
+### Step1: Create a new page folder.
+Create a new folder under `src/pages/`. And you can name it as `newpage`.
+
+### Step2: Create a new index.js for your new page.
+Create a new `index.js` file under your `newpage` folder. And below is an example.
+```html
+import ReactDOM from 'react-dom'
+ReactDOM.render(
+    <h1>This is Your New Page!</h1>,
+    document.getElementById('root')
+);
+```
+### Step3: Run and see the result.
+First, run `npm install` to install the dependencies.  
+Then, run `npm start` to run the project in develop environment.  
+Finally, visit `http://localhost:3000/newpage.html` to see the result.
+
+## Simple Tutorial
+All page will use the same HTML template, which is `index.html` under `public/` directory.  
+Webpack will inject JS files into the template, so you don't need to link JS file in HTML file.  
+In addition, Webpack will build a list of HTML files in `npm run build` command, which have the same names with JS file, like `index.html`, `test.html`.
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -26,6 +50,8 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
+
+> !Important, DO NOT use `serve -s build `. It will create a single page server and route all requests to index. Please use `serve build`!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
