@@ -206,17 +206,17 @@ function build(previousFileSizes) {
   });
 }
 
-const copyPublicFolder = async() => {
-  await cpy([`${paths.appPublic}/*.*`, `!${paths.appPublic}/*.html`], paths.appBuild);
-  console.log('copy success!');
-  // fs.copySync(paths.appPublic, paths.appBuild, {
-  //  dereference: true,
-  //  filter: file => file !== paths.appHtml,
-  // });
- }
-// function copyPublicFolder() {
-//   fs.copySync(paths.appPublic, paths.appBuild, {
-//     dereference: true,
-//     filter: file => file !== paths.appHtml,
-//   });
-// }
+// const copyPublicFolder = async() => {
+//   await cpy([`${paths.appPublic}/*.*`, `!${paths.appPublic}/*.html`], paths.appBuild);
+//   console.log('copy success!');
+//   // fs.copySync(paths.appPublic, paths.appBuild, {
+//   //  dereference: true,
+//   //  filter: file => file !== paths.appHtml,
+//   // });
+//  }
+function copyPublicFolder() {
+  fs.copySync(paths.appPublic, paths.appBuild, {
+    dereference: true,
+    filter: file => file !== paths.appHtml,
+  });
+}

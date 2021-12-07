@@ -9,4 +9,4 @@ RUN npm install \
 
 EXPOSE 3000
 
-CMD ["serve","-s","build"]
+CMD ["serve","build"]
