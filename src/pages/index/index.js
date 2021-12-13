@@ -1,96 +1,34 @@
 import ReactDOM from 'react-dom'
-import { Table, Tag, Space } from 'antd';
 import 'antd/dist/antd.css';
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Row, Col, Layout } from 'antd';
 import MyFooter from '../../components/footer';
 import MyHeader from '../../components/header';
-import i18n from '../../components/i18n';
-const { Header, Content, Footer } = Layout;
+import MyTable from './table';
+import { Tabs } from 'antd';
 
-const columns = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: text => <a>{text}</a>,
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-    },
-    {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-            <>
-                {tags.map(tag => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green';
-                    if (tag === 'loser') {
-                        color = 'volcano';
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </>
-        ),
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-            <Space size="middle">
-                <a>Invite {record.name}</a>
-                <a>Delete</a>
-            </Space>
-        ),
-    },
-];
+const { TabPane } = Tabs;
+const { Content } = Layout;
 
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
-const content = <Table columns={columns} dataSource={data} />
+function callback(key) {
+    console.log(key);
+}
 
 ReactDOM.render(
     <Layout className="layout">
-        <MyHeader/>
-        <Content style={{ padding: '0 50px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Home</Breadcrumb.Item>
-                <Breadcrumb.Item>List</Breadcrumb.Item>
-                <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="site-layout-content">Content</div>
+        <MyHeader />
+        <Content style={{ padding: '0 50px', background: '#fff' }}>
+            <Row>
+                <Col span={18} offset={3}>
+                    <Tabs onChange={callback} type="card" centered style={{ marginTop: '30px' }}>
+                        <TabPane tab="活跃度" key="1">
+                            <MyTable year={"2021"} month={3} />
+                        </TabPane>
+                        <TabPane tab="影响力" key="2">
+                            Content of Tab Pane 2
+                        </TabPane>
+                    </Tabs>
+                </Col>
+            </Row>
         </Content>
         <MyFooter />
     </Layout>,

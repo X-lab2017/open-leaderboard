@@ -2,9 +2,9 @@ import ReactDOM from 'react-dom'
 import 'antd/dist/antd.css';
 import { Layout, Menu, Dropdown} from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import i18n from '../components/i18n';
+import i18n from '../util/i18n';
 import { useTranslation } from 'react-i18next';
-import { lngs } from './languages';
+import { lngs } from '../util/languages';
 const { Header } = Layout;
 const { SubMenu } = Menu;
 
