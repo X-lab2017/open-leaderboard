@@ -50,10 +50,7 @@ class MyTable extends React.Component {
     state = {
         flag:false, // 为 true 的话，componentDidUpdate函数中会请求新数据
         data: [],
-        pagination: {
-            current: 1,
-            pageSize: 10,
-        },
+        pagination: false,
         loading: false,
         url: '',
         base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_index/activity/company/",
@@ -151,7 +148,7 @@ class MyTable extends React.Component {
                     columns={columns}
                     rowKey={record => record.rank}
                     dataSource={data}
-                    pagination={pagination}
+                    pagination={false}
                     loading={loading}
                     onChange={this.handleTableChange}
                 />
