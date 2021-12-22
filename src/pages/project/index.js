@@ -33,6 +33,9 @@ const activityColumns = [
         title: '',
         dataIndex: 'diff_rank',
         render:(text, row, index)=>{
+            if(text=='UNKNOWN'){
+                return ''
+            }
             if(text==0){
                 return ''
             }
@@ -73,6 +76,9 @@ const influenceColumns = [
         title: '',
         dataIndex: 'diff_rank',
         render:(text, row, index)=>{
+            if(text=='UNKNOWN'){
+                return ''
+            }
             if(text==0){
                 return ''
             }
