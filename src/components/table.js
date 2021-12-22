@@ -1,7 +1,7 @@
 import React from 'react';
 import { message, Table } from 'antd';
 import 'antd/dist/antd.css';
-import { toJSON } from '../../util/csv';
+import { toJSON } from '../util/csv';
 import SwitchablePicker from './datePicker';
 
 const solveDate = (year,month)=>{
@@ -19,48 +19,68 @@ function DateTitle(props){
         <h1>{solveDate(props.year,props.month)}</h1>
     );
 }
-
-const columns = [
-    {
-        title: 'Rank',
-        dataIndex: 'rank',
-        sorter: (a, b) => a.rank - b.rank,
-        width: '5%',
-    },
-    {
-        title: '',
-        dataIndex: 'diff_rank',
-        width: '5%',
-    },
-    {
-        title: 'Company',
-        dataIndex: 'company',
-        sorter: true,
-        width: '20%',
-    },
-    {
-        title: 'Activity',
-        dataIndex: 'activity',
-        sorter: true,
-        width: '20%',
-    },
-];
+// 示例
+// const columns = [
+//     {
+//         title: 'Rank',
+//         dataIndex: 'rank',
+//         sorter: (a, b) => a.rank - b.rank,
+//         width: '5%',
+//     },
+//     {
+//         title: '',
+//         dataIndex: 'diff_rank',
+//         render:(text, row, index)=>{
+//             if(text==0){
+//                 return ''
+//             }
+//             else if(text<0){
+//                 return <>
+//                     <ArrowDownOutlined style={{color:'green'}}/>{text}
+//                 </>
+//             }else{
+//                 return <>
+//                     <ArrowUpOutlined style={{color:'red'}}/>{text}
+//                 </>
+//             }
+//             return text
+//         },
+//         width: '5%',
+//     },
+//     {
+//         title: 'Company',
+//         dataIndex: 'company',
+//         sorter: true,
+//         width: '20%',
+//     },
+//     {
+//         title: 'Activity',
+//         dataIndex: 'activity',
+//         sorter: true,
+//         width: '20%',
+//     },
+// ];
 
 class MyTable extends React.Component {
     state = {
+        columns: {},
         flag:false, // 为 true 的话，componentDidUpdate函数中会请求新数据
         data: [],
         pagination: false,
         loading: false,
         url: '',
-        base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_index/activity/company/",
+        // item: '',
+        // object: '',
+        base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_index/",
         year: null,// 字符串格式
         month: null,// 整数格式，0表示1月，1表示2月...
     };
     constructor(props) {
         super(props);
+        this.state.columns = props.columns;
         this.state.year = props.year;
         this.state.month = props.month;
+        this.state.base = this.state.base + props.item + '/' + props.object + '/';
         this.state.url = this.state.base + props.year + (props.month + 1) + '.csv';
     }
 
@@ -139,7 +159,7 @@ class MyTable extends React.Component {
     };
 
     render() {
-        const { data, pagination, loading, year, month } = this.state;
+        const { data, columns, loading, year, month } = this.state;
         return (
             <>
                 <SwitchablePicker update={this.updateDate} />

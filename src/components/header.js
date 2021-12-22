@@ -12,7 +12,13 @@ const { SubMenu } = Menu;
 function MyHeader(){
     const { t } = useTranslation();
     return (
-        <Header style={{background:'rgba(222,225,255,0)', zIndex:99,position: 'fixed', width: '100%',height:'100px',paddingTop:'20px' }}>
+        <Header style={{
+            background:'rgba(222,225,255,0)', 
+            zIndex:99,
+            // position: 'fixed', 
+            width: '100%',
+            height:'100px',
+            paddingTop:'20px' }}>
             <Row>
                 <Col span={1} offset={3}>
                     <Image 
