@@ -163,7 +163,6 @@ class MyTable extends React.Component {
         return (
             <>
                 <SwitchablePicker update={this.updateDate} />
-                <DateTitle year={year} month={month} />
                 <Table
                     columns={columns}
                     rowKey={record => record.rank}

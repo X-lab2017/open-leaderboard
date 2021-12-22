@@ -6,13 +6,13 @@ import MyHeader from '../../components/header';
 import MyTable from '../../components/table';
 import { Tabs } from 'antd';
 
-import {
-    ArrowDownOutlined,
-    ArrowUpOutlined,
-  } from '@ant-design/icons';
-
 import './tab.css'
 import './index.css'
+import ArrowRender from '../../components/arrow';
+import PointRender from '../../components/changeNumber';
+
+import RoundFloat from '../../components/resolveFloat';
+import Trophy from '../../components/rankTrophy';
 
 const { TabPane } = Tabs;
 const { Content } = Layout;
@@ -26,88 +26,78 @@ const activityColumns = [
     {
         title: 'Rank',
         dataIndex: 'rank',
-        sorter: (a, b) => a.rank - b.rank,
         width: '5%',
+        align: 'center',
+        render: Trophy,
     },
     {
         title: '',
         dataIndex: 'diff_rank',
-        render:(text, row, index)=>{
-            if(text=='UNKNOWN'){
-                return ''
-            }
-            if(text==0){
-                return ''
-            }
-            else if(text<0){
-                return <>
-                    <ArrowDownOutlined style={{color:'green'}}/>{-1*text}
-                </>
-            }else{
-                return <>
-                    <ArrowUpOutlined style={{color:'red'}}/>{text}
-                </>
-            }
-            return text
-        },
+        render: ArrowRender,
+        align:'left',
         width: '5%',
     },
     {
         title: 'Company',
         dataIndex: 'company',
-        sorter: true,
+        align:'center',
         width: '20%',
     },
     {
         title: 'Activity',
         dataIndex: 'activity',
-        sorter: true,
+        align:'right',
         width: '20%',
     },
+    {
+        title:'',
+        dataIndex:'diff_activity',
+        width:'10%',
+        align:'left',
+        render: PointRender,
+    }
 ];
 
 const influenceColumns = [
     {
         title: 'Rank',
         dataIndex: 'rank',
-        sorter: (a, b) => a.rank - b.rank,
         width: '5%',
+        render: Trophy,
+        align: 'center',
     },
     {
         title: '',
         dataIndex: 'diff_rank',
-        render:(text, row, index)=>{
-            if(text=='UNKNOWN'){
-                return ''
-            }
-            if(text==0){
-                return ''
-            }
-            else if(text<0){
-                return <>
-                    <ArrowDownOutlined style={{color:'green'}}/>{-1*text}
-                </>
-            }else{
-                return <>
-                    <ArrowUpOutlined style={{color:'red'}}/>{text}
-                </>
-            }
-            return text
-        },
+        render: ArrowRender,
+        align:'left',
         width: '5%',
     },
     {
         title: 'Company',
         dataIndex: 'company',
-        sorter: true,
         width: '20%',
+        align:'center',
     },
     {
         title: 'Influence',
         dataIndex: 'influence',
-        sorter: true,
         width: '20%',
+        align:'right',
+        render:(text, row, index)=>{
+            return RoundFloat(text)
+        }
     },
+    {
+        title:'',
+        dataIndex:'diff_influence',
+        width:'10%',
+        align: 'left',
+        render: (text, row, index)=>{
+            text = RoundFloat(text)
+            return PointRender(text, row, index)
+        },
+    }
 ];
 
 
