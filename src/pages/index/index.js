@@ -137,7 +137,10 @@ ReactDOM.render(
                         centered
                         tabBarGutter={50}
                         style={{zIndex:5}}
-                        tabBarStyle={{zIndex:5}}
+                        size={'large'}
+                        tabBarStyle={{
+                            zIndex:5,
+                        }}
                         >
                         <TabPane tab="活跃度" key="1">
                             <Card
@@ -188,7 +191,8 @@ ReactDOM.render(
             style={{
                 zIndex:-1,
                 position:'absolute',
-                bottom:'-500px',
+                height:'2000px',
+                bottom:'-1000px',
                 }}
             preview={false}
             src='/pics/Bubble BG.png'/>
