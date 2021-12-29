@@ -1,5 +1,5 @@
 import React from 'react';
-import { message, Table } from 'antd';
+import { Col, message, Row, Switch, Table } from 'antd';
 import 'antd/dist/antd.css';
 import { toJSON } from '../util/csv';
 import SwitchablePicker from './datePicker';
@@ -63,37 +63,78 @@ function DateTitle(props){
 
 class MyTable extends React.Component {
     state = {
+        object:'company',
+        preObject:'',
         columns: {},
+        detailColumns: {},
+        ordinaryColumns: {},
+        hasDetail:false,
         flag:false, // 为 true 的话，componentDidUpdate函数中会请求新数据
         data: [],
         pagination: false,
         loading: false,
         url: '',
-        // item: '',
-        // object: '',
         base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_index/",
         year: null,// 字符串格式
         month: null,// 整数格式，0表示1月，1表示2月...
     };
     constructor(props) {
         super(props);
+        if(props.hasOwnProperty('hasDetail')==true){
+            this.state.hasDetail = props.hasDetail;
+            this.state.detailColumns = props.detailColumns;
+        }
         this.state.columns = props.columns;
+        this.state.ordinaryColumns = props.columns;
         this.state.year = props.year;
         this.state.month = props.month;
-        this.state.base = this.state.base + props.item + '/' + props.object + '/';
-        this.state.url = this.state.base + props.year + (props.month + 1) + '.csv';
+        this.state.object = props.object;
+        this.state.url = this.state.base + props.item + '/' + props.object + '/';
     }
 
     componentDidMount() {
-        const { pagination, url } = this.state;
-        this.fetch({ pagination, url });
+        const { pagination, url, year, month } = this.state;
+        this.fetch({ pagination, url:url+year+(1+month)+'.csv' });
     }
 
-    componentDidUpdate() {
-        if(this.state.flag==true){
-            this.setState({flag:false});
-            const { pagination, url } = this.state;
-            this.fetch({ pagination, url });
+    componentDidUpdate(){
+        if(this.state.flag == true){
+            const { pagination, url, year, month } = this.state;
+            if(month===null){
+                this.fetch({ pagination, url:url+year+'.csv' });
+            }
+            else{
+                this.fetch({ pagination, url:url+year+(1+month)+'.csv' });
+            }
+        }
+    }
+
+    static getDerivedStateFromProps(props, state){
+        if(props.object!=state.preObject){
+            console.log('getDerivedStateFromProps starts!')
+            return {
+                object: props.object,
+                columns: props.columns,
+                preObject: props.object,
+                flag: true,
+                url : state.base + props.item + '/' + props.object + '/'
+            }
+        }
+        return null;
+    }
+
+
+    // 点击 开关 切换到详情页或简况页
+    toggleDetail = (checked, event) => {
+        if(checked == true){
+            this.setState({
+                columns:this.state.detailColumns
+            })
+        }
+        else{
+            this.setState({
+                columns:this.state.ordinaryColumns
+            })
         }
     }
 
@@ -109,28 +150,24 @@ class MyTable extends React.Component {
         });
     };
 
-    // 更新 state 后自动调用 生命周期 DidUpdate 请求最新数据
+    // 更新时间
     updateDate = (year, month) => {
+        this.setState({
+            year:year,
+            month:month
+        })
         if (month === null) {
-            this.setState({
-                year: year,
-                month: month,
-                url: this.state.base + year + '.csv',
-                flag:true,
-            });
+            const { pagination, url } = this.state;
+            this.fetch({ pagination, url:url+year+'.csv' });
         }
         else {
-            this.setState({
-                year: year,
-                month: month,
-                url: this.state.base + year + (month + 1) + '.csv',
-                flag:true,
-            });
+            const { pagination, url } = this.state;
+            this.fetch({ pagination, url:url+year+(1+month)+'.csv' });
         }
     }
 
     fetch = (params = {}) => {
-        this.setState({ loading: true });
+        this.setState({ flag:false,loading: true });
         console.log(params.url);
         fetch(params.url)
             .then(res => {
@@ -159,21 +196,58 @@ class MyTable extends React.Component {
     };
 
     render() {
-        const { data, columns, loading, year, month } = this.state;
-        return (
-            <>
-                <SwitchablePicker update={this.updateDate} />
-                <Table
-                    columns={columns}
-                    rowKey={record => record.rank}
-                    dataSource={data}
-                    pagination={false}
-                    loading={loading}
-                    onChange={this.handleTableChange}
-                />
-            </>
+        const { data, columns, loading, year, month, hasDetail } = this.state;
+        if(hasDetail==true){
+            return (
+                <>
+                    <Row style={{marginBottom:'20px'}} align='middle' >
+                        <Col>
+                            <SwitchablePicker update={this.updateDate} />
+                        </Col>
+                        <Col offset={18}>
+                            <span style={{
+                                color:'#FFCC19',
+                                fontSize:'18px',
+                                marginRight:'10px'
+                                }}>
+                                详情
+                            </span>
+                            <Switch onChange={this.toggleDetail}/>
+                        </Col>
+                    </Row>
+                    <Table
+                        columns={columns}
+                        rowKey={record => record.rank}
+                        dataSource={data}
+                        pagination={false}
+                        loading={loading}
+                        onChange={this.handleTableChange}
+                    />
+                </>
+    
+            );
+        }
+        else{
+            return (
+                <>
+                    <Row style={{marginBottom:'20px'}}>
+                        <Col>
+                            <SwitchablePicker update={this.updateDate} />
+                        </Col>
+                    </Row>
+                    <Table
+                        columns={columns}
+                        rowKey={record => record.rank}
+                        dataSource={data}
+                        pagination={false}
+                        loading={loading}
+                        onChange={this.handleTableChange}
+                    />
+                </>
+    
+            );
+        }
 
-        );
     }
 }
 

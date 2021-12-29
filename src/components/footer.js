@@ -14,7 +14,7 @@ function MyFooter(props){
             backgroundColor:'rgba(0,0,0,0)',
             backgroundImage:'url("/pics/Footer BG.png")',
             backgroundRepeat:'no-repeat',
-            backgroundSize:'100%',
+            backgroundSize:'100% 100%',
             }}>
             <Row style={{marginTop:'400px'}}></Row>
             <Row align='middle'>

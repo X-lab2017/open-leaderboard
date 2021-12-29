@@ -9,7 +9,7 @@ import './header.css'
 const { Header } = Layout;
 const { SubMenu } = Menu;
 
-function MyHeader(){
+function MyHeader(props){
     const { t } = useTranslation();
     return (
         <Header style={{
@@ -33,9 +33,17 @@ function MyHeader(){
                         src={'/pics/OpenInsight-Index.png'}/>
                 </Col>
                 <Col span={7} offset={1}>
-                    <Menu style={{background:'rgba(255,255,255,0)'}}mode="horizontal" defaultSelectedKeys={['enterprise']}>
-                        <Menu.Item key='enterprise'>{t('navBar.enterprise')}</Menu.Item>
-                        <Menu.Item key='project'>{t('navBar.project')}</Menu.Item>
+                    <Menu 
+                        style={{background:'rgba(255,255,255,0)'}}
+                        mode="horizontal" 
+                        defaultSelectedKeys={['company']}
+                        onClick={(event)=>{
+                            props.callback(event.key)
+                            return false;
+                        }}
+                        >
+                        <Menu.Item key='company'>{t('navBar.enterprise')}</Menu.Item>
+                        <Menu.Item key='repo'>{t('navBar.project')}</Menu.Item>
                         <Menu.Item key='bot'>{t('navBar.bot')}</Menu.Item>
 
                         {/* Language Switcher */}
