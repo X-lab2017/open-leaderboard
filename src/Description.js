@@ -25,9 +25,9 @@ const Description = () => {
                 <Divider />
                 <Row>
                     <Col>
-                    <p className='myFontColor'>
-                        lalallalala
-                    </p>
+                    <span className='myFontColor'>
+                        {t('analysisConclusion')}
+                    </span>
                     </Col>
                 </Row>
             </Col>

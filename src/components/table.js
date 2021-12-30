@@ -3,6 +3,7 @@ import { Col, message, Row, Switch, Table } from 'antd';
 import 'antd/dist/antd.css';
 import { toJSON } from '../util/csv';
 import SwitchablePicker from './datePicker';
+import { t } from 'i18next';
 
 const solveDate = (year,month)=>{
     if(year===null&&month===null){
@@ -207,7 +208,7 @@ class MyTable extends React.Component {
                                         fontSize:'18px',
                                         marginRight:'10px'
                                         }}>
-                                        详情
+                                        {t('details')}
                                     </span>
                                     <Switch onChange={this.toggleDetail}/>
                                 </Col>
@@ -251,7 +252,7 @@ class MyTable extends React.Component {
                             <Col offset={1}>
                                 <a style={{
                                         color:'#FFCC19',
-                                        fontSize:'18px',}}>没有您的数据？</a>
+                                        fontSize:'18px',}}>{t('tip')}</a>
                             </Col>
                         </Row>
                     </Col>

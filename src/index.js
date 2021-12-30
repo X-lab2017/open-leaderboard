@@ -14,6 +14,8 @@ import RoundFloat from './components/resolveFloat';
 import Trophy from './components/rankTrophy';
 import './tab.css'
 import './index.css'
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const { TabPane } = Tabs;
 const { Content } = Layout;
@@ -32,7 +34,7 @@ const activityColumns = (object)=>{
     return (
         [
             {
-                title: 'Rank',
+                title: 'rank',
                 dataIndex: 'rank',
                 width: '5%',
                 align: 'center',
@@ -218,7 +220,7 @@ class App extends React.Component {
                                                 zIndex:5,
                                             }}
                                             >
-                                            <TabPane tab="活跃度" key="1">
+                                            <TabPane tab={t('activity')} key="1">
                                                 <Card
                                                     style={{
                                                         zIndex:10,
@@ -241,7 +243,7 @@ class App extends React.Component {
                                                         />
                                                 </Card>
                                             </TabPane>
-                                            <TabPane tab="影响力" key="2">
+                                            <TabPane tab={t('influence')} key="2">
                                                 <Card
                                                     style={{
                                                         zIndex:10,
