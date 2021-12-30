@@ -19,20 +19,24 @@ function MyHeader(props){
             width: '100%',
             height:'100px',
             padding:'20px 0px 0px 0px' }}>
-            <Row gutter={[16, 16]}>
-                <Col offset={4}>
-                    <Image 
-                        style={{float:'left',height:'50px',width:'auto',marginTop:'7px'}}
-                        preview={false}
-                        src={'/pics/Main Logo.png'}/>
+            <Row>
+                <Col offset={4} span={5}>
+                    <Row gutter={[16,16]}>
+                        <Col>
+                            <Image 
+                                style={{float:'left',height:'50px',width:'auto',marginTop:'7px'}}
+                                preview={false}
+                                src={'/pics/Main Logo.png'}/>
+                        </Col>
+                        <Col>
+                            <Image
+                                style={{float:'left',height:'30px',width:'auto',marginTop:'17px'}}
+                                preview={false}
+                                src={'/pics/OpenInsight-Index.png'}/>
+                        </Col>
+                    </Row>
                 </Col>
-                <Col>
-                    <Image
-                        style={{float:'left',height:'30px',width:'auto',marginTop:'17px'}}
-                        preview={false}
-                        src={'/pics/OpenInsight-Index.png'}/>
-                </Col>
-                <Col span={7} offset={1}>
+                <Col span={7} offset={2}>
                     <Menu 
                         style={{background:'rgba(255,255,255,0)'}}
                         mode="horizontal" 
