@@ -16,24 +16,41 @@ function disabledDate(current) {
 
 const SwitchablePicker = (props) => {
   const { t } = useTranslation();
+  const [monthDate, setMonthDate] = useState({year:props.year,month:props.month});
+  const [yearDate, setYearDate] = useState(props.year);
   return (
     <>
-        <Tabs defaultActiveKey="1">
-            <TabPane tab={t('month')} key="1">
-                <PickerWithType type='month' defaultDate={moment(props.year+'/'+(props.month+1),'YYYY-MM')} onChange={value=>{
-                    if(value.years === null || value.months === null){
-                        message.error('This is an error month');
-                        return false;
-                    }
-                    props.update(value.years(),value.months());
-                }} />
+        <Tabs 
+          onChange={(activeKey)=>{
+            if(activeKey=='month'){
+              console.log('month'+monthDate);
+              props.update(monthDate.year,monthDate.month);
+            }
+            else{
+              console.log('year'+yearDate);
+              props.update(yearDate,null);
+            }
+          }}
+          defaultActiveKey="month">
+            <TabPane tab={t('month')} key="month">
+                <PickerWithType type='month' defaultDate={moment(props.year+'/'+(props.month+1),'YYYY-MM')} 
+                  onChange={value=>{
+                      if(value.years === null || value.months === null){
+                          message.error('This is an error month');
+                          return false;
+                      }
+                      setMonthDate({year:value.years(),month:value.months()});
+                      props.update(value.years(),value.months());
+                  }} 
+                />
             </TabPane>
-            <TabPane tab={t('year')} key="2">
+            <TabPane tab={t('year')} key="year">
                 <PickerWithType type='year' defaultDate={moment(props.year)} onChange={value=>{
                     if(value.years() === null){
                         message.error('This is an error year');
                         return false;
                     }
+                    setYearDate(value.years());
                     props.update(value.years(),null);
                  }} />
             </TabPane>

@@ -4,6 +4,7 @@ import 'antd/dist/antd.css';
 import { toJSON } from '../util/csv';
 import SwitchablePicker from './datePicker';
 import { t } from 'i18next';
+import QAmiss from './QA2';
 
 const solveDate = (year,month)=>{
     if(year===null&&month===null){
@@ -236,12 +237,12 @@ class MyTable extends React.Component {
                                         color:'#FFCC19',
                                         fontSize:'18px',}}
                                         onClick={this.expandData}>
-                                            展示更多{'>>'}
+                                            {t('showMore')+'>>'}
                                     </a>:
                                     <span style={{
                                         color:'gray',
                                         fontSize:'18px',}}>
-                                        没有更多啦
+                                        {t('noMore')}
                                     </span>
                                 }
                                 
@@ -250,10 +251,8 @@ class MyTable extends React.Component {
                     </Col>
                     <Col span={12}>
                         <Row justify='end'>
-                            <Col offset={1}>
-                                <a style={{
-                                        color:'#FFCC19',
-                                        fontSize:'18px',}}>{t('tip')}</a>
+                            <Col>
+                                <QAmiss />
                             </Col>
                         </Row>
                     </Col>
