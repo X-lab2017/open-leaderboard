@@ -12,8 +12,6 @@ import ArrowRender from './components/arrow';
 import PointRender from './components/changeNumber';
 import RoundFloat from './components/resolveFloat';
 import Trophy from './components/rankTrophy';
-
-
 import './tab.css'
 import './index.css'
 
@@ -203,81 +201,84 @@ class App extends React.Component {
                         preview={false}
                         style={{zIndex:-1,position:'absolute'}}
                         width={'100%'} src="/pics/Slide Background.png"/>
-                    <MyHeader callback={this.changeObject} />
-                    <Content style={{ 
-                        backgroundColor:'rgba(0,0,0,0)',
-                        }}>
-                        <Description/>
-                        <Row style={{marginTop:'130px'}}>
-                            <Col span={16} offset={4} xs={20} sm={16}>
-                                <Tabs 
-                                    centered
-                                    tabBarGutter={50}
-                                    style={{zIndex:5}}
-                                    tabBarStyle={{
-                                        zIndex:5,
-                                    }}
-                                    >
-                                    <TabPane tab="活跃度" key="1">
-                                        <Card
-                                            style={{
-                                                zIndex:10,
-                                                bottom:'20px',
-                                                margin:'20px auto',
-                                                width:'100%',
-                                                background: '#FFFFFF',
-                                                boxShadow:'0px 25px 50px 25px #F7F7FF',
-                                                borderRadius: '42px'
+                    <Row justify='center'>
+                        <Col xs={24} sm={24} md={20} lg={18} xl={16} xxl={16} style={{overflow:'visible'}}>
+                            <MyHeader callback={this.changeObject} />
+                            <Content style={{ 
+                                backgroundColor:'rgba(0,0,0,0)',
+                                }}>
+                                <Description/>
+                                <Row style={{marginTop:'130px'}}>
+                                    <Col span={24}>
+                                        <Tabs 
+                                            centered
+                                            tabBarGutter={50}
+                                            style={{zIndex:5}}
+                                            tabBarStyle={{
+                                                zIndex:5,
                                             }}
                                             >
-                                            <MyTable 
-                                                hasDetail={true}
-                                                year={"2021"} 
-                                                month={10} 
-                                                item={"activity"}
-                                                object={object}
-                                                columns={activityColumns(object)}
-                                                detailColumns={activityDetailColumns(object)}
-                                                />
-                                        </Card>
-                                    </TabPane>
-                                    <TabPane tab="影响力" key="2">
-                                        <Card
-                                            style={{
-                                                zIndex:10,
-                                                bottom:'20px',
-                                                margin:'20px auto',
-                                                width:'100%',
-                                                background: '#FFFFFF',
-                                                boxShadow:'0px 25px 50px 25px #F7F7FF',
-                                                borderRadius: '42px'
-                                            }}
-                                            >
-                                            <MyTable 
-                                                year={"2021"} 
-                                                month={10} 
-                                                item={"influence"}
-                                                object={object}
-                                                columns={influenceColumns(object)}/>
-                                        </Card>
-                                    </TabPane>
-                                </Tabs>
-                            </Col>
-                        </Row>
-                    </Content>
+                                            <TabPane tab="活跃度" key="1">
+                                                <Card
+                                                    style={{
+                                                        zIndex:10,
+                                                        bottom:'20px',
+                                                        margin:'20px auto',
+                                                        width:'100%',
+                                                        background: '#FFFFFF',
+                                                        boxShadow:'0px 25px 50px 25px #F7F7FF',
+                                                        borderRadius: '42px'
+                                                    }}
+                                                    >
+                                                    <MyTable 
+                                                        hasDetail={true}
+                                                        year={"2021"} 
+                                                        month={10} 
+                                                        item={"activity"}
+                                                        object={object}
+                                                        columns={activityColumns(object)}
+                                                        detailColumns={activityDetailColumns(object)}
+                                                        />
+                                                </Card>
+                                            </TabPane>
+                                            <TabPane tab="影响力" key="2">
+                                                <Card
+                                                    style={{
+                                                        zIndex:10,
+                                                        bottom:'20px',
+                                                        margin:'20px auto',
+                                                        width:'100%',
+                                                        background: '#FFFFFF',
+                                                        boxShadow:'0px 25px 50px 25px #F7F7FF',
+                                                        borderRadius: '42px'
+                                                    }}
+                                                    >
+                                                    <MyTable 
+                                                        year={"2021"} 
+                                                        month={10} 
+                                                        item={"influence"}
+                                                        object={object}
+                                                        columns={influenceColumns(object)}/>
+                                                </Card>
+                                            </TabPane>
+                                        </Tabs>
+                                    </Col>
+                                </Row>
+                            </Content>
+                        </Col>
+                    </Row>
+                    <MyFooter />
                     <Image 
                         style={{
                             zIndex:-1,
                             position:'absolute',
                             height:'2000px',
-                            bottom:'-800px',
+                            bottom:'0px',
                             }}
                         preview={false}
                         src='/pics/Bubble BG.png'/>
-                    <MyFooter />
                 </Layout>
-            </ConfigProvider>
-            
+            </ConfigProvider>   
         )
     }
 }

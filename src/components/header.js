@@ -6,6 +6,7 @@ import i18n from '../util/i18n';
 import { useTranslation } from 'react-i18next';
 import { lngs } from '../util/languages';
 import './header.css'
+import Dictionary from './Dictionary';
 const { Header } = Layout;
 const { SubMenu } = Menu;
 
@@ -20,7 +21,7 @@ function MyHeader(props){
             height:'100px',
             padding:'20px 0px 0px 0px' }}>
             <Row>
-                <Col offset={4} span={5}>
+                <Col span={5}>
                     <Row gutter={[16,16]}>
                         <Col>
                             <Image 
@@ -52,10 +53,7 @@ function MyHeader(props){
                     </Menu>
                 </Col>
                 <Col span={5}>
-                    <Image 
-                        style={{height:'60px',width:'auto',marginTop:'15px'}}
-                        preview={false}
-                        src='/pics/Dic.png'/>
+                    <Dictionary/>
                     <Image 
                         style={{height:'60px',width:'auto',marginTop:'15px'}}
                         preview={false}
