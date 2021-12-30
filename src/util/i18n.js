@@ -37,6 +37,7 @@ i18n
           showMore:'show more',
           contributeProject:'miss your project?',
           contributeCompany:'miss your company?',
+
           introduction:'Welcome to OpenInsight-IndexI, where Chinese companys, projects ant robot accounts are ranked by the activity and influence on GitHub, the leading source code repository for free and open source (FOSS) projects.',
           updateTime:'Updated December 1st, 2021',  
           openinsight:'Openinsight is a complete set of tools integrating open source data collection, open source data development and open source data visualization. It can solve the open source data analysis and reporting in a one-stop way. It has a professional and in-depth understanding of various indicators of various open source projects to help the community operate reasonably.',      
