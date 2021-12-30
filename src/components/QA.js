@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Card, Col, Image, Modal, Row, Space } from "antd";
 import { CloseCircleOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import './modal.css'
 const QA = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    
+
+    const {t} = useTranslation();
+
     const showModal = () => {
         setIsModalVisible(true);
     };
@@ -40,9 +43,9 @@ const QA = () => {
                     <Row justify="center">
                         <Col xs={20} sm={16} md={12} lg={8} xl={6}>
                             <Space direction="vertical" size={'large'} style={{width:'100%'}}>
-                                <Card><h2>活跃度</h2>Some contents...</Card>
-                                <Card>Some contents...</Card>
-                                <Card>Some contents...</Card>
+                                <Card><h2>{t('Question.Q1')}</h2>{t('Answer.A1')}</Card>
+                                {/* <Card><h2>{t('Question.Q2')}</h2>{t('Answer.A2')}</Card> */}
+                                <Card><h2>{t('Question.Q3')}</h2>{t('Answer.A3')}</Card>
                             </Space>
                         </Col>
                     </Row>
