@@ -7,8 +7,13 @@ const { Option } = Select;
 
 function PickerWithType({ type, onChange, defaultDate }) {
     console.log(defaultDate);
-  return <DatePicker picker={type} onChange={onChange} defaultValue={defaultDate}/>;
+  return <DatePicker picker={type} onChange={onChange}  disabledDate={disabledDate}  defaultValue={defaultDate}/>;
 }
+
+function disabledDate(current) {
+    // Can not select days before today and today
+    return current< moment('2015') || current >= moment().endOf('day');
+  }
 
 const SwitchablePicker = (props) => {
   return (
