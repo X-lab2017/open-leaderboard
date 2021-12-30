@@ -75,6 +75,8 @@ class MyTable extends React.Component {
             return {
                 object: props.object,
                 columns: props.columns,
+                ordinaryColumns: props.columns,
+                detailColumns: props.detailColumns,
                 preObject: props.object,
                 flag: true,
                 url : state.base + props.item + '/' + props.object + '/'
@@ -205,7 +207,7 @@ class MyTable extends React.Component {
                     loading={loading}
                     onChange={this.handleTableChange}
                 />
-                <Row>
+                <Row style={{marginTop:'10px'}} >
                     <Col span={12}>
                         <Row justify='start'>
                             <Col>
