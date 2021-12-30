@@ -188,6 +188,7 @@ class MyTable extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const { data, columns, loading, showSize, hasDetail, year, month } = this.state;
         return (
             <>
@@ -208,7 +209,7 @@ class MyTable extends React.Component {
                                         fontSize:'18px',
                                         marginRight:'10px'
                                         }}>
-                                        {t('Details')}
+                                        {t('details')}
                                     </span>
                                     <Switch onChange={this.toggleDetail}/>
                                 </Col>
@@ -252,7 +253,7 @@ class MyTable extends React.Component {
                             <Col offset={1}>
                                 <a style={{
                                         color:'#FFCC19',
-                                        fontSize:'18px',}}>{t()}</a>
+                                        fontSize:'18px',}}>{t('tip')}</a>
                             </Col>
                         </Row>
                     </Col>
