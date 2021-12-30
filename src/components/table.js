@@ -170,14 +170,14 @@ class MyTable extends React.Component {
     };
 
     render() {
-        const { data, columns, loading, showSize, hasDetail } = this.state;
+        const { data, columns, loading, showSize, hasDetail, year, month } = this.state;
         return (
             <>
                 <Row style={{marginBottom:'20px'}} align='middle' >
                     <Col span={12}>
                         <Row justify='start'>
                             <Col>
-                                <SwitchablePicker update={this.updateDate} />
+                                <SwitchablePicker year={year} month={month} update={this.updateDate} />
                             </Col>
                         </Row>
                     </Col>
