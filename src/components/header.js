@@ -46,8 +46,8 @@ function MyHeader(props){
                         <Menu.Item key='repo'>{t('navBar.project')}</Menu.Item>
                         <Menu.Item key='bot'>{t('navBar.bot')}</Menu.Item>
 
-                        {/* Language Switcher */}
-                        <SubMenu key="SubMenu" icon={<DownOutlined />} title="Language">
+                        {/* Language Switcher
+                        <Menu>
                             {Object.keys(lngs).map((lng) => (
                                 <Menu.Item key={lng}>
                                     <a onClick={() => i18n.changeLanguage(lng)} style={{ fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal' }}>
@@ -55,7 +55,7 @@ function MyHeader(props){
                                     </a>
                                 </Menu.Item>
                             ))}
-                        </SubMenu>
+                        </Menu> */}
                     </Menu>
                 </Col>
                 <Col span={5}>
@@ -67,10 +67,20 @@ function MyHeader(props){
                         style={{height:'60px',width:'auto',marginTop:'15px'}}
                         preview={false}
                         src='/pics/Q&A.png'/>
-                    <Image 
-                        style={{height:'60px',width:'auto',marginTop:'15px'}}
-                        preview={false}
-                        src='/pics/International.png'/>
+                    <Dropdown overlay={<Menu>
+                            {Object.keys(lngs).map((lng) => (
+                                <Menu.Item key={lng}>
+                                    <a onClick={() => i18n.changeLanguage(lng)} style={{ fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal' }}>
+                                        {lngs[lng].nativeName}
+                                    </a>
+                                </Menu.Item>
+                            ))}
+                        </Menu>}>
+                        <Image 
+                            style={{height:'60px',width:'auto',marginTop:'15px'}}
+                            preview={false}
+                            src='/pics/International.png'/>
+                    </Dropdown>
                 </Col>
             </Row>
         </Header>
