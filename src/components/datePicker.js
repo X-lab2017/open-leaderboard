@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DatePicker, TimePicker, Select, Space, message, Tabs } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment'
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 const { TabPane} = Tabs;
-const { Option } = Select;
 
 function PickerWithType({ type, onChange, defaultDate }) {
     console.log(defaultDate);
@@ -17,8 +15,9 @@ function disabledDate(current) {
   }
 
 const SwitchablePicker = (props) => {
+  const { t } = useTranslation();
   return (
-    <>\
+    <>
         <Tabs defaultActiveKey="1">
             <TabPane tab={t('month')} key="1">
                 <PickerWithType type='month' defaultDate={moment(props.year+'/'+(props.month+1),'YYYY-MM')} onChange={value=>{

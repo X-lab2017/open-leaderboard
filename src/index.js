@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom'
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Layout, Image, Card, Tabs, ConfigProvider } from 'antd';
 import 'antd/dist/antd.css'
 
@@ -176,113 +176,98 @@ const influenceColumns = (object)=>[
     }
 ];
 
-class App extends React.Component {
-
-    constructor(){
-        super();
-        this.state = {
-            object:'company',
-        };
-    }
-
-    changeObject = (object)=>{
-        if(object!=this.state.object){
-            this.setState({
-                object: object,
-            })
-        }
-    }
-
-    render(){
-        const { object } = this.state;
-        return(
-            <ConfigProvider>
-                <Layout className="layout" 
-                        style={{backgroundColor:'rgba(0,0,0,0)',}}>
-                    <Image 
-                        preview={false}
-                        style={{zIndex:-1,position:'absolute'}}
-                        width={'100%'} src="/pics/Slide Background.png"/>
-                    <Row justify='center'>
-                        <Col xs={24} sm={24} md={20} lg={18} xl={16} xxl={16} style={{overflow:'visible'}}>
-                            <MyHeader callback={this.changeObject} />
-                            <Content style={{ 
-                                backgroundColor:'rgba(0,0,0,0)',
-                                }}>
-                                <Description/>
-                                <Row style={{marginTop:'130px'}}>
-                                    <Col span={24}>
-                                        <Tabs 
-                                            centered
-                                            tabBarGutter={50}
-                                            style={{zIndex:5}}
-                                            tabBarStyle={{
-                                                zIndex:5,
-                                            }}
-                                            >
-                                            <TabPane tab={t('activity')} key="1">
-                                                <Card
-                                                    style={{
-                                                        zIndex:10,
-                                                        bottom:'20px',
-                                                        margin:'20px auto',
-                                                        width:'100%',
-                                                        background: '#FFFFFF',
-                                                        boxShadow:'0px 25px 50px 25px #F7F7FF',
-                                                        borderRadius: '42px'
-                                                    }}
-                                                    >
-                                                    <MyTable 
-                                                        hasDetail={true}
-                                                        year={"2021"} 
-                                                        month={10} 
-                                                        item={"activity"}
-                                                        object={object}
-                                                        columns={activityColumns(object)}
-                                                        detailColumns={activityDetailColumns(object)}
-                                                        />
-                                                </Card>
-                                            </TabPane>
-                                            <TabPane tab={t('influence')} key="2">
-                                                <Card
-                                                    style={{
-                                                        zIndex:10,
-                                                        bottom:'20px',
-                                                        margin:'20px auto',
-                                                        width:'100%',
-                                                        background: '#FFFFFF',
-                                                        boxShadow:'0px 25px 50px 25px #F7F7FF',
-                                                        borderRadius: '42px'
-                                                    }}
-                                                    >
-                                                    <MyTable 
-                                                        year={"2021"} 
-                                                        month={10} 
-                                                        item={"influence"}
-                                                        object={object}
-                                                        columns={influenceColumns(object)}/>
-                                                </Card>
-                                            </TabPane>
-                                        </Tabs>
-                                    </Col>
-                                </Row>
-                            </Content>
-                        </Col>
-                    </Row>
-                    <MyFooter />
-                    <Image 
-                        style={{
-                            zIndex:-1,
-                            position:'absolute',
-                            height:'2000px',
-                            bottom:'0px',
-                            }}
-                        preview={false}
-                        src='/pics/Bubble BG.png'/>
-                </Layout>
-            </ConfigProvider>   
-        )
-    }
+const App = () => {
+    const [object,setObject]=useState('company');
+    const {t} = useTranslation();
+    return(
+        <ConfigProvider>
+            <Layout className="layout" 
+                    style={{backgroundColor:'rgba(0,0,0,0)',}}>
+                <Image 
+                    preview={false}
+                    style={{zIndex:-1,position:'absolute'}}
+                    width={'100%'} src="/pics/Slide Background.png"/>
+                <Row justify='center'>
+                    <Col xs={24} sm={24} md={20} lg={18} xl={16} xxl={16} style={{overflow:'visible'}}>
+                        <MyHeader callback={setObject} />
+                        <Content style={{ 
+                            backgroundColor:'rgba(0,0,0,0)',
+                            }}>
+                            <Description/>
+                            <Row style={{marginTop:'130px'}}>
+                                <Col span={24}>
+                                    <Tabs 
+                                        centered
+                                        tabBarGutter={50}
+                                        style={{zIndex:5}}
+                                        tabBarStyle={{
+                                            zIndex:5,
+                                        }}
+                                        >
+                                        <TabPane tab={t('activity')} key="1">
+                                            <Card
+                                                style={{
+                                                    zIndex:10,
+                                                    bottom:'20px',
+                                                    margin:'20px auto',
+                                                    width:'100%',
+                                                    background: '#FFFFFF',
+                                                    boxShadow:'0px 25px 50px 25px #F7F7FF',
+                                                    borderRadius: '42px'
+                                                }}
+                                                >
+                                                <MyTable 
+                                                    hasDetail={true}
+                                                    year={"2021"} 
+                                                    t={t}
+                                                    month={10} 
+                                                    item={"activity"}
+                                                    object={object}
+                                                    columns={activityColumns(object)}
+                                                    detailColumns={activityDetailColumns(object)}
+                                                    />
+                                            </Card>
+                                        </TabPane>
+                                        <TabPane tab={t('influence')} key="2">
+                                            <Card
+                                                style={{
+                                                    zIndex:10,
+                                                    bottom:'20px',
+                                                    margin:'20px auto',
+                                                    width:'100%',
+                                                    background: '#FFFFFF',
+                                                    boxShadow:'0px 25px 50px 25px #F7F7FF',
+                                                    borderRadius: '42px'
+                                                }}
+                                                >
+                                                <MyTable 
+                                                    t={t}
+                                                    year={"2021"} 
+                                                    month={10} 
+                                                    item={"influence"}
+                                                    object={object}
+                                                    columns={influenceColumns(object)}/>
+                                            </Card>
+                                        </TabPane>
+                                    </Tabs>
+                                </Col>
+                            </Row>
+                        </Content>
+                    </Col>
+                </Row>
+                <MyFooter />
+                <Image 
+                    style={{
+                        zIndex:-1,
+                        position:'absolute',
+                        height:'2000px',
+                        bottom:'0px',
+                        }}
+                    preview={false}
+                    src='/pics/Bubble BG.png'/>
+            </Layout>
+        </ConfigProvider>   
+    )
 }
 
 ReactDOM.render(
