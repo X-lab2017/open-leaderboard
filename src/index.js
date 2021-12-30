@@ -19,10 +19,12 @@ const { Content } = Layout;
 const titleDir = {
     company: 'Company',
     repo: 'Repository',
+    actor: 'Bot',
 }
 const dataIndexDir = {
     company: 'company',
     repo: 'repo_name',
+    actor: 'actor_login',
 }
 const activityColumns = (object)=>{
     return (
@@ -199,9 +201,8 @@ class App extends React.Component {
                 <Content style={{ 
                     backgroundColor:'rgba(0,0,0,0)',
                     }}>
-                    <Row style={{ marginTop: '200px' }}></Row>
-                    <Row >
-                        <Col span={4} offset={4} >
+                    <Row style={{ marginTop: '200px' }}>
+                        <Col span={5} offset={4} >
                             <Image
                                 style={{paddingRight:'20px'}}
                                 preview={false} 
@@ -215,7 +216,7 @@ class App extends React.Component {
                         </Col>
                     </Row>
                     <Row style={{marginTop:'130px'}}>
-                        <Col span={18} offset={3}>
+                        <Col span={16} offset={4}>
                             <Tabs 
                                 centered
                                 tabBarGutter={50}
@@ -230,7 +231,7 @@ class App extends React.Component {
                                             zIndex:10,
                                             bottom:'20px',
                                             margin:'20px auto',
-                                            width:'80%',
+                                            width:'100%',
                                             background: '#FFFFFF',
                                             boxShadow:'0px 25px 50px 25px #F7F7FF',
                                             borderRadius: '42px'

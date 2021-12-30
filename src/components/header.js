@@ -18,16 +18,16 @@ function MyHeader(props){
             // position: 'fixed', 
             width: '100%',
             height:'100px',
-            paddingTop:'20px' }}>
-            <Row>
-                <Col span={1} offset={3}>
+            padding:'20px 0px 0px 0px' }}>
+            <Row gutter={[16, 16]}>
+                <Col offset={4}>
                     <Image 
                         style={{float:'left',height:'50px',width:'auto',marginTop:'7px'}}
                         preview={false}
                         src={'/pics/Main Logo.png'}/>
                 </Col>
-                <Col span={5}>
-                <Image
+                <Col>
+                    <Image
                         style={{float:'left',height:'30px',width:'auto',marginTop:'17px'}}
                         preview={false}
                         src={'/pics/OpenInsight-Index.png'}/>
@@ -44,18 +44,7 @@ function MyHeader(props){
                         >
                         <Menu.Item key='company'>{t('navBar.enterprise')}</Menu.Item>
                         <Menu.Item key='repo'>{t('navBar.project')}</Menu.Item>
-                        <Menu.Item key='bot'>{t('navBar.bot')}</Menu.Item>
-
-                        {/* Language Switcher
-                        <Menu>
-                            {Object.keys(lngs).map((lng) => (
-                                <Menu.Item key={lng}>
-                                    <a onClick={() => i18n.changeLanguage(lng)} style={{ fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal' }}>
-                                        {lngs[lng].nativeName}
-                                    </a>
-                                </Menu.Item>
-                            ))}
-                        </Menu> */}
+                        <Menu.Item key='actor'>{t('navBar.bot')}</Menu.Item>
                     </Menu>
                 </Col>
                 <Col span={5}>

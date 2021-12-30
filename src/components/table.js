@@ -154,6 +154,23 @@ class MyTable extends React.Component {
             })
             .then(data => {
                 data = toJSON(data);
+                // 过滤出“机器人”
+                if(this.state.object=='actor'){
+                    console.log('solving bot...')
+                    let newdata = [];
+                    data.map((obj)=>{
+                        if(obj['actor_login'].toLowerCase().indexOf('[bot]')!=-1){
+                            newdata.push(obj);
+                        }
+                    });
+                    data = newdata;
+                    data = data.map((obj,index,arr)=>{
+                        obj['rank']=index+1;
+                        // 机器人和开发者一同计算了rank，所以变化量有问题，先去掉。
+                        obj['diff_rank']='';
+                        return obj;
+                    })
+                }
                 console.log(data);
                 this.setState({
                     loading: false,
