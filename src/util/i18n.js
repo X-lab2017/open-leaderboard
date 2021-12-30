@@ -38,7 +38,7 @@ i18n
           contributeProject:'miss your project?',
           contributeCompany:'miss your company?',
 
-          introduction:'Welcome to OpenInsight-IndexI, where Chinese companys, projects ant robot accounts are ranked by the activity and influence on GitHub, the leading source code repository for free and open source (FOSS) projects.',
+          introduction:'Welcome to OpenInsight-Index, where Chinese companys, projects ant robot accounts are ranked by the activity and influence on GitHub, the leading source code repository for free and open source (FOSS) projects.',
           updateTime:'Updated December 1st, 2021',  
           openinsight:'Openinsight is a complete set of tools integrating open source data collection, open source data development and open source data visualization. It can solve the open source data analysis and reporting in a one-stop way. It has a professional and in-depth understanding of various indicators of various open source projects to help the community operate reasonably.',      
           opendigger:'OpenDigger is an open source analysis report project for all open source data initiated by X-lab, this project aims to combine the wisdom of global developers to jointly analyze and insight into open source related data to help everyone better understand and participate in open source.',

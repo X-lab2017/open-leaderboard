@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { lngs } from '../util/languages';
 import './header.css'
 import Dictionary from './Dictionary';
+import QA from './QA';
 const { Header } = Layout;
 const { SubMenu } = Menu;
 
@@ -54,10 +55,7 @@ function MyHeader(props){
                 </Col>
                 <Col span={5}>
                     <Dictionary/>
-                    <Image 
-                        style={{height:'60px',width:'auto',marginTop:'15px'}}
-                        preview={false}
-                        src='/pics/Q&A.png'/>
+                    <QA/>
                     <Dropdown overlay={<Menu>
                             {Object.keys(lngs).map((lng) => (
                                 <Menu.Item key={lng}>
