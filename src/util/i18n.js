@@ -44,14 +44,14 @@ i18n
           openinsight:'Openinsight is a complete set of tools integrating open source data collection, open source data development and open source data visualization. It can solve the open source data analysis and reporting in a one-stop way. It has a professional and in-depth understanding of various indicators of various open source projects to help the community operate reasonably.',      
           opendigger:'OpenDigger is an open source analysis report project for all open source data initiated by X-lab, this project aims to combine the wisdom of global developers to jointly analyze and insight into open source related data to help everyone better understand and participate in open source.',
           Question:{
-            Q1: 'Your business or project is not here, how to add it?',
+            Q1: 'Your business or project is not here, and how to add it?',
             Q2: 'The items that have been fed back are not seen in the ranking.',
             Q3: 'What is X-lab？'
           },
           Answer:{
             A1:'Please submit feedback to GitHub warehouse: https://github.com/X-lab2017/open-digger Description of feedback method: (link to contribution process document) Open the submit modification template, fill in the project name, path, country and other information, and submit to issue. For template, please refer to: (issue template link)',
             A2:'We have limited the number of projects. You can try to search for the name of your project in the search box at the top of the ranking to locate your item.',
-            A3:'X-Lab is a combination of two leading and pioneering laboratories from computer science and data science and engineering respectively in Tongji University (同济大学) and East China Normal University (华东师范大学).The lab is supported by a number of core members, including doctorial supervisors, Ph.D students, master students and undergraduate students. X-Lab is an intercross multi-discipline, cutting-edge research lab which focuses on the following research domains: Cloud Computing, Big Data, Data Intelligence, and Education Science & Technology.'
+            A3:'X-Lab is a combination of two leading and pioneering laboratories from computer science and data science and engineering respectively in Tongji University and East China Normal University.The lab is supported by a number of core members, including doctorial supervisors, Ph.D students, master students and undergraduate students. X-Lab is an intercross multi-discipline, cutting-edge research lab which focuses on the following research domains: Cloud Computing, Big Data, Data Intelligence, and Education Science & Technology.'
           },
           glossary:'GLOSSARY',
           Glossary:{

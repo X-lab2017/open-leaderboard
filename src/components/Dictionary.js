@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, Col, Image, Modal, Row, Space } from "antd";
 import { CloseCircleOutlined } from '@ant-design/icons';
 import './modal.css'
+import { t } from 'i18next';
 const Dictionary = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     
@@ -25,7 +26,7 @@ const Dictionary = () => {
                 onClick={showModal}
                 src='/pics/Dic.png'/>
             <Modal 
-                title="Dictionary" 
+                title={t('glossary')}
                 width={'100%'}
                 closable={false}
                 visible={isModalVisible} 

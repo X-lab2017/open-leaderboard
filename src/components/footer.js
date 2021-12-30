@@ -1,6 +1,7 @@
 import { Col, Row } from 'antd';
 import 'antd/dist/antd.css';
 import { Layout, Image } from 'antd';
+import { t } from 'i18next';
 const { Footer } = Layout;
 
 function MyFooter(props){
@@ -48,7 +49,7 @@ function MyFooter(props){
                             fontSize:'25px'
                         }} 
                         >
-                        OpenInsight 是一个集开源数据采集、开源数据开发、开源数据可视化一整套工具，一站式解决开源数据分析与报告，专业并且具有深度的了解各个开源项目各项指标，帮助社区合理运营。
+                        {t('openinsight')}
                     </p>
                 </Col>
                 <Col span={6} offset={1}>
@@ -58,7 +59,7 @@ function MyFooter(props){
                             color:'#D7DBFF',
                             fontSize:'25px',
                         }}>
-                        OpenDigger is an open source analysis report project for all open source data initiated by X-lab, this project aims to combine the wisdom of global developers to jointly analyze and insight into open source related data to help everyone better understand and participate in open source.
+                        {t('opendigger')}
                     </p>
                 </Col>
             </Row>
