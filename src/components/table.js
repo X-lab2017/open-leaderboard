@@ -19,47 +19,6 @@ function DateTitle(props){
         <h1>{solveDate(props.year,props.month)}</h1>
     );
 }
-// 示例
-// const columns = [
-//     {
-//         title: 'Rank',
-//         dataIndex: 'rank',
-//         sorter: (a, b) => a.rank - b.rank,
-//         width: '5%',
-//     },
-//     {
-//         title: '',
-//         dataIndex: 'diff_rank',
-//         render:(text, row, index)=>{
-//             if(text==0){
-//                 return ''
-//             }
-//             else if(text<0){
-//                 return <>
-//                     <ArrowDownOutlined style={{color:'green'}}/>{text}
-//                 </>
-//             }else{
-//                 return <>
-//                     <ArrowUpOutlined style={{color:'red'}}/>{text}
-//                 </>
-//             }
-//             return text
-//         },
-//         width: '5%',
-//     },
-//     {
-//         title: 'Company',
-//         dataIndex: 'company',
-//         sorter: true,
-//         width: '20%',
-//     },
-//     {
-//         title: 'Activity',
-//         dataIndex: 'activity',
-//         sorter: true,
-//         width: '20%',
-//     },
-// ];
 
 class MyTable extends React.Component {
     state = {
@@ -197,57 +156,45 @@ class MyTable extends React.Component {
 
     render() {
         const { data, columns, loading, year, month, hasDetail } = this.state;
-        if(hasDetail==true){
-            return (
-                <>
-                    <Row style={{marginBottom:'20px'}} align='middle' >
-                        <Col>
-                            <SwitchablePicker update={this.updateDate} />
+        return (
+            <>
+                <Row style={{marginBottom:'20px'}} align='middle' >
+                    <Col span={12}>
+                        <Row justify='start'>
+                            <Col>
+                                <SwitchablePicker update={this.updateDate} />
+                            </Col>
+                        </Row>
+                    </Col>
+                    { hasDetail? 
+                        <Col span={12}>
+                            <Row justify='end'>
+                                <Col>
+                                    <span style={{
+                                        color:'#FFCC19',
+                                        fontSize:'18px',
+                                        marginRight:'10px'
+                                        }}>
+                                        详情
+                                    </span>
+                                    <Switch onChange={this.toggleDetail}/>
+                                </Col>
+                            </Row>
                         </Col>
-                        <Col offset={18}>
-                            <span style={{
-                                color:'#FFCC19',
-                                fontSize:'18px',
-                                marginRight:'10px'
-                                }}>
-                                详情
-                            </span>
-                            <Switch onChange={this.toggleDetail}/>
-                        </Col>
-                    </Row>
-                    <Table
-                        columns={columns}
-                        rowKey={record => record.rank}
-                        dataSource={data}
-                        pagination={false}
-                        loading={loading}
-                        onChange={this.handleTableChange}
-                    />
-                </>
-    
-            );
-        }
-        else{
-            return (
-                <>
-                    <Row style={{marginBottom:'20px'}}>
-                        <Col>
-                            <SwitchablePicker update={this.updateDate} />
-                        </Col>
-                    </Row>
-                    <Table
-                        columns={columns}
-                        rowKey={record => record.rank}
-                        dataSource={data}
-                        pagination={false}
-                        loading={loading}
-                        onChange={this.handleTableChange}
-                    />
-                </>
-    
-            );
-        }
-
+                        :<></>
+                    }
+                </Row>
+                <Table
+                    columns={columns}
+                    rowKey={record => record.rank}
+                    dataSource={data}
+                    pagination={false}
+                    loading={loading}
+                    onChange={this.handleTableChange}
+                />
+                <a>点击查看更多</a>
+            </>
+        );
     }
 }
 
