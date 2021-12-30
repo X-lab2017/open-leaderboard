@@ -1,8 +1,7 @@
-import ReactDOM from 'react-dom'
-import { Table, Tag, Space, Col, Row } from 'antd';
+import { Col, Row } from 'antd';
 import 'antd/dist/antd.css';
-import { Layout, Menu, Breadcrumb, Image } from 'antd';
-const { Header, Content, Footer } = Layout;
+import { Layout, Image } from 'antd';
+const { Footer } = Layout;
 
 function MyFooter(props){
     return (

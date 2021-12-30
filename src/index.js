@@ -1,8 +1,7 @@
 import ReactDOM from 'react-dom'
 import React from 'react';
 import { Row, Col, Layout, Image, Card, Tabs } from 'antd';
-import 'antd/dist/antd.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import 'antd/dist/antd.css'
 
 import MyFooter from './components/footer';
 import MyHeader from './components/header';
@@ -289,18 +288,6 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<App />}>
-            </Route>
-            {/* unmatched URL */}
-            <Route 
-                path="*" 
-                element={
-                    <p>There's nothing here!</p>
-                }
-            />
-        </Routes>
-    </BrowserRouter>,
+    <App/>,
     document.getElementById('root')
 );

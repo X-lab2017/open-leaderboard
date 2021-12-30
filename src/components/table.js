@@ -30,6 +30,7 @@ class MyTable extends React.Component {
         hasDetail:false,
         flag:false, // 为 true 的话，componentDidUpdate函数中会请求新数据
         data: [],
+        showSize: 25,
         pagination: false,
         loading: false,
         url: '',
@@ -109,6 +110,18 @@ class MyTable extends React.Component {
         });
     };
 
+    expandData = ()=>{
+        this.setState({
+            showSize: this.state.showSize + 25,
+        })
+    }
+
+    collapseData = ()=>{
+        this.setState({
+            showSize: 25,
+        })
+    }
+
     // 更新时间
     updateDate = (year, month) => {
         this.setState({
@@ -155,7 +168,7 @@ class MyTable extends React.Component {
     };
 
     render() {
-        const { data, columns, loading, year, month, hasDetail } = this.state;
+        const { data, columns, loading, showSize, hasDetail } = this.state;
         return (
             <>
                 <Row style={{marginBottom:'20px'}} align='middle' >
@@ -187,12 +200,43 @@ class MyTable extends React.Component {
                 <Table
                     columns={columns}
                     rowKey={record => record.rank}
-                    dataSource={data}
+                    dataSource={data.slice(0,Math.min(showSize,data.length))}
                     pagination={false}
                     loading={loading}
                     onChange={this.handleTableChange}
                 />
-                <a>点击查看更多</a>
+                <Row>
+                    <Col span={12}>
+                        <Row justify='start'>
+                            <Col>
+                                {  
+                                    showSize<data.length?
+                                    <a style={{
+                                        color:'#FFCC19',
+                                        fontSize:'18px',}}
+                                        onClick={this.expandData}>
+                                            展示更多{'>>'}
+                                    </a>:
+                                    <span style={{
+                                        color:'gray',
+                                        fontSize:'18px',}}>
+                                        没有更多啦
+                                    </span>
+                                }
+                                
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col span={12}>
+                        <Row justify='end'>
+                            <Col offset={1}>
+                                <a style={{
+                                        color:'#FFCC19',
+                                        fontSize:'18px',}}>没有您的数据？</a>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
             </>
         );
     }
