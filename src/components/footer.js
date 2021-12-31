@@ -16,7 +16,7 @@ function MyFooter(props){
             backgroundRepeat:'no-repeat',
             backgroundSize:'100% 100%',
             }}>
-            <Row style={{marginTop:'200px'}}></Row>
+            <Row style={{marginTop:'100px'}}></Row>
             <Row justify='center'>
                 <Col xs={22} sm={22} md={20} lg={18} xl={16} xxl={16}>
                     <Row>
