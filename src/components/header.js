@@ -22,7 +22,7 @@ function MyHeader(props){
             height:'100px',
             padding:'20px 0px 0px 0px' }}>
             <Row>
-                <Col xs={22} sm={16} md={13} lg={12} xl={12} xxl={8} >
+                <Col xs={22} sm={16} md={13} lg={12} xl={10} xxl={8} >
                     <Row gutter={[16,16]}>
                         <Col>
                             <Image 
@@ -38,7 +38,7 @@ function MyHeader(props){
                         </Col>
                     </Row>
                 </Col>
-                <Col span={7} offset={2}>
+                <Col xs={22} sm={16} md={13} lg={12} xl={8} xxl={8}>
                     <Menu 
                         style={{background:'rgba(255,255,255,0)'}}
                         mode="horizontal" 
@@ -53,7 +53,7 @@ function MyHeader(props){
                         <Menu.Item key='actor'>{t('navBar.bot')}</Menu.Item>
                     </Menu>
                 </Col>
-                <Col span={5}>
+                <Col xs={22} sm={16} md={13} lg={12} xl={6} xxl={8}>
                     <Dictionary/>
                     <QA/>
                     <Dropdown overlay={<Menu>

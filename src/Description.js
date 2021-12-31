@@ -5,12 +5,12 @@ const Description = () => {
     const {t} = useTranslation();
     return (
         <Row style={{ marginTop: '200px' }}>
-            <Col span={5} >
+            <Col xs={22} sm={16} md={13} lg={12} xl={10} xxl={8}  >
                 <span className='myFontColor'>
                 {t('introduction')}
                 </span>
             </Col>
-            <Col span={9} offset={2}>
+            <Col xs={22} sm={16} md={13} lg={12} xl={10} xxl={8} offset={1}>
                 <Row>
                     <Col>
                         <Image

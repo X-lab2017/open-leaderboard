@@ -21,10 +21,10 @@ function MyFooter(props){
                 <Col xs={22} sm={22} md={20} lg={18} xl={16} xxl={16}>
                     <Row>
                         {/* OpenIsight */}
-                        <Col xs={22} sm={22} md={20} lg={18} xl={16} xxl={11}>
+                        <Col xs={22} sm={22} md={20} lg={18} xl={11} xxl={11}>
                             {/* 两个图片 */}
                             <Row align='middle' gutter={[16,16]}>
-                                <Col span={2}>
+                                <Col span={6}>
                                     <Image
                                         preview={false}
                                         src='/pics/Main Logo.png'/>
@@ -43,7 +43,7 @@ function MyFooter(props){
                                         align='left'
                                         style={{
                                             color:'#D7DBFF',
-                                            fontSize:'25px'
+                                            fontSize:'1rem'
                                         }} 
                                         >
                                         {t('openinsight')}
@@ -53,9 +53,9 @@ function MyFooter(props){
                             
                         </Col>
                         {/* OpenDigger */}
-                        <Col xs={22} sm={22} md={20} lg={18} xl={16} xxl={{span:11,offset:1}}>
+                        <Col xs={22} sm={22} md={20} lg={18} xl={{span:11,offset:1}} xxl={11}>
                             <Row align='middle' gutter={[16,16]}>
-                                <Col span={2}>
+                                <Col span={6}>
                                     <Image 
                                         preview={false}
                                         src='/pics/OD.png'/>
@@ -72,7 +72,7 @@ function MyFooter(props){
                                         align='left'
                                         style={{
                                             color:'#D7DBFF',
-                                            fontSize:'25px',
+                                            fontSize:'1rem',
                                         }}>
                                         {t('opendigger')}
                                     </p>
