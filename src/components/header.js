@@ -22,7 +22,7 @@ function MyHeader(props){
             height:'100px',
             padding:'20px 0px 0px 0px' }}>
             <Row>
-                <Col span={5}>
+                <Col xs={22} sm={16} md={13} lg={12} xl={12} xxl={8} >
                     <Row gutter={[16,16]}>
                         <Col>
                             <Image 

@@ -188,7 +188,7 @@ const App = () => {
                     style={{zIndex:-1,position:'absolute'}}
                     width={'100%'} src="/pics/Slide Background.png"/>
                 <Row justify='center'>
-                    <Col xs={24} sm={24} md={20} lg={18} xl={16} xxl={16} style={{overflow:'visible'}}>
+                    <Col xs={22} sm={22} md={20} lg={18} xl={16} xxl={16} style={{overflow:'visible'}}>
                         <MyHeader callback={setObject} />
                         <Content style={{ 
                             backgroundColor:'rgba(0,0,0,0)',
@@ -210,9 +210,9 @@ const App = () => {
                                                     zIndex:10,
                                                     bottom:'20px',
                                                     margin:'20px auto',
-                                                    width:'100%',
+                                                    width:'95%',
                                                     background: '#FFFFFF',
-                                                    boxShadow:'0px 25px 50px 25px #F7F7FF',
+                                                    boxShadow:'0px 15px 20px 15px #F7F7FF',
                                                     borderRadius: '42px'
                                                 }}
                                                 >
@@ -234,9 +234,9 @@ const App = () => {
                                                     zIndex:10,
                                                     bottom:'20px',
                                                     margin:'20px auto',
-                                                    width:'100%',
+                                                    width:'95%',
                                                     background: '#FFFFFF',
-                                                    boxShadow:'0px 25px 50px 25px #F7F7FF',
+                                                    boxShadow:'0px 15px 20px 15px #F7F7FF',
                                                     borderRadius: '42px'
                                                 }}
                                                 >

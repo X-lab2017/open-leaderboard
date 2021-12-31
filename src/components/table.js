@@ -220,6 +220,8 @@ class MyTable extends React.Component {
                     }
                 </Row>
                 <Table
+                    // Todo
+                    // scroll={{ x: 1500, y: 300 }}
                     columns={columns}
                     rowKey={record => record.rank}
                     dataSource={data.slice(0,Math.min(showSize,data.length))}
