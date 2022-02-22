@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 import React, { useState } from 'react';
-import { Row, Col, Layout, Image, Card, Tabs, ConfigProvider } from 'antd';
+import { Row, Col, Layout, Image, Card, Tabs, ConfigProvider, Button } from 'antd';
 import 'antd/dist/antd.css'
 
 import Description from './Description';
@@ -14,8 +14,8 @@ import RoundFloat from './components/resolveFloat';
 import Trophy from './components/rankTrophy';
 import './tab.css'
 import './index.css'
-import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import ScrollTopButton from './components/ scrollTopButton';
 
 const { TabPane } = Tabs;
 const { Content } = Layout;
@@ -183,6 +183,8 @@ const App = () => {
         <ConfigProvider>
             <Layout className="layout" 
                     style={{backgroundColor:'rgba(0,0,0,0)',}}>
+                
+                <ScrollTopButton />
                 <Image 
                     preview={false}
                     style={{zIndex:-1,position:'absolute'}}

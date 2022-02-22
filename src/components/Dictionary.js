@@ -3,7 +3,7 @@ import { Card, Col, Image, Modal, Row, Space } from "antd";
 import { CloseCircleOutlined } from '@ant-design/icons';
 import './modal.css'
 import { t } from 'i18next';
-const Dictionary = () => {
+const Dictionary = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     
     const showModal = () => {
@@ -20,11 +20,14 @@ const Dictionary = () => {
 
     return (
         <>
-            <Image 
+            {
+                props.type=='word'? <div style={{width:'100%'}} onClick={showModal}>{t('glossary')}</div>
+                :<Image 
                 style={{height:'60px',width:'auto',marginTop:'15px',cursor:'pointer'}}
                 preview={false}
                 onClick={showModal}
                 src='/pics/Dic.png'/>
+            }
             <Modal 
                 title={t('glossary')}
                 width={'100%'}
