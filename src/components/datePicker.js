@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { DatePicker, Select, Space } from 'antd';
 import moment from 'moment'
 const { Option } = Select;
-function PickerWithType({ defaultValue, type, onChange }) {
-  return <DatePicker defaultValue={defaultValue} format={'YYYY/MM'} picker={type} onChange={onChange} />;
+function PickerWithType({month, year, type, onChange }) {
+  console.log('time type is'+type);
+  if(type=='month')
+    return <DatePicker defaultValue={moment(String(year)+'/'+String(1+month),'YYYY/MM')} format={'YYYY/MM'} picker={type} onChange={onChange} />;
+  else if(type == 'year')
+    return <DatePicker  defaultValue={moment(year,'YYYY')} format={'YYYY'} picker={type} onChange={onChange} />;
 }
 
 function disabledDate(current) {
@@ -12,16 +16,14 @@ function disabledDate(current) {
 }
 
 const SwitchablePicker = (props) => {
-  console.log(moment(String(props.year)+'-'+String(props.month)));
-  const [type, setType] = useState('month');
   return (
     <>
         <Space>
-          <Select value={type} onChange={setType} >
+          <Select value={props.type} onChange={value=>{props.setState({'time_type':value})}} >
             <Option value="month">Month</Option>
             <Option value="year">Year</Option>
           </Select>
-          <PickerWithType defaultValue={moment(String(props.year)+'/'+String(1+props.month),'YYYY/MM')} type={type} onChange={value => props.setState({'month':value.month(),'year':String(value.years())})} />
+          <PickerWithType month={props.month} year={props.year} type={props.type} onChange={value => {props.setState({'month':value.months(),'year':String(value.years())})}} />
         </Space>
     </>
   );

@@ -236,7 +236,8 @@ class MyTable extends React.Component {
             url: '',// base + index + object + region + yearmonth + .json
             base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_index_data/",
             year: '2022',// 字符串格式
-            month: 1,// 整数格式，0表示1月，1表示2月...
+            month: 1,// 整数格式，0表示1月，1表示2月..., null for year type time
+            time_type: 'month',
         };
         // this.state.url = this.state.base + props.index + '/' + props.object + '/';
     }
@@ -272,7 +273,7 @@ class MyTable extends React.Component {
     }
 
     updateDate = (newstate) => {
-        let { base, object, index, region, month, year, columns, showDetail, hasDetail } = this.state;
+        let { base, object, index, region, month, year, columns, showDetail, hasDetail, time_type } = this.state;
         this.setState({...newstate,loading: true});
         if(newstate.hasOwnProperty('object')) object = newstate.object;
         if(newstate.hasOwnProperty('index')) index = newstate.index;
@@ -280,6 +281,7 @@ class MyTable extends React.Component {
         if(newstate.hasOwnProperty('month')) month = newstate.month;
         if(newstate.hasOwnProperty('year')) year = newstate.year;
         if(newstate.hasOwnProperty('showDetail')) showDetail = newstate.showDetail;
+        if(newstate.hasOwnProperty('time_type')) time_type = newstate.time_type;
         // 更新表格的标题
         if(index=='activity'){
             columns = activityColumns(object);
@@ -293,6 +295,9 @@ class MyTable extends React.Component {
             columns = open_rankColumns(object);
             hasDetail = false;
             showDetail = false;
+        }
+        if(time_type == 'year'){
+            month = null;
         }
 
         let url = base + index + '/' + object + '/' + region + '/';
@@ -344,7 +349,7 @@ class MyTable extends React.Component {
 
     render() {
         const {t} = this.props;
-        const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year} = this.state;
+        const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, time_type} = this.state;
         return (
             <Card style={{
                 zIndex:10,
@@ -355,7 +360,7 @@ class MyTable extends React.Component {
                 boxShadow:'0px 15px 20px 15px #F7F7FF',
                 borderRadius: '42px'
             }}>
-                <TablePanel setState={this.updateDate} object={object} index={index} region={region} hasDetail
+                <TablePanel type={time_type} setState={this.updateDate} object={object} index={index} region={region} hasDetail
                 ={hasDetail} showDetail={showDetail} month={month} year={year}/>
                 <Table
                     // Todo

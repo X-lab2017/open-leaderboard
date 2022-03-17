@@ -33,7 +33,7 @@ const TablePanel = (props) => {
             </Radio.Group>  
           </Col>
           <Col>
-            <span className='myFontColor'>时间：</span><SwitchablePicker setState={props.setState} month={props.month} year={props.year}/>
+            <span className='myFontColor'>时间：</span><SwitchablePicker setState={props.setState} month={props.month} type={props.type} year={props.year}/>
           </Col>
           <Col>
           {
