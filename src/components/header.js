@@ -12,7 +12,7 @@ const { Header } = Layout;
 
 
 
-function MyHeader(props){
+function MyHeader(){
     const { t } = useTranslation();
     const MyMenu = ()=>{
         return (
@@ -20,64 +20,28 @@ function MyHeader(props){
                 style={{background:'rgba(255,255,255,0)'}}
                 mode="horizontal" 
                 defaultSelectedKeys={['company']}
-                onClick={(event)=>{
-                    console.log(event.key);
-                    if(event.key=='company' || event.key == 'repo' || event.key == 'actor'){
-                        props.callback(event.key)
-                        return false;
-                    }
-                }}
                 >
-                <Menu.Item key='company'>{t('navBar.enterprise')}</Menu.Item>
-                <Menu.Item key='repo'>{t('navBar.project')}</Menu.Item>
-                <Menu.Item key='actor'>{t('navBar.bot')}</Menu.Item>
                 <Menu.Item key='glossary'><Dictionary type='word'/></Menu.Item>
                 <Menu.Item key='QA'><QA type='word'/></Menu.Item>
             </Menu>
         )
     }
     return (
-        <Header style={{
-            background:'rgba(222,225,255,0)', 
-            // position: 'fixed', 
-            width: '100%',
-            padding:'10px 0px 0px 0px' }}>
-            <Row>
-                <Col xs={{span:20, offset:2}} sm={{span:20, offset:2}} md={{span:12,offset:0}} lg={{span:12,offset:0}} xl={{span:10,offset:0}} xxl={{span:8,offset:0}} >
-                    <Row gutter={[16,0]} justify='center' align='middle'>
-                        <Col style={{textAlign:'center'}}>
-                            <Image 
-                                style={{height:'50px',width:'auto'}}
-                                preview={false}
-                                src={'/pics/Main Logo.png'}/>
-                        </Col>
-                        <Col>
-                            <Image
-                                style={{width:'10rem'}}
-                                preview={false}
-                                src={'/pics/OpenInsight-Index.png'}/>
-                        </Col>
-                    </Row>
+        <Header style={{background:'rgba(222,225,255,0)'}}>
+            <Row className='container' align='middle' justify='center' style={{width: '100%', height:'80px'}}>
+                <Col style={{display:'flex',flex:'0 1 305px',justifyContent:'space-between',alignItems:'center'}}>
+                    <Image 
+                        style={{height:'60px',width:'48px'}}
+                        preview={false}
+                        src={'/pics/Main Logo.png'}/>
+                    <Image
+                        style={{width:'250px'}}
+                        preview={false}
+                        src={'/pics/open leaderboard.png'}/>
                 </Col>
-                <Col xs={0} sm={0} md={8} lg={12} xl={8} xxl={8}>
-                <Menu 
-                style={{background:'rgba(255,255,255,0)'}}
-                mode="horizontal" 
-                defaultSelectedKeys={['company']}
-                onClick={(event)=>{
-                    console.log(event.key);
-                    if(event.key=='company' || event.key == 'repo' || event.key == 'actor'){
-                        props.callback(event.key)
-                        return false;
-                    }
-                }}
-                >
-                <Menu.Item key='company'>{t('navBar.enterprise')}</Menu.Item>
-                <Menu.Item key='repo'>{t('navBar.project')}</Menu.Item>
-                <Menu.Item key='actor'>{t('navBar.bot')}</Menu.Item>
-                </Menu>
+                <Col style={{display:'flex',flex:'1 1 auto',justifyContent:'center',alignItems:'center'}}>
                 </Col>
-                <Col xs={0} sm={0} md={7} lg={12} xl={6} xxl={8}>
+                <Col style={{display:'flex',flex:'0 1 180px',justifyContent:'space-between',alignItems:'center'}}>
                     <Dictionary/>
                     <QA/>
                     <Dropdown overlay={<Menu>
@@ -90,9 +54,9 @@ function MyHeader(props){
                             ))}
                         </Menu>}>
                         <Image 
-                            style={{height:'60px',width:'auto',marginTop:'15px'}}
+                            style={{height:'48px',width:'48px'}}
                             preview={false}
-                            src='/pics/International.png'/>
+                            src='/pics/translation.png'/>
                     </Dropdown>
                 </Col>
                 <Col xs={2} sm={2} md={0} lg={0} xl={0} xxl={0}>

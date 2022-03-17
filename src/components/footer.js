@@ -1,109 +1,49 @@
 import { Col, Row } from 'antd';
 import 'antd/dist/antd.css';
 import { Layout, Image } from 'antd';
-import { t } from 'i18next';
 const { Footer } = Layout;
 
 function MyFooter(props){
     return (
-        <Footer style={{
-            // zIndex:10,
-            // paddingTop:'50px',
-            // minHeight: '1000px',
-            // textAlign: 'center',
-            backgroundColor:'rgba(0,0,0,0)',
-            backgroundImage:'url("/pics/Footer BG.png")',
-            backgroundRepeat:'no-repeat',
-            backgroundSize:'100% 100%',
-            }}>
-            <Row style={{marginTop:'100px'}}></Row>
-            <Row justify='center'>
-                <Col xs={22} sm={22} md={20} lg={18} xl={16} xxl={16}>
-                    <Row>
-                        {/* OpenIsight */}
-                        <Col xs={22} sm={22} md={20} lg={18} xl={11} xxl={11}>
-                            {/* 两个图片 */}
-                            <Row align='middle' gutter={[16,16]}>
-                                <Col span={6}>
-                                    <Image
-                                        preview={false}
-                                        src='/pics/Main Logo.png'/>
-                                </Col>
-                                <Col span={9}>
-                                    <Image 
-                                        style={{margin:'auto 0'}}
-                                        preview={false}
-                                        src='/pics/OpenInsight.png'/>
-                                </Col>
-                            </Row>
-                            {/* 介绍文字 */}
-                            <Row>
-                                <Col>
-                                    <p 
-                                        align='left'
-                                        style={{
-                                            color:'#D7DBFF',
-                                            fontSize:'1rem'
-                                        }} 
-                                        >
-                                        {t('openinsight')}
-                                    </p>
-                                </Col>
-                            </Row>
-                            
-                        </Col>
-                        {/* OpenDigger */}
-                        <Col xs={22} sm={22} md={20} lg={18} xl={{span:11,offset:1}} xxl={11}>
-                            <Row align='middle' gutter={[16,16]}>
-                                <Col span={6}>
-                                    <Image 
-                                        preview={false}
-                                        src='/pics/OD.png'/>
-                                </Col>
-                                <Col span={9}>
-                                    <Image
-                                        preview={false}
-                                        src='/pics/OpenDigger.png'/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <p 
-                                        align='left'
-                                        style={{
-                                            color:'#D7DBFF',
-                                            fontSize:'1rem',
-                                        }}>
-                                        {t('opendigger')}
-                                    </p>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    {/* X-lab Logo */}
-                    <Row>
-
-                    </Row>
-                </Col>
-            </Row>
-            
-            {/* X-lab Logo */}
-            <Row>
-
-            </Row>
-            {/* ---- */}
-            <Row style={{marginTop:'40px'}} align='middle' justify='center'>
-                <Col>
-                    <Image 
-                        preview={false}
-                        src='/pics/x-lab Logo.png'/>
-                </Col>
-                <Col style={{marginLeft:'20px'}}>
-                    <Image 
-                        preview={false}
-                        src='/pics/Powered by X-lab.png'/>
-                </Col>
-            </Row>
+        <Footer style={{backgroundColor:'rgba(0,0,0,0)'}}>
+            <div className='container'>
+                <Row align='middle' justify='center'>
+                    <Col>
+                        <h1 className='myFontColor'>Dependent project</h1>
+                    </Col>
+                </Row>
+                <Row align='middle' justify='center' gutter={20} style={{minHeight:'100px'}}>
+                    <Col>
+                        <img src='/pics/OD.png' style={{height:'80px',width:'80px'}}/><span style={{marginLeft:'5px',fontSize:'18px'}}>OpenDigger</span>
+                    </Col>
+                </Row>
+                <Row align='middle' justify='center'>
+                    <Col>
+                        <h1 className='myFontColor'>Membership</h1>
+                    </Col>
+                </Row>
+                <Row align='middle' justify='center' style={{minHeight:'100px'}}>
+                    <Col>
+                        <span style={{fontSize:'28px'}}>Leave a seat vacant for you.</span>
+                    </Col>
+                </Row>
+                <Row style={{marginTop:'100px'}}>
+                    <Col offset={4} span={16}>
+                        <Row align='middle' justify='center'>
+                            <Col>
+                                <span>Copyright ©2022 X-lab </span>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col span={4}>
+                        <Row align='bottom' justify='end'>
+                            <Col>
+                                <a href='https://github.com/X-lab2017/open-digger' target={'_blank'}><img src='/pics/GitHub.png' style={{width:'30px',height:'30px'}} /></a>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </div>
         </Footer>
     );
 }

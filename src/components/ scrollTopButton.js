@@ -10,7 +10,7 @@ function scrollToTop(timestamp){
 const ScrollTopButton = (props)=>{
     return(
         <Button  
-            style={{position:'fixed',right:'22px',bottom:'60px',backgroundColor:'#FFCC19',borderColor:'#FFCC19'}}
+            style={{position:'fixed',zIndex:2147483640,right:'22px',bottom:'60px',backgroundColor:'#FFCC19',borderColor:'#FFCC19'}}
             type="primary" 
             icon={<VerticalAlignTopOutlined />} 
             onClick={()=>{

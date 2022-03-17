@@ -7,8 +7,11 @@ const ArrowRender = (text, row, index)=>{
     if(text=='UNKNOWN'){
         return ''
     }
-    if(text==0){
-        return ''
+    if(text == -10000000){
+        return <span className='specialColor'>new</span>;
+    }
+    else if(text==0){
+        return <span style={{textAlign:'center'}}> - </span>;
     }
     else if(text<0){
         return <>
