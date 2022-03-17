@@ -9,7 +9,7 @@ function MyFooter(props){
             <div className='container'>
                 <Row align='middle' justify='center'>
                     <Col>
-                        <h1 className='myFontColor'>Dependent project</h1>
+                        <h1 className='myFontColor'>Data Powered by</h1>
                     </Col>
                 </Row>
                 <Row align='middle' justify='center' gutter={20} style={{minHeight:'100px'}}>
@@ -24,7 +24,7 @@ function MyFooter(props){
                 </Row>
                 <Row align='middle' justify='center' style={{minHeight:'100px'}}>
                     <Col>
-                        <span style={{fontSize:'28px'}}>Leave a seat vacant for you.</span>
+                        <span style={{fontSize:'18px'}}>Leave a seat vacant for you.</span>
                     </Col>
                 </Row>
                 <Row style={{marginTop:'100px'}}>

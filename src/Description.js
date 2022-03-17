@@ -20,7 +20,7 @@ const Description = () => {
             <Row style={{minHeight:'100px'}} align='middle' justify='center'>
                 <Col span={12}>
                     <span className='myFontColor'>
-                    欢迎来到 open leaderboard，我们对 GitHub 上的企业、项目以及开发者账号进行了活跃度和影响力的排名。
+                    欢迎来到 OpenLeaderboard，我们对 GitHub 上的企业、项目以及开发者账号进行了活跃度和影响力的排名。
                     （GitHub 是全球最大的社交编程及代码托管网站。）
                     </span>
                 </Col>

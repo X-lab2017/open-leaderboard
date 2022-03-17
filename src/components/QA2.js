@@ -42,7 +42,7 @@ const QAmiss = () => {
                     <CloseCircleOutlined style={{fontSize:'30px'}}onClick={handleOk}/>
                 ]}
                 style={{margin:'0px auto',backgroundColor:'rgba(0,0,0,0)'}}
-                maskStyle={{backgroundColor:'rgba(0,0,0,0.618)'}}>
+                maskStyle={{backgroundColor:'rgba(0,0,0,0.8)'}}>
                     <Row justify="center">
                         <Col xs={20} sm={16} md={12} lg={8} xl={6}>
                             <Space direction="vertical" size={'large'} style={{width:'100%'}}>

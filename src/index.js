@@ -10,7 +10,7 @@ import MyHeader from './components/header';
 import MyTable from './components/table';
 import './index.css'
 import { useTranslation } from 'react-i18next';
-import ScrollTopButton from './components/ scrollTopButton';
+import ScrollTopButton from './components/scrollTopButton';
 const { Content } = Layout;
 
 const App = () => {

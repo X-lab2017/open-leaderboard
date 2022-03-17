@@ -15,63 +15,64 @@ const titleDir = {
     repo: 'Repository',
     actor: 'ID',
 }
-const dataIndexDir = {
+const activityDataIndexDir = {
     company: 'name',
     repo: 'name',
     actor: 'name',
 }
-const activityColumns = (object)=>{
-    return (
-        [
-            {
-                title: 'rank',
-                dataIndex: 'rank',
-                width: '5%',
-                align: 'center',
-                render: Trophy,
-            },
-            object=='actor'?
-            {
-                title: 'Avatar',
-                dataIndex: 'id',
-                width: '5%',
-                align: 'center',
-                render: MyAvatar,
-            }:{
-                title: '',
-                dataIndex: '',
-                align:'left',
-                width: '1%',
-            },
-            {
-                title: '',
-                dataIndex: 'rankDelta',
-                render: ArrowRender,
-                align:'left',
-                width: '5%',
-            },
-            {
-                title: titleDir[object],
-                dataIndex: dataIndexDir[object],
-                align:'center',
-                width: '20%',
-            },
-            {
-                title: 'Activity',
-                dataIndex: 'value',
-                align:'right',
-                width: '20%',
-            },
-            {
-                title:'',
-                dataIndex:'valueDelta',
-                width:'10%',
-                align:'left',
-                render: PointRender,
-            }
-        ]
-    )
+const openRankDataIndexDir = {
+    company: 'item',
+    repo: 'item',
+    actor: 'name',
 }
+const activityColumns = (object)=>[
+    {
+        title: 'rank',
+        dataIndex: 'rank',
+        width: '5%',
+        align: 'center',
+        render: Trophy,
+    },
+    object=='actor'?
+    {
+        title: 'Avatar',
+        dataIndex: 'id',
+        width: '5%',
+        align: 'center',
+        render: MyAvatar,
+    }:{
+        title: '',
+        dataIndex: '',
+        align:'left',
+        width: '1%',
+    },
+    {
+        title: '',
+        dataIndex: 'rankDelta',
+        render: ArrowRender,
+        align:'left',
+        width: '5%',
+    },
+    {
+        title: titleDir[object],
+        dataIndex: activityDataIndexDir[object],
+        align:'center',
+        width: '20%',
+    },
+    {
+        title: 'Activity',
+        dataIndex: 'value',
+        align:'right',
+        width: '20%',
+    },
+    {
+        title:'',
+        dataIndex:'valueDelta',
+        width:'10%',
+        align:'left',
+        render: PointRender,
+    }
+];
 const activityDetailColumns = (object)=>[
     {
         title: 'Rank',
@@ -101,7 +102,7 @@ const activityDetailColumns = (object)=>[
     },
     {
         title: titleDir[object],
-        dataIndex: dataIndexDir[object],
+        dataIndex: activityDataIndexDir[object],
         align:'center',
         width: '15%',
     },
@@ -179,7 +180,7 @@ const open_rankColumns = (object)=>[
     },
     {
         title: titleDir[object],
-        dataIndex: 'item',
+        dataIndex: openRankDataIndexDir[object],
         width: '20%',
         align:'center',
     },
@@ -234,7 +235,7 @@ class MyTable extends React.Component {
             showSize: 25,
             loading: false,
             url: '',// base + index + object + region + yearmonth + .json
-            base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_index_data/",
+            base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/",
             year: '2022',// 字符串格式
             month: 1,// 整数格式，0表示1月，1表示2月..., null for year type time
             time_type: 'month',
@@ -324,6 +325,7 @@ class MyTable extends React.Component {
                     obj = expandObject(obj);
                     if(obj.rankDelta==0 && obj.value == obj.valueDelta){
                         obj.rankDelta = -10000000;
+                        obj.valueDelta = 0;
                     }
                     dataSource.push(obj);
                 });

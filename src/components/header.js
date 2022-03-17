@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Menu, Dropdown, Image, Row, Col} from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
@@ -35,7 +35,7 @@ const MyHeader = ()=>{
                     <Image
                         style={{width:'250px'}}
                         preview={false}
-                        src={'/pics/open leaderboard.png'}/>
+                        src={'/pics/OpenLeaderboard.png'}/>
                 </Col>
                 <Col style={{display:'flex',flex:'1 1 auto',justifyContent:'center',alignItems:'center'}}>
                 </Col>
