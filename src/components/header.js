@@ -1,19 +1,17 @@
-import ReactDOM from 'react-dom'
+import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Menu, Dropdown, Image, Row, Col} from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import i18n from '../util/i18n';
 import { useTranslation } from 'react-i18next';
-import { lngs } from '../util/languages';
 import './header.css'
 import Dictionary from './Dictionary';
 import QA from './QA';
 const { Header } = Layout;
 
-
-
-function MyHeader(){
+const MyHeader = ()=>{
     const { t } = useTranslation();
+    const [ language, setLanguage ] = useState('zh_CN');
     const MyMenu = ()=>{
         return (
             <Menu 
@@ -44,20 +42,19 @@ function MyHeader(){
                 <Col style={{display:'flex',flex:'0 1 180px',justifyContent:'space-between',alignItems:'center'}}>
                     <Dictionary/>
                     <QA/>
-                    <Dropdown overlay={<Menu>
-                            {Object.keys(lngs).map((lng) => (
-                                <Menu.Item key={lng}>
-                                    <a onClick={() => i18n.changeLanguage(lng)} style={{ fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal' }}>
-                                        {lngs[lng].nativeName}
-                                    </a>
-                                </Menu.Item>
-                            ))}
-                        </Menu>}>
-                        <Image 
-                            style={{height:'48px',width:'48px'}}
-                            preview={false}
-                            src='/pics/translation.png'/>
-                    </Dropdown>
+                    <Image 
+                        style={{height:'48px',width:'48px',cursor:'pointer'}}
+                        preview={false}
+                        onClick={()=>{
+                            let lan = language;
+                            if(language == 'zh_CN')
+                                lan = 'en';
+                            else
+                                lan = 'zh_CN';
+                            i18n.changeLanguage(lan);
+                            setLanguage(lan);
+                        }}
+                        src='/pics/translation.png'/>
                 </Col>
                 <Col xs={2} sm={2} md={0} lg={0} xl={0} xxl={0}>
                     <Dropdown overlay={MyMenu}>
