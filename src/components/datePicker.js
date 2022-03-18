@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { DatePicker, Select, Space } from 'antd';
 import moment from 'moment'
 const { Option } = Select;
@@ -11,7 +11,7 @@ function PickerWithType({month, year, type, onChange }) {
 }
 
 function disabledDate(current) {
-    // Can not select days before today and today
+    // Can not select days before 2015 or after today
     return current< moment('2015') || current >= moment().endOf('day');
 }
 

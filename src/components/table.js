@@ -204,7 +204,6 @@ const open_rankColumns = (object)=>[
         },
     }
 ];
-
 const solveDate = (year,month)=>{
     if(year===null&&month===null){
         return "not found";
@@ -214,7 +213,6 @@ const solveDate = (year,month)=>{
     }
     return year+"年"+(month+1)+"月";
 }
-
 function DateTitle(props){
     return (
         <h1>{solveDate(props.year,props.month)}</h1>
@@ -238,27 +236,14 @@ class MyTable extends React.Component {
             base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/",
             year: '2022',// 字符串格式
             month: 1,// 整数格式，0表示1月，1表示2月..., null for year type time
-            time_type: 'month',
+            type: 'month',
         };
         // this.state.url = this.state.base + props.index + '/' + props.object + '/';
     }
 
+    // 组件挂载成功后，按照默认属性，请求一次数据更新表格。
     componentDidMount() {
         this.updateDate(this.state);
-    }
-
-    // 点击 开关 切换到详情页或简况页
-    toggleDetail = (checked, event) => {
-        if(checked == true){
-            this.setState({
-                columns:this.state.detailColumns
-            })
-        }
-        else{
-            this.setState({
-                columns:this.state.ordinaryColumns
-            })
-        }
     }
 
     expandData = ()=>{
@@ -266,24 +251,21 @@ class MyTable extends React.Component {
             showSize: this.state.showSize + 25,
         })
     }
-
-    collapseData = ()=>{
-        this.setState({
-            showSize: 25,
-        })
-    }
-
+    
     updateDate = (newstate) => {
-        let { base, object, index, region, month, year, columns, showDetail, hasDetail, time_type } = this.state;
+        // 先获取原先的表格属性
+        let { base, object, index, region, month, year, columns, showDetail, hasDetail, type } = this.state;
+        // 然后把表格改为加载中的状态
         this.setState({...newstate,loading: true});
+        // 如果 newstate 有对应的属性，则进行更新
         if(newstate.hasOwnProperty('object')) object = newstate.object;
         if(newstate.hasOwnProperty('index')) index = newstate.index;
         if(newstate.hasOwnProperty('region')) region = newstate.region;
         if(newstate.hasOwnProperty('month')) month = newstate.month;
         if(newstate.hasOwnProperty('year')) year = newstate.year;
         if(newstate.hasOwnProperty('showDetail')) showDetail = newstate.showDetail;
-        if(newstate.hasOwnProperty('time_type')) time_type = newstate.time_type;
-        // 更新表格的标题
+        if(newstate.hasOwnProperty('type')) type = newstate.type;
+        // 根据 index 和 showDetail 改变表格的 columns 格式
         if(index=='activity'){
             columns = activityColumns(object);
             hasDetail = true;
@@ -297,10 +279,12 @@ class MyTable extends React.Component {
             hasDetail = false;
             showDetail = false;
         }
-        if(time_type == 'year'){
+        // 如果是年份数据，则把 month 置为 null。
+        // TODO：待验证，如果从年份数据切换到月份数据，似乎会自动回到原来 month 值？
+        if(type == 'year'){
             month = null;
         }
-
+        // 以当前的属性构造请求 url
         let url = base + index + '/' + object + '/' + region + '/';
         if(month===null){
             url += year + '.json';
@@ -308,7 +292,9 @@ class MyTable extends React.Component {
         else{
             url += year + (1+month)+ '.json';
         }
-        console.log(url);
+        // console.log(url);
+
+        // fetch 异步请求
         fetch(url)
             .then(res => {
                 // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
@@ -321,6 +307,7 @@ class MyTable extends React.Component {
             .then(data => {
                 data = data.data;
                 let dataSource = [];
+                // 预处理数据，对新上榜单数据进行特殊标记处理
                 data.map((obj)=>{
                     obj = expandObject(obj);
                     if(obj.rankDelta==0 && obj.value == obj.valueDelta){
@@ -329,8 +316,9 @@ class MyTable extends React.Component {
                     }
                     dataSource.push(obj);
                 });
+                // console.log(dataSource);
 
-                console.log(dataSource);
+                // 更新属性和表格数据
                 this.setState({
                     loading: false,
                     columns: columns,
@@ -351,7 +339,7 @@ class MyTable extends React.Component {
 
     render() {
         const {t} = this.props;
-        const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, time_type} = this.state;
+        const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, type} = this.state;
         return (
             <Card style={{
                 zIndex:10,
@@ -362,7 +350,7 @@ class MyTable extends React.Component {
                 boxShadow:'0px 15px 20px 15px #F7F7FF',
                 borderRadius: '42px'
             }}>
-                <TablePanel type={time_type} setState={this.updateDate} object={object} index={index} region={region} hasDetail
+                <TablePanel type={type} setState={this.updateDate} object={object} index={index} region={region} hasDetail
                 ={hasDetail} showDetail={showDetail} month={month} year={year}/>
                 <Table
                     // Todo
