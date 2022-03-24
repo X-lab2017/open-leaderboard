@@ -21,8 +21,8 @@ const activityDataIndexDir = {
     actor: 'name',
 }
 const openRankDataIndexDir = {
-    company: 'item',
-    repo: 'item',
+    company: 'name',
+    repo: 'name',
     actor: 'name',
 }
 const activityColumns = (object)=>[
@@ -316,7 +316,7 @@ class MyTable extends React.Component {
                     }
                     dataSource.push(obj);
                 });
-                // console.log(dataSource);
+                console.log(dataSource);
 
                 // 更新属性和表格数据
                 this.setState({
