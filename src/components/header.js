@@ -17,7 +17,6 @@ const MyHeader = ()=>{
             <Menu 
                 style={{background:'rgba(255,255,255,0)'}}
                 mode="horizontal" 
-                defaultSelectedKeys={['company']}
                 >
                 <Menu.Item key='glossary'><Dictionary type='word'/></Menu.Item>
                 <Menu.Item key='QA'><QA type='word'/></Menu.Item>
@@ -25,26 +24,23 @@ const MyHeader = ()=>{
         )
     }
     return (
-        <Header style={{background:'rgba(222,225,255,0)'}}>
-            <Row className='container' align='middle' justify='center' style={{width: '100%', height:'80px'}}>
-                <Col style={{display:'flex',flex:'0 1 305px',justifyContent:'space-between',alignItems:'center'}}>
-                    <Image 
-                        style={{height:'60px',width:'48px'}}
-                        preview={false}
-                        src={'/pics/Main Logo.png'}/>
-                    <Image
-                        style={{width:'250px'}}
-                        preview={false}
-                        src={'/pics/OpenLeaderboard.png'}/>
-                </Col>
-                <Col style={{display:'flex',flex:'1 1 auto',justifyContent:'center',alignItems:'center'}}>
-                </Col>
-                <Col style={{display:'flex',flex:'0 1 180px',justifyContent:'space-between',alignItems:'center'}}>
+        <div className='header'>
+            <div className='header-content'>
+                <div className='header-logo'>
+                    <img 
+                        style={{height:'45px',width:'36px'}}
+                        src={'/pics/Main Logo.png'}
+                    />
+                    <img
+                        style={{width:'185px'}}
+                        src={'/pics/OpenLeaderboard.png'}
+                    />
+                </div>
+                <div className='header-pc'>
                     <Dictionary/>
                     <QA/>
-                    <Image 
+                    <img 
                         style={{height:'48px',width:'48px',cursor:'pointer'}}
-                        preview={false}
                         onClick={()=>{
                             let lan = language;
                             if(language == 'zh_CN')
@@ -54,16 +50,16 @@ const MyHeader = ()=>{
                             i18n.changeLanguage(lan);
                             setLanguage(lan);
                         }}
-                        src='/pics/translation.png'/>
-                </Col>
-                <Col xs={2} sm={2} md={0} lg={0} xl={0} xxl={0}>
-                    <Dropdown overlay={MyMenu}>
+                        src='/pics/translation.png'
+                    />
+                </div>
+                <div className='header-phone'>
+                    <Dropdown overlay={MyMenu} className=''>
                         <MenuOutlined style={{fontSize:'1rem'}}/>
                     </Dropdown>
-                    
-                </Col>
-            </Row>
-        </Header>
+                </div>
+            </div>
+        </div>
     )
 }
 

@@ -14,10 +14,13 @@ import ScrollTopButton from './components/scrollTopButton';
 const { Content } = Layout;
 
 const App = () => {
+    console.log('layout viewport = ',document.documentElement.clientWidth);
+    console.log('visual viewport = ',window.innerWidth);
+    console.log('window.width = ',window.screen.width);
     const {t} = useTranslation();
     return(
         <ConfigProvider>
-            <Layout className='layout' style={{backgroundColor:'rgba(0,0,0,0)'}}>
+            <Layout className='layout' style={{backgroundColor:'rgba(0,0,0,0)',minWidth:'320px'}}>
                 <Image preview={false} style={{zIndex:-1,position:'absolute',top:0}} width={'100%'} src="/pics/Header BG.png"/>
                 <ScrollTopButton />
                 <MyHeader/>
