@@ -22,9 +22,8 @@ const Dictionary = (props) => {
         <>
             {
                 props.type=='word'? <div style={{width:'100%'}} onClick={showModal}>{t('glossary')}</div>
-                :<Image 
+                :<img 
                 style={{height:'48px',width:'48px',cursor:'pointer'}}
-                preview={false}
                 onClick={showModal}
                 src='/pics/Dic.png'/>
             }
