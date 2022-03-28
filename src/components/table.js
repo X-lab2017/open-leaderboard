@@ -9,6 +9,7 @@ import PointRender from './changeNumber';
 import RoundFloat from './resolveFloat';
 import Trophy from './rankTrophy';
 import expandObject from '../util/expandObject';
+import './table.css'
 
 const titleDir = {
     company: 'Company',
@@ -32,32 +33,31 @@ const activityColumns = (object)=>[
         width: '5%',
         align: 'center',
         render: Trophy,
+        fixed: 'left',
     },
-    object=='actor'?
-    {
+    ...object=='actor'?
+    [{
         title: 'Avatar',
         dataIndex: 'id',
         width: '5%',
         align: 'center',
         render: MyAvatar,
-    }:{
-        title: '',
-        dataIndex: '',
-        align:'left',
-        width: '1%',
-    },
+        fixed: 'left',
+    }]:[],
     {
         title: '',
         dataIndex: 'rankDelta',
         render: ArrowRender,
         align:'left',
         width: '5%',
+        fixed: 'left',
     },
     {
         title: titleDir[object],
         dataIndex: activityDataIndexDir[object],
         align:'center',
         width: '20%',
+        fixed: 'left',
     },
     {
         title: 'Activity',
@@ -80,31 +80,31 @@ const activityDetailColumns = (object)=>[
         width: '5%',
         align: 'center',
         render: Trophy,
+        fixed: 'left',
     },
-    object=='actor'?
-    {
+    ...object=='actor'?
+    [{
         title: 'Avatar',
         dataIndex: 'id',
         width: '5%',
         align: 'center',
         render: MyAvatar,
-    }:{
-        title: '',
-        dataIndex: '',
-        width: '1%',
-    },
+        fixed: 'left',
+    }]:[],
     {
         title: '',
         dataIndex: 'rankDelta',
         render: ArrowRender,
         align:'left',
         width: '5%',
+        fixed: 'left',
     },
     {
         title: titleDir[object],
         dataIndex: activityDataIndexDir[object],
         align:'center',
         width: '15%',
+        fixed: 'left',
     },
     {
         title: 'Activity',
@@ -157,32 +157,31 @@ const open_rankColumns = (object)=>[
         width: '5%',
         render: Trophy,
         align: 'center',
+        fixed: 'left',
     },
-    object=='actor'?
-    {
+    ...object=='actor'?
+    [{
         title: 'Avatar',
         dataIndex: 'id',
         width: '5%',
         align: 'center',
         render: MyAvatar,
-    }: { // just placeholder
-        title: '',
-        dataIndex: '',
-        align:'left',
-        width: '1%',
-    },
+        fixed: 'left',
+    }]:[],
     {
         title: '',
         dataIndex: 'rankDelta',
         render: ArrowRender,
         align:'left',
         width: '5%',
+        fixed: 'left',
     },
     {
         title: titleDir[object],
         dataIndex: openRankDataIndexDir[object],
         width: '20%',
         align:'center',
+        fixed: 'left',
     },
     {
         title: 'Influence',
@@ -341,58 +340,60 @@ class MyTable extends React.Component {
         const {t} = this.props;
         const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, type} = this.state;
         return (
-            <Card style={{
-                zIndex:10,
-                bottom:'20px',
-                margin:'20px 0px',
-                width:'100%',
-                background: '#FFFFFF',
-                boxShadow:'0px 15px 20px 15px #F7F7FF',
-                borderRadius: '42px'
-            }}>
-                <TablePanel type={type} setState={this.updateDate} object={object} index={index} region={region} hasDetail
-                ={hasDetail} showDetail={showDetail} month={month} year={year}/>
-                <Table
-                    // Todo
-                    // scroll={{ x: 1500, y: 300 }}
-                    columns={columns}
-                    rowKey={record => record.rank}
-                    dataSource={data.slice(0,Math.min(showSize,data.length))}
-                    pagination={false}
-                    loading={loading}
-                    onChange={this.handleTableChange}
-                />
-                <Row style={{marginTop:'10px'}} >
-                    <Col span={12}>
-                        <Row justify='start'>
-                            <Col>
-                                {  
-                                    showSize<data.length?
-                                    <a style={{
-                                        color:'#FFCC19',
-                                        fontSize:'18px',}}
-                                        onClick={this.expandData}>
-                                            {t('showMore')+'>>'}
-                                    </a>:
-                                    <span style={{
-                                        color:'gray',
-                                        fontSize:'18px',}}>
-                                        {t('noMore')}
-                                    </span>
-                                }
-                                
+            <div className='table'>
+                <div className='table-content'>
+                    <Card style={{
+                        width:'100%',
+                        background: '#FFFFFF',
+                        boxShadow:'0px 15px 20px 15px #F7F7FF',
+                    }}>
+                        <TablePanel type={type} setState={this.updateDate} object={object} index={index} region={region} hasDetail
+                        ={hasDetail} showDetail={showDetail} month={month} year={year}/>
+                        <Table
+                            // Todo
+                            // scroll={{ x: 1500, y: 300 }}
+                            columns={columns}
+                            rowKey={record => record.rank}
+                            dataSource={data.slice(0,Math.min(showSize,data.length))}
+                            pagination={false}
+                            loading={loading}
+                            onChange={this.handleTableChange}
+                            scroll={{x:'max-content'}}
+                        />
+                        <Row style={{marginTop:'10px'}} >
+                            <Col span={12}>
+                                <Row justify='start'>
+                                    <Col>
+                                        {  
+                                            showSize<data.length?
+                                            <a style={{
+                                                color:'#FFCC19',
+                                                fontSize:'18px',}}
+                                                onClick={this.expandData}>
+                                                    {t('showMore')+'>>'}
+                                            </a>:
+                                            <span style={{
+                                                color:'gray',
+                                                fontSize:'18px',}}>
+                                                {t('noMore')}
+                                            </span>
+                                        }
+                                        
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col span={12}>
+                                <Row justify='end'>
+                                    <Col>
+                                        <QAmiss />
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
-                    </Col>
-                    <Col span={12}>
-                        <Row justify='end'>
-                            <Col>
-                                <QAmiss />
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
-            </Card>
+                    </Card>
+                </div>
+            </div>
+            
         );
     }
 }
