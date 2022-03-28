@@ -56,8 +56,7 @@ const activityColumns = (object)=>[
         title: titleDir[object],
         dataIndex: activityDataIndexDir[object],
         align:'center',
-        width: '20%',
-        fixed: 'left',
+        width: '5%',
     },
     {
         title: 'Activity',
@@ -103,8 +102,7 @@ const activityDetailColumns = (object)=>[
         title: titleDir[object],
         dataIndex: activityDataIndexDir[object],
         align:'center',
-        width: '15%',
-        fixed: 'left',
+        width: '5%',
     },
     {
         title: 'Activity',
@@ -179,9 +177,8 @@ const open_rankColumns = (object)=>[
     {
         title: titleDir[object],
         dataIndex: openRankDataIndexDir[object],
-        width: '20%',
+        width: '5%',
         align:'center',
-        fixed: 'left',
     },
     {
         title: 'Influence',
