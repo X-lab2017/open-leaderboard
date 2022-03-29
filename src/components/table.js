@@ -249,6 +249,7 @@ class MyTable extends React.Component {
     }
     
     updateDate = (newstate) => {
+        console.log(newstate);
         // 先获取原先的表格属性
         let { base, object, index, region, month, year, columns, showDetail, hasDetail, type } = this.state;
         // 然后把表格改为加载中的状态

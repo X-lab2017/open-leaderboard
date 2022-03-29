@@ -19,7 +19,7 @@ const SwitchablePicker = (props) => {
   return (
     <>
         <Space>
-          <Select value={props.type} onChange={value=>{props.setState({'time_type':value})}} >
+          <Select value={props.type} onChange={value=>{props.setState({'type':value})}} >
             <Option value="month">Month</Option>
             <Option value="year">Year</Option>
           </Select>

@@ -6,7 +6,7 @@ const { Footer } = Layout;
 function MyFooter(props){
     return (
         <Footer style={{backgroundColor:'rgba(0,0,0,0)'}}>
-            <div className='container'>
+            <div>
                 <Row align='middle' justify='center'>
                     <Col>
                         <h1 className='myFontColor'>Data Powered by</h1>
@@ -24,23 +24,17 @@ function MyFooter(props){
                 </Row>
                 <Row align='middle' justify='center' style={{minHeight:'100px'}}>
                     <Col>
-                        <span style={{fontSize:'18px'}}>Leave a seat vacant for you.</span>
+                        <span style={{fontSize:'18px',width:'100%'}}>Leave a seat vacant for you.</span>
                     </Col>
                 </Row>
-                <Row style={{marginTop:'100px'}}>
-                    <Col offset={4} span={16}>
-                        <Row align='middle' justify='center'>
-                            <Col>
-                                <span>Copyright ©2022 X-lab </span>
-                            </Col>
-                        </Row>
+                <Row align='middle' justify='center' style={{marginTop:'50px'}}>
+                    <Col>
+                        <span>Copyright ©2022 X-lab </span>
                     </Col>
-                    <Col span={4}>
-                        <Row align='bottom' justify='end'>
-                            <Col>
-                                <a href='https://github.com/X-lab2017/open-digger' target={'_blank'}><img src='/pics/GitHub.png' style={{width:'30px',height:'30px'}} /></a>
-                            </Col>
-                        </Row>
+                </Row>
+                <Row align='middle' justify='center'>
+                    <Col>
+                        <a href='https://github.com/X-lab2017/open-digger' target={'_blank'}><img src='/pics/GitHub.png' style={{width:'30px',height:'30px'}} /></a>
                     </Col>
                 </Row>
             </div>
