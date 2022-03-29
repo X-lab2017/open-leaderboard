@@ -12,6 +12,15 @@ const { Header } = Layout;
 const MyHeader = ()=>{
     const { t } = useTranslation();
     const [ language, setLanguage ] = useState('zh_CN');
+    const changeLanguage = ()=>{
+        let lan = language;
+        if(language == 'zh_CN')
+            lan = 'en';
+        else
+            lan = 'zh_CN';
+        i18n.changeLanguage(lan);
+        setLanguage(lan);
+    }
     const MyMenu = ()=>{
         return (
             <Menu 
@@ -20,6 +29,7 @@ const MyHeader = ()=>{
                 >
                 <Menu.Item key='glossary'><Dictionary type='word'/></Menu.Item>
                 <Menu.Item key='QA'><QA type='word'/></Menu.Item>
+                <Menu.Item key='translate'><a href='javascript:;' onClick={changeLanguage}>中/En</a></Menu.Item>
             </Menu>
         )
     }
@@ -41,15 +51,7 @@ const MyHeader = ()=>{
                     <QA/>
                     <img 
                         style={{height:'48px',width:'48px',cursor:'pointer'}}
-                        onClick={()=>{
-                            let lan = language;
-                            if(language == 'zh_CN')
-                                lan = 'en';
-                            else
-                                lan = 'zh_CN';
-                            i18n.changeLanguage(lan);
-                            setLanguage(lan);
-                        }}
+                        onClick={changeLanguage}
                         src='/pics/translation.png'
                     />
                 </div>
