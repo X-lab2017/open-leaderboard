@@ -56,7 +56,16 @@ const activityColumns = (object)=>[
         title: titleDir[object],
         dataIndex: activityDataIndexDir[object],
         align:'center',
-        width: '5%',
+        width: '20%',
+        render: function (text, row, index) {
+            if (titleDir[object] === 'ID') {
+                return (
+                    <a href={"https://github.com/"+text} target="_blank">{text}</a>
+                )
+            } else {
+               return text
+            }
+        }
     },
     {
         title: 'Activity',
