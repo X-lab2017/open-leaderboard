@@ -26,12 +26,8 @@ const App = () => {
                 <MyHeader/>
                 <Content className='container'>
                     <Description/>
-                    <Row>
-                        <Col span={24}>
-                            <MyTable t={t}/>
-                        </Col>
-                    </Row>
                 </Content>
+                <MyTable t={t}/>
                 <MyFooter />
                 <Image style={{
                         zIndex:-2,

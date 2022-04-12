@@ -8,7 +8,7 @@
 }
 
 .myTitle {
-    font-size: 60px;
+    font-size: 3rem;
 }
 
 .container {
@@ -28,4 +28,17 @@
 
 .ant-switch-checked {
     background-color: #FFCC19 !important;
+}
+
+/* 媒体查询，适配手机端 */
+@media only screen and (max-width:768px){
+    .myTitle{
+        font-size: 2rem;
+    }
+}
+
+@media only screen and (max-width:576px){
+    .myTitle{
+        font-size: 2rem;
+    }
 }

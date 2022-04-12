@@ -38,7 +38,7 @@ const TablePanel = (props) => {
           <Col>
           {
             props.hasDetail==true?
-            <><span className='myFontColor'>详情</span> <Switch defaultChecked={props.showDetail} onChange={(checked)=>{props.setState({'showDetail':checked})}} /></>
+            <><span className='myFontColor'>详情：</span> <Switch defaultChecked={props.showDetail} onChange={(checked)=>{props.setState({'showDetail':checked})}} /></>
             :<></>
           }
           </Col>
