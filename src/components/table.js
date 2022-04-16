@@ -58,7 +58,7 @@ const activityColumns = (object)=>[
         align:'center',
         width: '20%',
         render: function (text, row, index) {
-            if (titleDir[object] === 'ID') {
+            if (titleDir[object] !== 'Company') {
                 return (
                     <a href={"https://github.com/"+text} target="_blank">{text}</a>
                 )
@@ -112,6 +112,15 @@ const activityDetailColumns = (object)=>[
         dataIndex: activityDataIndexDir[object],
         align:'center',
         width: '5%',
+        render: function (text, row, index) {
+            if (titleDir[object] !== 'Company') {
+                return (
+                    <a href={"https://github.com/"+text} target="_blank">{text}</a>
+                )
+            } else {
+               return text
+            }
+        }
     },
     {
         title: 'Activity',
@@ -188,6 +197,15 @@ const open_rankColumns = (object)=>[
         dataIndex: openRankDataIndexDir[object],
         width: '5%',
         align:'center',
+        render: function (text, row, index) {
+            if (titleDir[object] !== 'Company') {
+                return (
+                    <a href={"https://github.com/"+text} target="_blank">{text}</a>
+                )
+            } else {
+               return text
+            }
+        }
     },
     {
         title: 'Influence',
