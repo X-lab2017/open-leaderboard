@@ -240,7 +240,7 @@ class MyTable extends React.Component {
             url: '',// base + index + object + region + yearmonth + .json
             base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/",
             year: '2022',// 字符串格式
-            month: 1,// 整数格式，0表示1月，1表示2月..., null for year type time
+            month: 2,// 整数格式，0表示1月，1表示2月..., null for year type time
             type: 'month',
         };
         // this.state.url = this.state.base + props.index + '/' + props.object + '/';
