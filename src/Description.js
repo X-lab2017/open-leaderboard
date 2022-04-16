@@ -1,7 +1,7 @@
 import {Row, Col, Image, Divider, Space} from 'antd';
 import { useTranslation } from 'react-i18next';
 
-const Description = () => {
+const Description = (props) => {
     const {t} = useTranslation();
     return (
         <>
@@ -29,7 +29,7 @@ const Description = () => {
                 </Col>
                 <Col>
                     <span className='myFontColor'>
-                        2022 年 2 月更新
+                        {props.year} 年 {props.month+1} 月更新
                     </span>
                 </Col>
                 
