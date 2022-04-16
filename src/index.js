@@ -14,9 +14,8 @@ import ScrollTopButton from './components/scrollTopButton';
 const { Content } = Layout;
 
 const App = () => {
-    console.log('layout viewport = ',document.documentElement.clientWidth);
-    console.log('visual viewport = ',window.innerWidth);
-    console.log('window.width = ',window.screen.width);
+    const year = '2022';
+    const month = 2;
     const {t} = useTranslation();
     return(
         <ConfigProvider>
@@ -25,9 +24,9 @@ const App = () => {
                 <ScrollTopButton />
                 <MyHeader/>
                 <Content className='container'>
-                    <Description/>
+                    <Description year={year} month={month}/>
                 </Content>
-                <MyTable t={t}/>
+                <MyTable t={t} year={year} month={month}/>
                 <MyFooter />
                 <Image style={{
                         zIndex:-2,
