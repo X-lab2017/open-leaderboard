@@ -25,6 +25,9 @@ jobs:
 
     - run: npm install
     - run: npm run build
+      env:
+        CI: false
+    
     
   publish:
     needs: build
