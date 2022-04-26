@@ -27,14 +27,22 @@ jobs:
     - run: npm run build
       env:
         CI: false
-    
-    - name: Publish to OSS
-      uses: tvrcgo/upload-to-oss@master
+        
+    - name: Clean up OSS
+      uses: gymgym1212/delete-oss@main
       with:
         key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
         key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
         region: ${{ secrets.OSS_REGION }}
         bucket: ${{ secrets.OSS_BUCKET }}
-        assets: |
-          ./build/**:${{ secrets.OSS_TARGET_PATH }}
+        
+#     - name: Publish to OSS
+#       uses: tvrcgo/upload-to-oss@master
+#       with:
+#         key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
+#         key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+#         region: ${{ secrets.OSS_REGION }}
+#         bucket: ${{ secrets.OSS_BUCKET }}
+#         assets: |
+#           ./build/**:${{ secrets.OSS_TARGET_PATH }}
   
