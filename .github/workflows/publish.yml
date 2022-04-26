@@ -10,7 +10,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  publish:
   
     runs-on: ubuntu-latest
     
@@ -28,13 +28,6 @@ jobs:
       env:
         CI: false
     
-    
-  publish:
-    needs: build
-    
-    runs-on: unbuntu-latest
-    
-    steps:
     - name: Publish to OSS
       uses: tvrcgo/upload-to-oss@master
       with:
