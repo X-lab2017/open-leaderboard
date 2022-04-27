@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Col, message, Row, Table, Card } from 'antd';
 import MyAvatar from './avatar';
 import 'antd/dist/antd.css';
@@ -242,45 +242,51 @@ function DateTitle(props){
     );
 }
 
-class MyTable extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            object:'company',
-            index:'activity',
-            region:'chinese',
-            columns: activityColumns('company'),
-            showDetail:false,
-            hasDetail:true,
-            data: [],
-            showSize: 25,
-            loading: false,
-            url: '',// base + index + object + region + yearmonth + .json
-            base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/",
-            year: props.year,// 字符串格式
-            month: props.month,// 整数格式，0表示1月，1表示2月..., null for year type time
-            type: 'month',
-        };
-        // this.state.url = this.state.base + props.index + '/' + props.object + '/';
-    }
+function MyTable(props){
+    console.log('table',props);
+    const [state, setState] = useState({
+        object:'company',
+        index:'activity',
+        region:'chinese',
+        columns: activityColumns('company'),
+        showDetail:false,
+        hasDetail:true,
+        data: [],
+        showSize: 25,
+        loading: true,
+        url: '',// base + index + object + region + yearmonth + .json
+        base: "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/",
+        year: null,// 字符串格式
+        month: null,// 整数格式，0表示1月，1表示2月..., null for year type time
+        type: 'month',
+    });
 
-    // 组件挂载成功后，按照默认属性，请求一次数据更新表格。
-    componentDidMount() {
-        this.updateDate(this.state);
-    }
+    // 请求一次数据更新表格。如果还没读取好配置文件则不请求数据。
+    useEffect(()=>{
+        console.log('table effect',props);
+        if(props.year==null && props.month==null){
+            console.log('the first loading');
+            return;
+        }
+        updateDate({
+            year:props.year,
+            month:props.month
+        });
+    },[props]);
 
-    expandData = ()=>{
-        this.setState({
-            showSize: this.state.showSize + 25,
+    const expandData = ()=>{
+        setState({
+            ...state,
+            showSize: state.showSize + 25,
         })
     }
     
-    updateDate = (newstate) => {
-        console.log(newstate);
+    const updateDate = (newstate) => {
+        console.log('table update',newstate);
         // 先获取原先的表格属性
-        let { base, object, index, region, month, year, columns, showDetail, hasDetail, type } = this.state;
+        let { base, object, index, region, month, year, columns, showDetail, hasDetail, type } = state;
         // 然后把表格改为加载中的状态
-        this.setState({...newstate,loading: true});
+        setState({...state,...newstate,loading: true});
         // 如果 newstate 有对应的属性，则进行更新
         if(newstate.hasOwnProperty('object')) object = newstate.object;
         if(newstate.hasOwnProperty('index')) index = newstate.index;
@@ -316,111 +322,118 @@ class MyTable extends React.Component {
         else{
             url += year + (1+month)+ '.json';
         }
-        // console.log(url);
-
+        console.log(url);
         // fetch 异步请求
         fetch(url)
-            .then(res => {
-                // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
-                if(res.status==404){
-                    message.warning('No relevant results yet');
-                    return '';
+        .then(res => {
+            // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
+            if(res.status==404){
+                message.warning('No relevant results yet');
+                return '';
+            }
+            return res.json();
+        })
+        .then(data => {
+            data = data.data;
+            let dataSource = [];
+            // 预处理数据，对新上榜单数据进行特殊标记处理
+            data.map((obj)=>{
+                obj = expandObject(obj);
+                if(obj.rankDelta==0 && obj.value == obj.valueDelta){
+                    obj.rankDelta = -10000000;
+                    obj.valueDelta = 0;
                 }
-                return res.json();
-            })
-            .then(data => {
-                data = data.data;
-                let dataSource = [];
-                // 预处理数据，对新上榜单数据进行特殊标记处理
-                data.map((obj)=>{
-                    obj = expandObject(obj);
-                    if(obj.rankDelta==0 && obj.value == obj.valueDelta){
-                        obj.rankDelta = -10000000;
-                        obj.valueDelta = 0;
-                    }
-                    dataSource.push(obj);
-                });
-                console.log(dataSource);
+                dataSource.push(obj);
+            });
+            console.log(dataSource);
 
-                // 更新属性和表格数据
-                this.setState({
-                    loading: false,
-                    columns: columns,
-                    showDetail: showDetail,
-                    hasDetail: hasDetail,
-                    data: dataSource,
-                });
-            })
-            .catch(err => {
-                console.log('hi!' + err);
-                this.setState({
-                    loading: false,
-                    columns:columns,
-                    data: [],
-                });
-            })
+            // 更新属性和表格数据
+            setState({
+                ...state,
+                ...newstate,
+                loading: false,
+                columns: columns,
+                showDetail: showDetail,
+                hasDetail: hasDetail,
+                data: dataSource,
+            });
+        })
+        .catch(err => {
+            console.log('hi!' + err);
+            setState({
+                ...state,
+                ...newstate,
+                loading: false,
+                columns:columns,
+                data: [],
+            });
+        })
     };
 
-    render() {
-        const {t} = this.props;
-        const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, type} = this.state;
-        return (
-            <div className='table'>
-                <div className='table-content'>
-                    <Card style={{
-                        width:'100%',
-                        background: '#FFFFFF',
-                        boxShadow:'0px 15px 20px 15px #F7F7FF',
-                    }}>
-                        <TablePanel type={type} setState={this.updateDate} object={object} index={index} region={region} hasDetail
-                        ={hasDetail} showDetail={showDetail} month={month} year={year}/>
-                        <Table
-                            // Todo
-                            // scroll={{ x: 1500, y: 300 }}
-                            columns={columns}
-                            rowKey={record => record.rank}
-                            dataSource={data.slice(0,Math.min(showSize,data.length))}
-                            pagination={false}
-                            loading={loading}
-                            onChange={this.handleTableChange}
-                            scroll={{x:'max-content'}}
-                        />
-                        <Row style={{marginTop:'10px'}} >
-                            <Col span={12}>
-                                <Row justify='start'>
-                                    <Col>
-                                        {  
-                                            showSize<data.length?
-                                            <a style={{
-                                                color:'#FFCC19',
-                                                fontSize:'18px',}}
-                                                onClick={this.expandData}>
-                                                    {t('showMore')+'>>'}
-                                            </a>:
-                                            <span style={{
-                                                color:'gray',
-                                                fontSize:'18px',}}>
-                                                {t('noMore')}
-                                            </span>
-                                        }
-                                        
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col span={12}>
-                                <Row justify='end'>
-                                    <Col>
-                                        <QAmiss />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Card>
-                </div>
+    const {t} = props;
+    const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, type} = state;
+    return (
+        <div className='table'>
+            <div className='table-content'>
+                <Card style={{
+                    width:'100%',
+                    background: '#FFFFFF',
+                    boxShadow:'0px 15px 20px 15px #F7F7FF',
+                }}>
+                    <TablePanel 
+                        type={type} 
+                        setState={updateDate} 
+                        object={object} 
+                        index={index} 
+                        region={region} 
+                        hasDetail={hasDetail} 
+                        showDetail={showDetail} 
+                        month={month} year={year}
+                    />
+                    <Table
+                        // Todo
+                        // scroll={{ x: 1500, y: 300 }}
+                        columns={columns}
+                        rowKey={record => record.rank}
+                        dataSource={data.slice(0,Math.min(showSize,data.length))}
+                        pagination={false}
+                        loading={loading}
+                        scroll={{x:'max-content'}}
+                    />
+                    <Row style={{marginTop:'10px'}} >
+                        <Col span={12}>
+                            <Row justify='start'>
+                                <Col>
+                                    {  
+                                        showSize<data.length?
+                                        <a style={{
+                                            color:'#FFCC19',
+                                            fontSize:'18px',}}
+                                            onClick={expandData}>
+                                                {t('showMore')+'>>'}
+                                        </a>:
+                                        <span style={{
+                                            color:'gray',
+                                            fontSize:'18px',}}>
+                                            {t('noMore')}
+                                        </span>
+                                    }
+                                    
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col span={12}>
+                            <Row justify='end'>
+                                <Col>
+                                    <QAmiss />
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Card>
             </div>
-            
-        );
-    }
+        </div> 
+    )
 }
 
 export default MyTable;
