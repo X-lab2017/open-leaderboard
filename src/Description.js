@@ -29,7 +29,12 @@ const Description = (props) => {
                 </Col>
                 <Col>
                     <span className='myFontColor'>
-                        {props.year} 年 {props.month+1} 月更新
+                        {
+                            (props.year==null||props.month==null)?
+                            "加载中":
+                            props.year+" 年 "+(props.month+1)+" 月更新"
+                        
+                        }
                     </span>
                 </Col>
                 
