@@ -14,7 +14,10 @@ function MyFooter(props){
                 </Row>
                 <Row align='middle' justify='center' gutter={20} style={{minHeight:'100px'}}>
                     <Col>
-                        <img src='/pics/OD.png' style={{height:'80px',width:'80px'}}/><span style={{marginLeft:'5px',fontSize:'18px'}}>OpenDigger</span>
+                        <a href='https://github.com/X-lab2017/open-digger' target={'_blank'}>
+                            <img src='/pics/OD.png' style={{height:'80px',width:'80px'}}/>
+                            <span style={{marginLeft:'5px',fontSize:'18px'}}>OpenDigger</span>
+                        </a>
                     </Col>
                 </Row>
                 <Row align='middle' justify='center'>
@@ -34,7 +37,7 @@ function MyFooter(props){
                 </Row>
                 <Row align='middle' justify='center'>
                     <Col>
-                        <a href='https://github.com/X-lab2017/open-digger' target={'_blank'}><img src='/pics/GitHub.png' style={{width:'30px',height:'30px'}} /></a>
+                        <a href='https://github.com/X-lab2017/open-leaderboard' target={'_blank'}><img src='/pics/GitHub.png' style={{width:'30px',height:'30px'}} /></a>
                     </Col>
                 </Row>
             </div>
