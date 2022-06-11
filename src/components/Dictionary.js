@@ -43,8 +43,8 @@ const Dictionary = (props) => {
                     <Row justify="center">
                         <Col xs={20} sm={16} md={12} lg={10} xl={10}>
                             <Space direction="vertical" size={'large'} style={{width:'100%'}}>
-                                <Card><h2>{t('activity')}</h2>{t('Glossary.activity')}</Card>
-                                <Card><h2>{t('influence')}</h2>{t('Glossary.influence')}</Card>
+                                <Card><h2>{t('activity')}</h2>{t('Glossary.activity')}<a href="https://blog.frankzhao.cn/how_to_measure_open_source_1/" target={'_blank'}>{t('Glossary.activity_blog')}</a></Card>
+                                <Card><h2>{t('influence')}</h2>{t('Glossary.influence')}<a href="https://blog.frankzhao.cn/how_to_measure_open_source_2/" target={'_blank'}>{t('Glossary.influence_blog')}</a></Card>
                             </Space>
                         </Col>
                     </Row>
