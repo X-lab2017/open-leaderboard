@@ -3,6 +3,7 @@ import { Card, Col, Image, Modal, Row, Space } from "antd";
 import { CloseCircleOutlined } from '@ant-design/icons';
 import './modal.css'
 import { t } from 'i18next';
+
 const Dictionary = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     

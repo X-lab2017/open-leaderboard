@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Menu, Dropdown, Image, Row, Col} from 'antd';
+import { Layout, Menu, Dropdown, Image, Row, Col, message} from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import i18n from '../util/i18n';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +14,14 @@ const MyHeader = ()=>{
     const [ language, setLanguage ] = useState('zh_CN');
     const changeLanguage = ()=>{
         let lan = language;
-        if(language == 'zh_CN')
+        if(language == 'zh'){
             lan = 'en';
-        else
-            lan = 'zh_CN';
+            message.info('switched to English');
+        }
+        else{
+            lan = 'zh';
+            message.info('switched to Chinese');
+        }
         i18n.changeLanguage(lan);
         setLanguage(lan);
     }
