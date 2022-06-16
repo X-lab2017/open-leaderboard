@@ -12,17 +12,25 @@ import ScrollTopButton from './components/scrollTopButton';
 const { Content } = Layout;
 
 const META_URL = "https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/meta.json";
-const getLastMonth = (year, month)=>{
-    month--;
-    if(month<0){
-        month+=12;
+
+const getLastMonth = (lastUpdateTime)=>{
+    let year = lastUpdateTime.getFullYear();
+    let monthIndex = lastUpdateTime.getMonth();
+    let date = lastUpdateTime.getDate();
+
+    if(date < 20){
+        monthIndex--;
+    }
+
+    if(monthIndex < 0){
+        monthIndex += 12;
         year--;
     }
-    return [year, month];
+    return [year, monthIndex];
 }
 
 const App = () => {
-    const [date, setDate] = useState({year:null, month:null});
+    const [lastUpdateTime, setLastUpdateTime] = useState(null);
     const {t} = useTranslation();
 
     useEffect(()=>{
@@ -30,14 +38,15 @@ const App = () => {
         .then(res=>res.json())
         .then(data=>{
             const date = new Date(data.lastUpdatedAt);
-            let yy = date.getFullYear(), mm = date.getMonth();
-            [yy, mm] = getLastMonth(yy, mm);
-            setDate({year:''+yy,month:mm});
-            console.log("index effect: done!", yy,mm);
+            setLastUpdateTime(date)
         })
     }, []);
 
-    const { year, month }= date;
+    let year = null, monthIndex = null;
+    if(lastUpdateTime){
+        [year, monthIndex] = getLastMonth(lastUpdateTime);
+    }
+    
     return(
         <ConfigProvider>
             <Layout className='layout' style={{backgroundColor:'rgba(0,0,0,0)',minWidth:'320px'}}>
@@ -45,9 +54,9 @@ const App = () => {
                 <ScrollTopButton />
                 <MyHeader/>
                 <Content className='container'>
-                    <Description year={year} month={month}/>
+                    <Description lastUpdateTime={lastUpdateTime}/>
                 </Content>
-                <MyTable t={t} year={year} month={month}/>
+                <MyTable t={t} year={year} month={monthIndex}/>
                 <MyFooter />
                 <Image style={{
                         zIndex:-2,
