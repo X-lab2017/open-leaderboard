@@ -29,10 +29,10 @@ const Description = (props) => {
                 <Col>
                     <span className='myFontColor'>
                         {
-                            (props.year==null||props.month==null)?
-                            "加载中":
+                            (props.lastUpdateTime==null)?
+                            t('loading'):
                             t('desc.date',{
-                                val: new Date(Date.UTC(parseInt(props.year), parseInt(props.month), 0, 0, 0, 0)),
+                                val: props.lastUpdateTime,
                                 formatParams: {
                                   val: { year: 'numeric', month: 'long', day: 'numeric', },
                                 },

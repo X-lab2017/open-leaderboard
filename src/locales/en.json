@@ -4,6 +4,7 @@
         "project": "Project",
         "bot": "Bot"
     },
+    "loading":"loaidng",
     "month": "Monthly",
     "year": "Yearly",
     "rank": "Rank",

@@ -4,6 +4,7 @@
         "project": "项目",
         "bot": "机器人"
     },
+    "loading":"加载中",
     "month": "月度",
     "year": "年度",
     "rank": "排名",
@@ -45,6 +46,6 @@
         "intro": "一得之见，",
         "opensource": "开源世界",
         "content": "欢迎来到 OpenLeaderboard，我们对 GitHub 上的企业、项目以及开发者账号进行了活跃度和影响力的排名。（GitHub 是全球最大的社交编程及代码托管网站。）",
-        "date": "{{val, datetime}} 更新"
+        "date": "最近更新于 {{val, datetime}}"
     }
 }
