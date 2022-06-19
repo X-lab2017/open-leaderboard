@@ -1,6 +1,7 @@
 import { Col, Row } from 'antd';
 import 'antd/dist/antd.css';
 import { Layout, Image } from 'antd';
+import { t } from 'i18next';
 const { Footer } = Layout;
 
 function MyFooter(props){
@@ -9,7 +10,7 @@ function MyFooter(props){
             <div>
                 <Row align='middle' justify='center'>
                     <Col>
-                        <h1 className='myFontColor'>Data Powered by</h1>
+                        <h1 className='myFontColor'>{t('footer.data_power_by')}</h1>
                     </Col>
                 </Row>
                 <Row align='middle' justify='center' gutter={20} style={{minHeight:'100px'}}>
@@ -22,12 +23,12 @@ function MyFooter(props){
                 </Row>
                 <Row align='middle' justify='center'>
                     <Col>
-                        <h1 className='myFontColor'>Membership</h1>
+                        <h1 className='myFontColor'>{t('footer.sponsor')}</h1>
                     </Col>
                 </Row>
                 <Row align='middle' justify='center' style={{minHeight:'100px'}}>
                     <Col>
-                        <span style={{fontSize:'18px',width:'100%'}}>Leave a seat vacant for you.</span>
+                        <span style={{fontSize:'18px',width:'100%'}}>{t('footer.sponsor_info')}</span>
                     </Col>
                 </Row>
                 <Row align='middle' justify='center' style={{marginTop:'50px'}}>
