@@ -243,7 +243,6 @@ function DateTitle(props){
 }
 
 function MyTable(props){
-    console.log('table',props);
     const [state, setState] = useState({
         object:'company',
         index:'activity',
@@ -263,13 +262,12 @@ function MyTable(props){
 
     // 请求一次数据更新表格。如果还没读取好配置文件则不请求数据。
     useEffect(()=>{
-        console.log('table effect',props);
         if(props.year==null && props.month==null){
             console.log('the first loading');
             return;
         }
         updateDate({
-            year:props.year,
+            year: String(props.year),
             month:props.month
         });
     },[props]);
