@@ -43,8 +43,8 @@
     },
     "desc": {
         "intro": "一得之见，",
-        "opensource": "开源",
-        "content": "欢迎来到 OpenLeaderboard，我们对 Github 上的企业、项目以及开发者账号进行了活跃度和影响力的排名。（Github 是全球最大的社交编程及代码托管网站。）",
+        "opensource": "开源世界",
+        "content": "欢迎来到 OpenLeaderboard，我们对 GitHub 上的企业、项目以及开发者账号进行了活跃度和影响力的排名。（GitHub 是全球最大的社交编程及代码托管网站。）",
         "date": "{{val, datetime}} 更新"
     }
 }
