@@ -9,26 +9,17 @@ import PointRender from './changeNumber';
 import RoundFloat from './resolveFloat';
 import Trophy from './rankTrophy';
 import expandObject from '../util/expandObject';
-import './table.css'
+import { t } from 'i18next';
+import './table.css';
 
 const titleDir = {
-    company: 'Company',
-    repo: 'Repository',
-    actor: 'ID',
-}
-const activityDataIndexDir = {
-    company: 'name',
-    repo: 'name',
-    actor: 'name',
-}
-const openRankDataIndexDir = {
-    company: 'name',
-    repo: 'name',
-    actor: 'name',
+    company: t('company'),
+    repo: t('project'),
+    actor: t('ID'),
 }
 const activityColumns = (object)=>[
     {
-        title: 'rank',
+        title: t('rank'),
         dataIndex: 'rank',
         width: '5%',
         align: 'center',
@@ -37,7 +28,7 @@ const activityColumns = (object)=>[
     },
     ...object=='actor'?
     [{
-        title: 'Avatar',
+        title: t('avatar'),
         dataIndex: 'id',
         width: '5%',
         align: 'center',
@@ -53,8 +44,8 @@ const activityColumns = (object)=>[
         fixed: 'left',
     },
     {
-        title: titleDir[object],
-        dataIndex: activityDataIndexDir[object],
+        title: t(object),
+        dataIndex: 'name',
         align:'center',
         width: '20%',
         render: function (text, row, index) {
@@ -68,7 +59,7 @@ const activityColumns = (object)=>[
         }
     },
     {
-        title: 'Activity',
+        title: t('activity'),
         dataIndex: 'value',
         align:'right',
         width: '20%',
@@ -83,7 +74,7 @@ const activityColumns = (object)=>[
 ];
 const activityDetailColumns = (object)=>[
     {
-        title: 'Rank',
+        title: t('rank'),
         dataIndex: 'rank',
         width: '5%',
         align: 'center',
@@ -92,7 +83,7 @@ const activityDetailColumns = (object)=>[
     },
     ...object=='actor'?
     [{
-        title: 'Avatar',
+        title: t('avatar'),
         dataIndex: 'id',
         width: '5%',
         align: 'center',
@@ -108,8 +99,8 @@ const activityDetailColumns = (object)=>[
         fixed: 'left',
     },
     {
-        title: titleDir[object],
-        dataIndex: activityDataIndexDir[object],
+        title: t(object),
+        dataIndex: 'name',
         align:'center',
         width: '5%',
         render: function (text, row, index) {
@@ -123,7 +114,7 @@ const activityDetailColumns = (object)=>[
         }
     },
     {
-        title: 'Activity',
+        title: t('activity'),
         dataIndex: 'value',
         align:'right',
         width: '10%',
@@ -136,31 +127,31 @@ const activityDetailColumns = (object)=>[
         render: PointRender,
     },
     {
-        title:<p>Issue<br/>Comments</p>,
+        title: t('issue_comments'),
         dataIndex:'issue_comment',
         width:'10%',
         align:'center',
     },
     {
-        title:<p>Open<br/>Issues</p>,
+        title: t('open_issues'),
         dataIndex:'open_issue',
         width:'10%',
         align:'center',
     },
     {
-        title:<p>Open<br/>Pulls</p>,
+        title: t('open_pulls'),
         dataIndex:'open_pull',
         width:'10%',
         align:'center',
     },
     {
-        title:<p>Merge<br/>Pulls</p>,
+        title: t('merge_pulls'),
         dataIndex:'merged_pull',
         width:'10%',
         align:'center',
     },
     {
-        title:<p>PR<br/>Reviews</p>,
+        title: t('pr_reviews'),
         dataIndex:'review_comment',
         width:'10%',
         align:'center',
@@ -168,7 +159,7 @@ const activityDetailColumns = (object)=>[
 ];
 const open_rankColumns = (object)=>[
     {
-        title: 'Rank',
+        title: t('rank'),
         dataIndex: 'rank',
         width: '5%',
         render: Trophy,
@@ -177,7 +168,7 @@ const open_rankColumns = (object)=>[
     },
     ...object=='actor'?
     [{
-        title: 'Avatar',
+        title: t('avatar'),
         dataIndex: 'id',
         width: '5%',
         align: 'center',
@@ -193,8 +184,8 @@ const open_rankColumns = (object)=>[
         fixed: 'left',
     },
     {
-        title: titleDir[object],
-        dataIndex: openRankDataIndexDir[object],
+        title: t(object),
+        dataIndex: 'name',
         width: '5%',
         align:'center',
         render: function (text, row, index) {
@@ -208,7 +199,7 @@ const open_rankColumns = (object)=>[
         }
     },
     {
-        title: 'Influence',
+        title: t('influence'),
         dataIndex: 'value',
         width: '20%',
         align:'right',
@@ -367,8 +358,6 @@ function MyTable(props){
             });
         })
     };
-
-    const {t} = props;
     const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, type} = state;
     return (
         <div className='table'>
