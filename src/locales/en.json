@@ -61,7 +61,7 @@
         "intro": "An insight to the world of ",
         "opensource": "open source",
         "content": "Welcome to OpenLeaderboard, where companys, projects ant user accounts are ranked by the activity and influence on GitHub, the leading source code repository for free and open source (FOSS) projects.",
-        "date": "Updated {{val, datetime}}"
+        "date": "Last updated on {{val, datetime}}"
     },
     "footer":{
         "data_power_by":"Data Powered by",
