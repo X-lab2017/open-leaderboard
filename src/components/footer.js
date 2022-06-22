@@ -10,7 +10,7 @@ function MyFooter(props){
             <div>
                 <Row align='middle' justify='center'>
                     <Col>
-                        <h1 className='myFontColor'>{t('footer.data_power_by')}</h1>
+                        <h1 className='myFontColor subTitle'>{t('footer.data_power_by')}</h1>
                     </Col>
                 </Row>
                 <Row align='middle' justify='center' gutter={20} style={{minHeight:'100px'}}>
@@ -23,10 +23,20 @@ function MyFooter(props){
                 </Row>
                 <Row align='middle' justify='center'>
                     <Col>
-                        <h1 className='myFontColor'>{t('footer.sponsor')}</h1>
+                        <h1 className='myFontColor subTitle'>{t('footer.supported_by')}</h1>
                     </Col>
                 </Row>
-                <Row align='middle' justify='center' style={{minHeight:'100px'}}>
+                <Row align='middle' justify='center'  style={{minHeight:'100px'}}>
+                    <Col>
+                        <img src='/pics/GitHub.png' style={{width:'60px',height:'60px'}} />
+                    </Col>
+                </Row>
+                <Row align='middle' justify='center'>
+                    <Col>
+                        <h1 className='myFontColor subTitle'>{t('footer.sponsor')}</h1>
+                    </Col>
+                </Row>
+                <Row align='middle' justify='center' style={{minHeight:'50px'}}>
                     <Col>
                         <span style={{fontSize:'18px',width:'100%'}}>{t('footer.sponsor_info')}</span>
                     </Col>
@@ -36,11 +46,12 @@ function MyFooter(props){
                         <span>Copyright ©2022 X-lab </span>
                     </Col>
                 </Row>
-                <Row align='middle' justify='center'>
+                {/* 有官方 Logo 的话，这个先不放吧 */}
+                {/* <Row align='middle' justify='center'>
                     <Col>
                         <a href='https://github.com/X-lab2017/open-leaderboard' target={'_blank'}><img src='/pics/GitHub.png' style={{width:'30px',height:'30px'}} /></a>
                     </Col>
-                </Row>
+                </Row> */}
             </div>
         </Footer>
     );
