@@ -60,7 +60,7 @@
     "desc": {
         "intro": "An insight to the world of ",
         "opensource": "open source",
-        "content": "Welcome to OpenLeaderboard, where companys, projects ant user accounts are ranked by the activity and influence on GitHub, the leading source code repository for free and open source (FOSS) projects.",
+        "content": "Welcome to OpenLeaderboard, where companys, projects and user accounts are ranked by the activity and influence on GitHub, the leading source code repository for free and open source (FOSS) projects.",
         "date": "Last updated on {{val, datetime}}"
     },
     "footer":{

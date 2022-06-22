@@ -49,7 +49,7 @@ const activityColumns = (object)=>[
         align:'center',
         width: '20%',
         render: function (text, row, index) {
-            if (titleDir[object] !== 'Company') {
+            if (object !== 'company') {
                 return (
                     <a href={"https://github.com/"+text} target="_blank">{text}</a>
                 )
@@ -104,7 +104,7 @@ const activityDetailColumns = (object)=>[
         align:'center',
         width: '5%',
         render: function (text, row, index) {
-            if (titleDir[object] !== 'Company') {
+            if (object !== 'company') {
                 return (
                     <a href={"https://github.com/"+text} target="_blank">{text}</a>
                 )
@@ -189,7 +189,7 @@ const open_rankColumns = (object)=>[
         width: '5%',
         align:'center',
         render: function (text, row, index) {
-            if (titleDir[object] !== 'Company') {
+            if (object !== 'company') {
                 return (
                     <a href={"https://github.com/"+text} target="_blank">{text}</a>
                 )
