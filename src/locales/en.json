@@ -65,7 +65,8 @@
     },
     "footer":{
         "data_power_by":"Data Powered by",
-        "sponsor":"Membership",
+        "supported_by":"Supported By",
+        "sponsor":"Partnership",
         "sponsor_info":"Leave a seat vacant for you."
     }
 }
