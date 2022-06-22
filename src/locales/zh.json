@@ -62,14 +62,11 @@
         "opensource": "开源世界",
         "content": "欢迎来到 OpenLeaderboard，我们对 GitHub 上的企业、项目以及开发者账号进行了活跃度和影响力的排名。（GitHub 是全球最大的社交编程及代码托管网站。）",
         "date": "最近更新于 {{val, datetime}}"
-<<<<<<< HEAD
-=======
     },
     "footer":{
         "data_power_by":"数据支持",
         "supported_by":"官方支持",
         "sponsor":"合作社区",
         "sponsor_info":"虚位以待"
->>>>>>> 11c322f (feat: enormous i18n update)
     }
 }
