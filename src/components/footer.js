@@ -28,7 +28,9 @@ function MyFooter(props){
                 </Row>
                 <Row align='middle' justify='center'  style={{minHeight:'100px'}}>
                     <Col>
-                        <img src='/pics/GitHub.png' style={{width:'60px',height:'60px'}} />
+                        {/* 等 GitHub 官方确认后添加 Logo */}
+                        <span style={{width:'60px',height:'60px'}}></span>
+                        {/* <img src='/pics/GitHub.png' style={{width:'60px',height:'60px'}} /> */}
                     </Col>
                 </Row>
                 <Row align='middle' justify='center'>
