@@ -67,7 +67,8 @@
     },
     "footer":{
         "data_power_by":"数据支持",
-        "sponsor":"会员",
+        "supported_by":"官方支持",
+        "sponsor":"合作社区",
         "sponsor_info":"虚位以待"
 >>>>>>> 11c322f (feat: enormous i18n update)
     }

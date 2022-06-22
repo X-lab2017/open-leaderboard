@@ -10,6 +10,9 @@
 .myTitle {
     font-size: 3rem;
 }
+.subTitle{
+    font-size: 1.5rem;
+}
 
 .container {
     max-width: 1600px;
