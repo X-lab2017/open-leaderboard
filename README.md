@@ -5,7 +5,7 @@
 Welcome to OpenLeaderboard! This is a web project where companys, projects and user accounts are ranked by the activity and influence on GitHub, the leading source code repository for free and open source (FOSS) projects.
 
 ## About OpenLeaderboard
-
+<img src="public/readme_pics/snapshot.jpg"/>
 ## Website URL
 https://open-leaderboard.x-lab.info/
 
