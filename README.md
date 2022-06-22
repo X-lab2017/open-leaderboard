@@ -6,6 +6,8 @@ Welcome to OpenLeaderboard! This is a web project where companys, projects and u
 
 ## About OpenLeaderboard
 <img src="public/readme_pics/snapshot.jpg"/>
+
+
 ## Website URL
 https://open-leaderboard.x-lab.info/
 
