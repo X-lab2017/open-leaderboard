@@ -17,7 +17,7 @@ const titleDir = {
     repo: t('project'),
     actor: t('ID'),
 }
-const activityColumns = (object)=>[
+const activityColumns = (object,year,month)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -58,6 +58,50 @@ const activityColumns = (object)=>[
             }
         }
     },
+    ...object=='repo'?
+        [{
+            title: t('大屏'),
+            dataIndex: 'name',
+            align:'center',
+            width: '20%',
+            //根据行号判断，前300的项目可点击大屏
+            render: function (text, row, index) {
+                console.log('andy',row);
+                let [org_name,repo_name]=text.split("/");
+                console.log(year);
+                console.log(month);
+                let myyear=year;
+                let mymonth=month;
+                switch (mymonth) {
+                    case 0:
+                    {
+                        myyear--;
+                        mymonth='12';
+                        break;
+                    }
+                    case 10:
+                    {
+                        mymonth='10';
+                        break;
+                    }
+                    case 11:
+                    {
+                        mymonth = '11';
+                        break;
+                    }
+                    default:
+                        mymonth='0'+month;
+                        break
+                }
+                console.log(myyear);
+                console.log(mymonth);
+                let param='{\"org_name\":\"'+org_name+'\",\"repo_name\":\"'+repo_name+'\",\"t_month\":\"'+myyear+'-'+mymonth+'-01\"}';
+                console.log(param);
+                param=window.btoa(param);
+                console.log(param);
+                return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams="+param} target="_blank">{repo_name}大屏看板</a>
+            }
+        }]:[],
     {
         title: t('activity'),
         dataIndex: 'value',
@@ -113,6 +157,21 @@ const activityDetailColumns = (object)=>[
             }
         }
     },
+    ...object=='repo'?
+        [{
+            title: t('大屏'),
+            dataIndex: 'name',
+            align:'center',
+            width: '20%',
+            //根据行号判断，前300的项目可点击大屏
+            render: function (text, row, index) {
+                console.log('andy',text,row,index);
+                let [org_name,repo_name]=row.name.split("/");
+                console.log(org_name);
+                console.log(repo_name);
+                return <a>hello</a>
+            }
+        }]:[],
     {
         title: t('activity'),
         dataIndex: 'value',
@@ -198,6 +257,21 @@ const open_rankColumns = (object)=>[
             }
         }
     },
+    ...object=='repo'?
+        [{
+            title: t('大屏'),
+            dataIndex: 'name',
+            align:'center',
+            width: '20%',
+            //根据行号判断，前300的项目可点击大屏
+            render: function (text, row, index) {
+                console.log('andy',row);
+                let [org_name,repo_name]=row.name.split("/");
+                console.log(org_name);
+                console.log(repo_name);
+                return <a>hello</a>
+            }
+        }]:[],
     {
         title: t('influence'),
         dataIndex: 'value',
@@ -238,7 +312,7 @@ function MyTable(props){
         object:'company',
         index:'activity',
         region:'chinese',
-        columns: activityColumns('company'),
+        //columns: activityColumns('company'),
         showDetail:false,
         hasDetail:true,
         data: [],
@@ -286,15 +360,15 @@ function MyTable(props){
         if(newstate.hasOwnProperty('type')) type = newstate.type;
         // 根据 index 和 showDetail 改变表格的 columns 格式
         if(index=='activity'){
-            columns = activityColumns(object);
+            columns = activityColumns(object,newstate.year,newstate.month);
             hasDetail = true;
         }
         if(index=='activity' && showDetail == true){
-            columns = activityDetailColumns(object)
+            columns = activityDetailColumns(object,newstate.year,newstate.month)
             hasDetail =  true;
         }
         if(index=='open_rank'){
-            columns = open_rankColumns(object);
+            columns = open_rankColumns(object,newstate.year,newstate.month);
             hasDetail = false;
             showDetail = false;
         }
