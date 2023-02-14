@@ -66,10 +66,10 @@ const activityColumns = (object,year,month)=>[
             width: '20%',
             //根据行号判断，前300的项目可点击大屏
             render: function (text, row, index) {
-                console.log('andy',row);
+                //console.log('andy',row);
                 let [org_name,repo_name]=text.split("/");
-                //console.log(year);
-                //console.log(month);
+                //console.log('year',year);
+                //console.log('month',month);
                 let myyear=year;
                 let mymonth=month;
                 switch (mymonth) {
@@ -93,8 +93,8 @@ const activityColumns = (object,year,month)=>[
                         mymonth='0'+month;
                         break
                 }
-                console.log(myyear);
-                console.log(mymonth);
+                //console.log('myyear',myyear);
+                //console.log('mymonth',mymonth);
                 let param='{\"org_name\":\"'+org_name+'\",\"repo_name\":\"'+repo_name+'\",\"t_month\":\"'+myyear+'-'+mymonth+'-01\"}';
                 //console.log(param);
                 param=window.btoa(param);
@@ -165,7 +165,7 @@ const activityDetailColumns = (object,year,month)=>[
             width: '20%',
             //根据行号判断，前300的项目可点击大屏
             render: function (text, row, index) {
-                console.log('andy',row);
+                //console.log('andy',row);
                 let [org_name,repo_name]=text.split("/");
                 //console.log(year);
                 //console.log(month);
@@ -192,8 +192,8 @@ const activityDetailColumns = (object,year,month)=>[
                         mymonth='0'+month;
                         break
                 }
-                console.log(myyear);
-                console.log(mymonth);
+                //console.log(myyear);
+                //console.log(mymonth);
                 let param='{\"org_name\":\"'+org_name+'\",\"repo_name\":\"'+repo_name+'\",\"t_month\":\"'+myyear+'-'+mymonth+'-01\"}';
                 //console.log(param);
                 param=window.btoa(param);
@@ -294,7 +294,7 @@ const open_rankColumns = (object,year,month)=>[
             width: '20%',
             //根据行号判断，前300的项目可点击大屏
             render: function (text, row, index) {
-                console.log('andy',row);
+                //console.log('andy',row);
                 let [org_name,repo_name]=text.split("/");
                 //console.log(year);
                 //console.log(month);
@@ -321,8 +321,8 @@ const open_rankColumns = (object,year,month)=>[
                         mymonth='0'+month;
                         break
                 }
-                console.log(myyear);
-                console.log(mymonth);
+                //console.log(myyear);
+                //console.log(mymonth);
                 let param='{\"org_name\":\"'+org_name+'\",\"repo_name\":\"'+repo_name+'\",\"t_month\":\"'+myyear+'-'+mymonth+'-01\"}';
                 //console.log(param);
                 param=window.btoa(param);
