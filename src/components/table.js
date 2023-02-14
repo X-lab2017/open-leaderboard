@@ -68,8 +68,8 @@ const activityColumns = (object,year,month)=>[
             render: function (text, row, index) {
                 console.log('andy',row);
                 let [org_name,repo_name]=text.split("/");
-                console.log(year);
-                console.log(month);
+                //console.log(year);
+                //console.log(month);
                 let myyear=year;
                 let mymonth=month;
                 switch (mymonth) {
@@ -96,9 +96,9 @@ const activityColumns = (object,year,month)=>[
                 console.log(myyear);
                 console.log(mymonth);
                 let param='{\"org_name\":\"'+org_name+'\",\"repo_name\":\"'+repo_name+'\",\"t_month\":\"'+myyear+'-'+mymonth+'-01\"}';
-                console.log(param);
+                //console.log(param);
                 param=window.btoa(param);
-                console.log(param);
+                //console.log(param);
                 return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams="+param} target="_blank">{repo_name}大屏看板</a>
             }
         }]:[],
@@ -116,7 +116,7 @@ const activityColumns = (object,year,month)=>[
         render: PointRender,
     }
 ];
-const activityDetailColumns = (object)=>[
+const activityDetailColumns = (object,year,month)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -165,11 +165,40 @@ const activityDetailColumns = (object)=>[
             width: '20%',
             //根据行号判断，前300的项目可点击大屏
             render: function (text, row, index) {
-                console.log('andy',text,row,index);
-                let [org_name,repo_name]=row.name.split("/");
-                console.log(org_name);
-                console.log(repo_name);
-                return <a>hello</a>
+                console.log('andy',row);
+                let [org_name,repo_name]=text.split("/");
+                //console.log(year);
+                //console.log(month);
+                let myyear=year;
+                let mymonth=month;
+                switch (mymonth) {
+                    case 0:
+                    {
+                        myyear--;
+                        mymonth='12';
+                        break;
+                    }
+                    case 10:
+                    {
+                        mymonth='10';
+                        break;
+                    }
+                    case 11:
+                    {
+                        mymonth = '11';
+                        break;
+                    }
+                    default:
+                        mymonth='0'+month;
+                        break
+                }
+                console.log(myyear);
+                console.log(mymonth);
+                let param='{\"org_name\":\"'+org_name+'\",\"repo_name\":\"'+repo_name+'\",\"t_month\":\"'+myyear+'-'+mymonth+'-01\"}';
+                //console.log(param);
+                param=window.btoa(param);
+                //console.log(param);
+                return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams="+param} target="_blank">{repo_name}大屏看板</a>
             }
         }]:[],
     {
@@ -216,7 +245,7 @@ const activityDetailColumns = (object)=>[
         align:'center',
     },
 ];
-const open_rankColumns = (object)=>[
+const open_rankColumns = (object,year,month)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -266,10 +295,39 @@ const open_rankColumns = (object)=>[
             //根据行号判断，前300的项目可点击大屏
             render: function (text, row, index) {
                 console.log('andy',row);
-                let [org_name,repo_name]=row.name.split("/");
-                console.log(org_name);
-                console.log(repo_name);
-                return <a>hello</a>
+                let [org_name,repo_name]=text.split("/");
+                //console.log(year);
+                //console.log(month);
+                let myyear=year;
+                let mymonth=month;
+                switch (mymonth) {
+                    case 0:
+                    {
+                        myyear--;
+                        mymonth='12';
+                        break;
+                    }
+                    case 10:
+                    {
+                        mymonth='10';
+                        break;
+                    }
+                    case 11:
+                    {
+                        mymonth = '11';
+                        break;
+                    }
+                    default:
+                        mymonth='0'+month;
+                        break
+                }
+                console.log(myyear);
+                console.log(mymonth);
+                let param='{\"org_name\":\"'+org_name+'\",\"repo_name\":\"'+repo_name+'\",\"t_month\":\"'+myyear+'-'+mymonth+'-01\"}';
+                //console.log(param);
+                param=window.btoa(param);
+                //console.log(param);
+                return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams="+param} target="_blank">{repo_name}大屏看板</a>
             }
         }]:[],
     {
@@ -360,15 +418,15 @@ function MyTable(props){
         if(newstate.hasOwnProperty('type')) type = newstate.type;
         // 根据 index 和 showDetail 改变表格的 columns 格式
         if(index=='activity'){
-            columns = activityColumns(object,newstate.year,newstate.month);
+            columns = activityColumns(object,state.year,state.month);
             hasDetail = true;
         }
         if(index=='activity' && showDetail == true){
-            columns = activityDetailColumns(object,newstate.year,newstate.month)
+            columns = activityDetailColumns(object,state.year,state.month)
             hasDetail =  true;
         }
         if(index=='open_rank'){
-            columns = open_rankColumns(object,newstate.year,newstate.month);
+            columns = open_rankColumns(object,state.year,state.month);
             hasDetail = false;
             showDetail = false;
         }
@@ -432,7 +490,10 @@ function MyTable(props){
             });
         })
     };
+    console.log('state',state);
     const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, type} = state;
+    console.log('columns',columns);
+
     return (
         <div className='table'>
             <div className='table-content'>
