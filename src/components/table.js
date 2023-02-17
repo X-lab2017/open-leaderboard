@@ -17,7 +17,7 @@ const titleDir = {
     repo: t('project'),
     actor: t('ID'),
 }
-const activityColumns = (object)=>[
+const activityColumns = (object,t_month,myregion)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -58,6 +58,16 @@ const activityColumns = (object)=>[
             }
         }
     },
+    ...object=='repo'?
+        [{
+            title: t(''),
+            dataIndex: 'name',
+            align:'left',
+            width: '3%',
+            render: function (text, row, index) {
+                return dashboard(text,index,t_month,myregion)
+            }
+        }]:[],
     {
         title: t('activity'),
         dataIndex: 'value',
@@ -72,7 +82,7 @@ const activityColumns = (object)=>[
         render: PointRender,
     }
 ];
-const activityDetailColumns = (object)=>[
+const activityDetailColumns = (object,t_month,myregion)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -113,10 +123,20 @@ const activityDetailColumns = (object)=>[
             }
         }
     },
+    ...object=='repo'?
+        [{
+            title: t(''),
+            dataIndex: 'name',
+            align:'left',
+            width: '3%',
+            render: function (text, row, index) {
+                return dashboard(text,index,t_month,myregion)
+            }
+        }]:[],
     {
         title: t('activity'),
         dataIndex: 'value',
-        align:'right',
+        align:'center',
         width: '10%',
     },
     {
@@ -157,7 +177,7 @@ const activityDetailColumns = (object)=>[
         align:'center',
     },
 ];
-const open_rankColumns = (object)=>[
+const open_rankColumns = (object,t_month,myregion)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -186,7 +206,7 @@ const open_rankColumns = (object)=>[
     {
         title: t(object),
         dataIndex: 'name',
-        width: '5%',
+        width: '20%',
         align:'center',
         render: function (text, row, index) {
             if (object !== 'company') {
@@ -198,6 +218,16 @@ const open_rankColumns = (object)=>[
             }
         }
     },
+    ...object=='repo'?
+        [{
+            title: t(''),
+            dataIndex: 'name',
+            align:'center',
+            width: '3%',
+            render: function (text, row, index) {
+                return dashboard(text,index,t_month,myregion)
+            }
+        }]:[],
     {
         title: t('influence'),
         dataIndex: 'value',
@@ -227,6 +257,21 @@ const solveDate = (year,month)=>{
     }
     return year+"年"+(month+1)+"月";
 }
+
+function dashboard(text,index,t_month,region) {
+    if (index < 400 && region =='chinese' ) {
+        let [org_name, repo_name] = text.split("/");
+        let params = {
+            org_name,
+            repo_name,
+            t_month,
+        }
+        return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams=" + btoa(JSON.stringify(params))} target="_blank">
+            <img src='/pics/dashboard.png' style={{height: '20px', width: '20px'}}/>
+        </a>
+    }
+}
+
 function DateTitle(props){
     return (
         <h1>{solveDate(props.year,props.month)}</h1>
@@ -238,7 +283,6 @@ function MyTable(props){
         object:'company',
         index:'activity',
         region:'chinese',
-        columns: activityColumns('company'),
         showDetail:false,
         hasDetail:true,
         data: [],
@@ -269,7 +313,6 @@ function MyTable(props){
             showSize: state.showSize + 25,
         })
     }
-    
     const updateDate = (newstate) => {
         console.log('table update',newstate);
         // 先获取原先的表格属性
@@ -284,17 +327,26 @@ function MyTable(props){
         if(newstate.hasOwnProperty('year')) year = newstate.year;
         if(newstate.hasOwnProperty('showDetail')) showDetail = newstate.showDetail;
         if(newstate.hasOwnProperty('type')) type = newstate.type;
+
+        //获取数据大屏的‘t_month’参数
+        let myyear = newstate.year==null?state.year:newstate.year
+        let mymonth = newstate.month==null?state.month:newstate.month
+        mymonth = (''+(1+mymonth)).padStart(2, '0');
+        let t_month = `${myyear}-${mymonth}-01`
+
+        let myregion = newstate.region==null?state.region:newstate.region
+
         // 根据 index 和 showDetail 改变表格的 columns 格式
         if(index=='activity'){
-            columns = activityColumns(object);
+            columns = activityColumns(object,t_month,myregion);
             hasDetail = true;
         }
         if(index=='activity' && showDetail == true){
-            columns = activityDetailColumns(object)
+            columns = activityDetailColumns(object,t_month,myregion)
             hasDetail =  true;
         }
         if(index=='open_rank'){
-            columns = open_rankColumns(object);
+            columns = open_rankColumns(object,t_month,myregion);
             hasDetail = false;
             showDetail = false;
         }
@@ -359,6 +411,7 @@ function MyTable(props){
         })
     };
     const {object, index, region, data, columns, loading, showSize, showDetail, hasDetail, month, year, type} = state;
+
     return (
         <div className='table'>
             <div className='table-content'>
