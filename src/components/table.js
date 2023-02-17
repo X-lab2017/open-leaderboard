@@ -267,7 +267,7 @@ function dashboard(text,index,t_month,region) {
             t_month,
         }
         return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams=" + btoa(JSON.stringify(params))} target="_blank">
-            <img src='/pics/dashboard.png' style={{height: '20px', width: '20px', pading: '0px'}}/>
+            <img src='/pics/dashboard.png' style={{height: '20px', width: '20px'}}/>
         </a>
     }
 }
