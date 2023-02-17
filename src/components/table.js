@@ -261,10 +261,13 @@ const solveDate = (year,month)=>{
 function dashboard(text,index,t_month,region) {
     if (index < 400 && region =='chinese' ) {
         let [org_name, repo_name] = text.split("/");
-        let param = `{"org_name":"${org_name}","repo_name":"${repo_name}","t_month":"${t_month}"}`
-        param = window.btoa(param);
-        return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams=" + param} target="_blank">
-            <img src='/pics/dashboard.png' style={{height: '20px', width: '20px', pading: '5px'}}/>
+        let params = {
+            org_name,
+            repo_name,
+            t_month,
+        }
+        return <a href={"http://dataease.nzcer.cn/link/LeMILNSw?attachParams=" + btoa(JSON.stringify(params))} target="_blank">
+            <img src='/pics/dashboard.png' style={{height: '20px', width: '20px'}}/>
         </a>
     }
 }
@@ -280,7 +283,6 @@ function MyTable(props){
         object:'company',
         index:'activity',
         region:'chinese',
-        //columns: activityColumns('company'),
         showDetail:false,
         hasDetail:true,
         data: [],
@@ -361,7 +363,7 @@ function MyTable(props){
         else{
             url += year + (1+month)+ '.json';
         }
-        console.log('url',url);
+        console.log(url);
         // fetch 异步请求
         fetch(url)
         .then(res => {
