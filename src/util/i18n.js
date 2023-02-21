@@ -18,8 +18,8 @@ i18n
     },
     resources: {
       en: { translation: require('../locales/en.json') },
-      zh: { translation: require('../locales/zh.json') }
-    }
+      zh: { translation: require('../locales/zh.json') },
+    },
   });
 
 export default i18n;

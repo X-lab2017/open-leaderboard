@@ -1,73 +1,81 @@
 /* 以下为覆盖 ant-design 样式 */
 .ant-menu-horizontal {
-    line-height: 46px;
-    border: 0;
-    border-bottom: 0px solid #f0f0f0;
-    box-shadow: none;
-  }
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
-    border-bottom: 0px solid #1890ff;
+  line-height: 46px;
+  border: 0;
+  border-bottom: 0px solid #f0f0f0;
+  box-shadow: none;
 }
-.ant-menu-horizontal > .ant-menu-item::after, .ant-menu-horizontal > .ant-menu-submenu::after {
-    border-bottom: 0px solid transparent;
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
+  border-bottom: 0px solid #1890ff;
+}
+.ant-menu-horizontal > .ant-menu-item::after,
+.ant-menu-horizontal > .ant-menu-submenu::after {
+  border-bottom: 0px solid transparent;
 }
 
 .ant-menu-title-content {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 /* pc 访问时的样式 */
-.header{
-    height: 64px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.header {
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.header-content{
-    max-width: 1600px;
-    padding: 0 50px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.header-content {
+  max-width: 1600px;
+  padding: 0 50px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.header-logo{
-    display: flex;
-    flex: 0 1 238px;
-    justify-content: space-between;
-    align-items: center;
+.header-logo {
+  display: flex;
+  flex: 0 1 238px;
+  justify-content: space-between;
+  align-items: center;
 }
-.header-phone{
-    display: none;
+.header-phone {
+  display: none;
 }
-.header-pc{
-    display: flex;
-    flex: 0 1 170px;
-    justify-content: space-between;
-    align-items:center;
+.header-pc {
+  display: flex;
+  flex: 0 1 170px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* 媒体查询，适配手机端 */
-@media only screen and (max-width:768px){
-    .header-content{
-        padding: 20px;
-    }
-    .header-phone{
-        display: block;
-    }
-    .header-pc{
-        display: none;
-    }
+@media only screen and (max-width: 768px) {
+  .header-content {
+    padding: 20px;
+  }
+  .header-phone {
+    display: block;
+  }
+  .header-pc {
+    display: none;
+  }
 }
 
-@media only screen and (max-width:576px){
-    .header-content{
-        padding: 20px;
-    }
-    .header-phone{
-        display: block;
-    }
-    .header-pc{
-        display: none;
-    }
+@media only screen and (max-width: 576px) {
+  .header-content {
+    padding: 20px;
+  }
+  .header-phone {
+    display: block;
+  }
+  .header-pc {
+    display: none;
+  }
 }

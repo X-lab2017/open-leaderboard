@@ -1,26 +1,30 @@
-
-.ant-modal-header, .ant-modal-title,.ant-modal-content,.ant-modal-footer{
-    background-color: rgba(0,0,0,0);
-    color: white;
-    border: 0px;
-    box-shadow: none;
+.ant-modal-header,
+.ant-modal-title,
+.ant-modal-content,
+.ant-modal-footer {
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+  border: 0px;
+  box-shadow: none;
 }
 
-.ant-modal-header, .ant-modal-body,.ant-modal-footer{
-    text-align: center;
+.ant-modal-header,
+.ant-modal-body,
+.ant-modal-footer {
+  text-align: center;
 }
 
-.ant-modal-title{
-    font-weight: 600;
-    font-size: 36px;
+.ant-modal-title {
+  font-weight: 600;
+  font-size: 36px;
 }
 
-.ant-modal-body .ant-card{
-    background-color: rgba(0,0,0,0.2);
-    color: white;
-    border-radius: 12px;
-    text-align: left;
+.ant-modal-body .ant-card {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: white;
+  border-radius: 12px;
+  text-align: left;
 }
-.ant-modal-body h2{
-    color: white;
+.ant-modal-body h2 {
+  color: white;
 }
