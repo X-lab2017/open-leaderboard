@@ -19,8 +19,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #FFFFFF;
-  box-shadow: 0px 15px 20px 15px #F7F7FF;
+  background: #ffffff;
+  box-shadow: 0 15px 20px 15px #f7f7ff;
   border-radius: 42px;
 }
 
