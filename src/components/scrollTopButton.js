@@ -2,12 +2,11 @@ import { Button } from 'antd';
 import { VerticalAlignTopOutlined } from '@ant-design/icons';
 function scrollToTop(timestamp) {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-  if (scrollTop > 5) {
-    window.scrollTo(0, scrollTop - scrollTop / 8);
-    window.requestAnimationFrame(scrollToTop);
-  } else {
-    window.scrollTo(0, 0);
-  }
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth',
+  });
 }
 const ScrollTopButton = (props) => {
   return (
