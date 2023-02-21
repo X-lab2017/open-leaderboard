@@ -1,50 +1,50 @@
 /* 覆盖 ant design card 样式 */
 .ant-card-body {
-    padding: 40px;
+  padding: 40px;
 }
-.ant-card{
-    border-radius: 42px;
+.ant-card {
+  border-radius: 42px;
 }
 
 /*  */
-.table{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.table-content{
-    padding: 0 50px;
-    width: 100%;
-    max-width: 1600px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: '#FFFFFF';
-    box-shadow:'0px 15px 20px 15px #F7F7FF';
-    border-radius: '42px';
+.table-content {
+  padding: 0 50px;
+  width: 100%;
+  max-width: 1600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  box-shadow: 0px 15px 20px 15px #F7F7FF;
+  border-radius: 42px;
 }
 
 /* 适配移动端样式 */
-@media only screen and (max-width:768px){
-    .table-content{
-        padding: 0 10px;
-    }
-    .ant-card-body {
-        padding: 12px;
-    }
-    .ant-card{
-        border-radius: 10px;
-    }
+@media only screen and (max-width: 768px) {
+  .table-content {
+    padding: 0 10px;
+  }
+  .ant-card-body {
+    padding: 12px;
+  }
+  .ant-card {
+    border-radius: 10px;
+  }
 }
 
-@media only screen and (max-width:576px){
-    .table-content{
-        padding: 0 10px;
-    }
-    .ant-card-body {
-        padding: 12px;
-    }
-    .ant-card{
-        border-radius: 10px;
-    }
+@media only screen and (max-width: 576px) {
+  .table-content {
+    padding: 0 10px;
+  }
+  .ant-card-body {
+    padding: 12px;
+  }
+  .ant-card {
+    border-radius: 10px;
+  }
 }

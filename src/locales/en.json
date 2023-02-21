@@ -1,72 +1,72 @@
 {
-    "navBar": {
-        "enterprise": "Enterprise",
-        "project": "Project",
-        "bot": "Bot"
-    },
-    "chinese":"Chinese",
-    "global":"Global",
-    "time":"Time: ",
-    "index":"Index: ",
-    "detail":"Detail: ",
-    "item":"Item: ",
-    "region":"Region: ",
-    "developer":"Developer",
-    "loading":"loaidng",
-    "month": "Monthly",
-    "year": "Yearly",
-    "rank": "Rank",
-    "company": "Company",
-    "repo": "Project",
-    "actor":"ID",
-    "avatar":"Avatar",
-    "bot": "Bot",
-    "activity": "Activity",
-    "influence": "OpenRank",
-    "details": "Details",
-    "showMore": "show more",
-    "noMore": "no more",
-    "issue_comments":"Issue Comments",
-    "open_issues":"Open Issues",
-    "open_pulls":"Open PRs",
-    "merge_pulls":"Merge PRs",
-    "pr_reviews":"PR Reviews",
-    "analysisConclusion": "The table below shows the OpenIsight-Index rankings for GitHub activity and influence up to end of November 2021. Positions are compared to the rankings at the end of October. As for activity The top 4 leading organizations remain consistent this month with QingCloud progressing well above their closest neighbour’s growth figures，Contrastingly Alibaba, JD and Bytedance also see a decline in their activity this month. As for influence... ",
-    "contributeProject": "miss your project?",
-    "contributeCompany": "miss your company?",
-    "tip": "miss your item?",
-    "introduction": "Welcome to OpenInsight-Index, where Chinese companys, projects and robot accounts are ranked by the activity and influence on GitHub.",
-    "updateTime": "Updated December 1st, 2021",
-    "openinsight": "Openinsight is a complete set of tools integrating open source data collection, open source data development and open source data visualization. It can solve the open source data analysis and reporting in a one-stop way. It has a professional and in-depth understanding of various indicators of various open source projects to help the community operate reasonably.",
-    "opendigger": "OpenDigger is an open source analysis report project for all open source data initiated by X-lab, this project aims to combine the wisdom of global developers to jointly analyze and insight into open source related data to help everyone better understand and participate in open source.",
-    "Question": {
-        "Q1": "Your business or project is not here, and how to add it?",
-        "Q2": "The items that have been fed back are not seen in the ranking.",
-        "Q3": "What is X-lab?"
-    },
-    "Answer": {
-        "A1": "Please submit feedback to GitHub warehouse: https://github.com/X-lab2017/open-digger Description of feedback method: (link to contribution process document) Open the submit modification template, fill in the project name, path, country and other information, and submit to issue. For template, please refer to: (issue template link)",
-        "A2": "We have limited the number of projects. You can try to search for the name of your project in the search box at the top of the ranking to locate your item.",
-        "A3": "X-lab is an open group for open-source research and innovation, connected by experts, scholars and engineers from universities, startups, and IT companies at home and abroad. Professional backgrounds include software engineering, data science, business administration, economics and other interdisciplinary fields. It performs long-term thinking and practice of open source strategy, open source measurement, open source digital ecosystems and other topics, and has also made influential work in areas including open source governance standards development, community behavioral metrics and analysis, and data governance."
-    },
-    "glossary": "GLOSSARY",
-    "Glossary": {
-        "activity": "Activity is an algorithm based on the analysis method of historical behavior log data, which counts the behavior of all warehouses and developers of GitHub in the whole domain, and weights the behavior data of GitHub. The specific calculation method is: ad = ∑ wiciad = ∑ wici, where ADAD is the developer activity, and CICI is the occurrence times of the above five behavior events triggered by the developer, Wiwi is the weighted proportion of the behavior event. According to a simple value evaluation, we can set this value to 1 - 5, that is, 1 point for issue comment, 2 points for issue, 3 points for PR, 4 points for code review comment on PR, and 5 points for pr. After the activity of each developer is calculated, the activity of the project can be calculated by a weighted sum method. The previously given method is: ar = ∑ ad − − √ ar = ∑ ad, that is, the activity of the project is the sum of the activity of all developers. Here, the square is to reduce the impact of the excessive activity of core developers. (project activity only considers the behavior data of developers in the current project.) for more information about activity, please check ",
-        "influence": "On the basis of activity, a new upper layer algorithm is designed, which is a project influence evaluation method based on the global developer cooperation network. While evaluating the cooperation influence of all projects at one time, it can also deeply explore the cooperation relevance of the project and automatically judge the category of the project, So as to obtain the network cooperation influence of projects and individuals. For more information about OpenRank, please see ",
-        "bot": "",
-        "activity_blog": "How to evaluate an open source project (I) - activity blog.",
-        "influence_blog": "How to evaluate an open source project (2) - influence blog."
-    },
-    "desc": {
-        "intro": "An insight to the world of ",
-        "opensource": "open source",
-        "content": "Welcome to OpenLeaderboard, where companys, projects and developers are ranked by the activity and influence on GitHub.",
-        "date": "Last updated on {{val, datetime}}"
-    },
-    "footer":{
-        "data_power_by":"Data Powered by",
-        "supported_by":"Supported By",
-        "sponsor":"Partnership",
-        "sponsor_info":"Leave a seat vacant for you."
-    }
+  "navBar": {
+    "enterprise": "Enterprise",
+    "project": "Project",
+    "bot": "Bot"
+  },
+  "chinese": "Chinese",
+  "global": "Global",
+  "time": "Time: ",
+  "index": "Index: ",
+  "detail": "Detail: ",
+  "item": "Item: ",
+  "region": "Region: ",
+  "developer": "Developer",
+  "loading": "loaidng",
+  "month": "Monthly",
+  "year": "Yearly",
+  "rank": "Rank",
+  "company": "Company",
+  "repo": "Project",
+  "actor": "ID",
+  "avatar": "Avatar",
+  "bot": "Bot",
+  "activity": "Activity",
+  "influence": "OpenRank",
+  "details": "Details",
+  "showMore": "show more",
+  "noMore": "no more",
+  "issue_comments": "Issue Comments",
+  "open_issues": "Open Issues",
+  "open_pulls": "Open PRs",
+  "merge_pulls": "Merge PRs",
+  "pr_reviews": "PR Reviews",
+  "analysisConclusion": "The table below shows the OpenIsight-Index rankings for GitHub activity and influence up to end of November 2021. Positions are compared to the rankings at the end of October. As for activity The top 4 leading organizations remain consistent this month with QingCloud progressing well above their closest neighbour’s growth figures，Contrastingly Alibaba, JD and Bytedance also see a decline in their activity this month. As for influence... ",
+  "contributeProject": "miss your project?",
+  "contributeCompany": "miss your company?",
+  "tip": "miss your item?",
+  "introduction": "Welcome to OpenInsight-Index, where Chinese companys, projects and robot accounts are ranked by the activity and influence on GitHub.",
+  "updateTime": "Updated December 1st, 2021",
+  "openinsight": "Openinsight is a complete set of tools integrating open source data collection, open source data development and open source data visualization. It can solve the open source data analysis and reporting in a one-stop way. It has a professional and in-depth understanding of various indicators of various open source projects to help the community operate reasonably.",
+  "opendigger": "OpenDigger is an open source analysis report project for all open source data initiated by X-lab, this project aims to combine the wisdom of global developers to jointly analyze and insight into open source related data to help everyone better understand and participate in open source.",
+  "Question": {
+    "Q1": "Your business or project is not here, and how to add it?",
+    "Q2": "The items that have been fed back are not seen in the ranking.",
+    "Q3": "What is X-lab?"
+  },
+  "Answer": {
+    "A1": "Please submit feedback to GitHub warehouse: https://github.com/X-lab2017/open-digger Description of feedback method: (link to contribution process document) Open the submit modification template, fill in the project name, path, country and other information, and submit to issue. For template, please refer to: (issue template link)",
+    "A2": "We have limited the number of projects. You can try to search for the name of your project in the search box at the top of the ranking to locate your item.",
+    "A3": "X-lab is an open group for open-source research and innovation, connected by experts, scholars and engineers from universities, startups, and IT companies at home and abroad. Professional backgrounds include software engineering, data science, business administration, economics and other interdisciplinary fields. It performs long-term thinking and practice of open source strategy, open source measurement, open source digital ecosystems and other topics, and has also made influential work in areas including open source governance standards development, community behavioral metrics and analysis, and data governance."
+  },
+  "glossary": "GLOSSARY",
+  "Glossary": {
+    "activity": "Activity is an algorithm based on the analysis method of historical behavior log data, which counts the behavior of all warehouses and developers of GitHub in the whole domain, and weights the behavior data of GitHub. The specific calculation method is: ad = ∑ wiciad = ∑ wici, where ADAD is the developer activity, and CICI is the occurrence times of the above five behavior events triggered by the developer, Wiwi is the weighted proportion of the behavior event. According to a simple value evaluation, we can set this value to 1 - 5, that is, 1 point for issue comment, 2 points for issue, 3 points for PR, 4 points for code review comment on PR, and 5 points for pr. After the activity of each developer is calculated, the activity of the project can be calculated by a weighted sum method. The previously given method is: ar = ∑ ad − − √ ar = ∑ ad, that is, the activity of the project is the sum of the activity of all developers. Here, the square is to reduce the impact of the excessive activity of core developers. (project activity only considers the behavior data of developers in the current project.) for more information about activity, please check ",
+    "influence": "On the basis of activity, a new upper layer algorithm is designed, which is a project influence evaluation method based on the global developer cooperation network. While evaluating the cooperation influence of all projects at one time, it can also deeply explore the cooperation relevance of the project and automatically judge the category of the project, So as to obtain the network cooperation influence of projects and individuals. For more information about OpenRank, please see ",
+    "bot": "",
+    "activity_blog": "How to evaluate an open source project (I) - activity blog.",
+    "influence_blog": "How to evaluate an open source project (2) - influence blog."
+  },
+  "desc": {
+    "intro": "An insight to the world of ",
+    "opensource": "open source",
+    "content": "Welcome to OpenLeaderboard, where companys, projects and developers are ranked by the activity and influence on GitHub.",
+    "date": "Last updated on {{val, datetime}}"
+  },
+  "footer": {
+    "data_power_by": "Data Powered by",
+    "supported_by": "Supported By",
+    "sponsor": "Partnership",
+    "sponsor_info": "Leave a seat vacant for you."
+  }
 }

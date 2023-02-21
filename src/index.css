@@ -1,47 +1,46 @@
 .myFontColor {
-    color: rgba(9, 17, 86, 1);
-    font-size: 18px;
+  color: rgba(9, 17, 86, 1);
+  font-size: 18px;
 }
 
 .specialColor {
-    color: #FFCC19;
+  color: #ffcc19;
 }
 
 .myTitle {
-    font-size: 3rem;
+  font-size: 3rem;
 }
-.subTitle{
-    font-size: 1.5rem;
+.subTitle {
+  font-size: 1.5rem;
 }
 
 .container {
-    max-width: 1600px;
-    margin:0 auto;
-    padding:0 50px;
-    width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 50px;
+  width: 100%;
 }
 .ant-radio-inner {
-    color: #FFCC19 !important;
-    border: 1px solid #D9D9D9 !important;
-    
-    }
-    .ant-radio-inner:after {
-    background-color: #FFCC19 !important;
+  color: #ffcc19 !important;
+  border: 1px solid #d9d9d9 !important;
+}
+.ant-radio-inner:after {
+  background-color: #ffcc19 !important;
 }
 
 .ant-switch-checked {
-    background-color: #FFCC19 !important;
+  background-color: #ffcc19 !important;
 }
 
 /* 媒体查询，适配手机端 */
-@media only screen and (max-width:768px){
-    .myTitle{
-        font-size: 2rem;
-    }
+@media only screen and (max-width: 768px) {
+  .myTitle {
+    font-size: 2rem;
+  }
 }
 
-@media only screen and (max-width:576px){
-    .myTitle{
-        font-size: 2rem;
-    }
+@media only screen and (max-width: 576px) {
+  .myTitle {
+    font-size: 2rem;
+  }
 }

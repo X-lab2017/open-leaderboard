@@ -1,10 +1,10 @@
-.ant-tabs-top > .ant-tabs-nav::before{
+.ant-tabs-top > .ant-tabs-nav::before {
   position: absolute;
   right: 0;
   left: 0;
   border-bottom: 0px solid #f0f0f0;
   content: '';
-  }
+}
 
 .ant-tabs-tab-btn {
   color: rgba(196, 196, 196, 1);
