@@ -17,7 +17,7 @@ const titleDir = {
     repo: t('project'),
     actor: t('ID'),
 }
-const activityColumns = (object,t_month,myregion)=>[
+const activityColumns = (object,t_month)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -65,7 +65,7 @@ const activityColumns = (object,t_month,myregion)=>[
             align:'left',
             width: '3%',
             render: function (text, row, index) {
-                return dashboard(text,index,t_month,myregion)
+                return dashboard(text,index,t_month)
             }
         }]:[],
     {
@@ -82,7 +82,7 @@ const activityColumns = (object,t_month,myregion)=>[
         render: PointRender,
     }
 ];
-const activityDetailColumns = (object,t_month,myregion)=>[
+const activityDetailColumns = (object,t_month)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -130,7 +130,7 @@ const activityDetailColumns = (object,t_month,myregion)=>[
             align:'left',
             width: '3%',
             render: function (text, row, index) {
-                return dashboard(text,index,t_month,myregion)
+                return dashboard(text,index,t_month)
             }
         }]:[],
     {
@@ -177,7 +177,7 @@ const activityDetailColumns = (object,t_month,myregion)=>[
         align:'center',
     },
 ];
-const open_rankColumns = (object,t_month,myregion)=>[
+const open_rankColumns = (object,t_month)=>[
     {
         title: t('rank'),
         dataIndex: 'rank',
@@ -225,7 +225,7 @@ const open_rankColumns = (object,t_month,myregion)=>[
             align:'center',
             width: '3%',
             render: function (text, row, index) {
-                return dashboard(text,index,t_month,myregion)
+                return dashboard(text,index,t_month)
             }
         }]:[],
     {
@@ -258,8 +258,8 @@ const solveDate = (year,month)=>{
     return year+"年"+(month+1)+"月";
 }
 
-function dashboard(text,index,t_month,region) {
-    if (index < 400 && region =='chinese' ) {
+function dashboard(text,index,t_month) {
+    if (index < 300 ) {
         let [org_name, repo_name] = text.split("/");
         let params = {
             org_name,
@@ -334,19 +334,17 @@ function MyTable(props){
         mymonth = (''+(1+mymonth)).padStart(2, '0');
         let t_month = `${myyear}-${mymonth}-01`
 
-        let myregion = newstate.region==null?state.region:newstate.region
-
         // 根据 index 和 showDetail 改变表格的 columns 格式
         if(index=='activity'){
-            columns = activityColumns(object,t_month,myregion);
+            columns = activityColumns(object,t_month);
             hasDetail = true;
         }
         if(index=='activity' && showDetail == true){
-            columns = activityDetailColumns(object,t_month,myregion)
+            columns = activityDetailColumns(object,t_month)
             hasDetail =  true;
         }
         if(index=='open_rank'){
-            columns = open_rankColumns(object,t_month,myregion);
+            columns = open_rankColumns(object,t_month);
             hasDetail = false;
             showDetail = false;
         }
