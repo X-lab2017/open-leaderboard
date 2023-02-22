@@ -19,7 +19,7 @@ const MyHeader = () => {
       message.info('switched to English');
     } else {
       lan = 'zh';
-      message.info('switched to Chinese');
+      message.info('切换为中文');
     }
     i18n.changeLanguage(lan);
     setLanguage(lan);
