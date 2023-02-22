@@ -11,7 +11,7 @@ const { Header } = Layout;
 
 const MyHeader = () => {
   const { t } = useTranslation();
-  const [language, setLanguage] = useState('zh_CN');
+  const [language, setLanguage] = useState('zh');
   const changeLanguage = () => {
     let lan = language;
     if (language == 'zh') {
@@ -19,7 +19,7 @@ const MyHeader = () => {
       message.info('switched to English');
     } else {
       lan = 'zh';
-      message.info('switched to Chinese');
+      message.info('切换为中文');
     }
     i18n.changeLanguage(lan);
     setLanguage(lan);
