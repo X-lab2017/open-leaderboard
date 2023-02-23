@@ -10,11 +10,11 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
@@ -24,15 +24,7 @@ jobs:
     - run: npm run build
       env:
         CI: false
-        
-    - name: Clean up OSS
-      uses: gymgym1212/delete-oss@main
-      with:
-        key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
-        key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
-        region: ${{ secrets.OSS_REGION }}
-        bucket: ${{ secrets.OSS_BUCKET }}
-        
+
     - name: Publish to OSS
       uses: tvrcgo/upload-to-oss@master
       with:
@@ -42,4 +34,3 @@ jobs:
         bucket: ${{ secrets.OSS_BUCKET }}
         assets: |
           ./build/**:${{ secrets.OSS_TARGET_PATH }}
-  
