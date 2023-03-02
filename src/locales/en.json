@@ -12,12 +12,13 @@
   "item": "Item: ",
   "region": "Region: ",
   "developer": "Developer",
-  "loading": "loaidng",
+  "loading": "loading",
   "month": "Monthly",
   "year": "Yearly",
   "rank": "Rank",
   "company": "Company",
   "repo": "Project",
+  "insight_board": "Insight Board",
   "actor": "ID",
   "avatar": "Avatar",
   "bot": "Bot",
@@ -35,7 +36,7 @@
   "contributeProject": "miss your project?",
   "contributeCompany": "miss your company?",
   "tip": "miss your item?",
-  "introduction": "Welcome to OpenInsight-Index, where Chinese companys, projects and robot accounts are ranked by the activity and influence on GitHub.",
+  "introduction": "Welcome to OpenInsight-Index, where Chinese companies, projects and robot accounts are ranked by the activity and influence on GitHub.",
   "updateTime": "Updated December 1st, 2021",
   "openinsight": "Openinsight is a complete set of tools integrating open source data collection, open source data development and open source data visualization. It can solve the open source data analysis and reporting in a one-stop way. It has a professional and in-depth understanding of various indicators of various open source projects to help the community operate reasonably.",
   "opendigger": "OpenDigger is an open source analysis report project for all open source data initiated by X-lab, this project aims to combine the wisdom of global developers to jointly analyze and insight into open source related data to help everyone better understand and participate in open source.",
@@ -60,7 +61,7 @@
   "desc": {
     "intro": "An insight to the world of ",
     "opensource": "open source",
-    "content": "Welcome to OpenLeaderboard, where companys, projects and developers are ranked by the activity and influence on GitHub.",
+    "content": "Welcome to OpenLeaderboard, where companies, projects and developers are ranked by the activity and influence on GitHub.",
     "date": "Last updated on {{val, datetime}}"
   },
   "footer": {

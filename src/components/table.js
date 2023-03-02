@@ -66,10 +66,10 @@ const activityColumns = (object, t_month) => [
   ...(object == 'repo'
     ? [
         {
-          title: t(''),
+          title: t('insight_board'),
           dataIndex: 'name',
-          align: 'left',
-          width: '3%',
+          align: 'center',
+          width: '10%',
           render: function (text, row, index) {
             return dashboard(text, index, t_month);
           },
@@ -139,10 +139,10 @@ const activityDetailColumns = (object, t_month) => [
   ...(object == 'repo'
     ? [
         {
-          title: t(''),
+          title: t('insight_board'),
           dataIndex: 'name',
-          align: 'left',
-          width: '3%',
+          align: 'center',
+          width: '10%',
           render: function (text, row, index) {
             return dashboard(text, index, t_month);
           },
@@ -242,10 +242,10 @@ const open_rankColumns = (object, t_month) => [
   ...(object == 'repo'
     ? [
         {
-          title: t(''),
+          title: t('insight_board'),
           dataIndex: 'name',
           align: 'center',
-          width: '3%',
+          width: '10%',
           render: function (text, row, index) {
             return dashboard(text, index, t_month);
           },
