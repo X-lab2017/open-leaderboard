@@ -11,9 +11,9 @@ const { Header } = Layout;
 
 const MyHeader = () => {
   const { t } = useTranslation();
-  const [language, setLanguage] = useState('zh');
+  const [language, setLanguage] = useState(i18n.language);
   const changeLanguage = () => {
-    let lan = language;
+    let lan;
     if (language == 'zh') {
       lan = 'en';
       message.info('switched to English');
@@ -34,7 +34,7 @@ const MyHeader = () => {
           <QA type="word" />
         </Menu.Item>
         <Menu.Item key="translate">
-          <a href="javascript:;" onClick={changeLanguage}>
+          <a href="javascript:" onClick={changeLanguage}>
             中/En
           </a>
         </Menu.Item>
@@ -48,8 +48,13 @@ const MyHeader = () => {
           <img
             style={{ height: '45px', width: '36px' }}
             src={'/pics/Main Logo.png'}
+            alt={t('loading')}
           />
-          <img style={{ width: '185px' }} src={'/pics/OpenLeaderboard.png'} />
+          <img
+            style={{ width: '185px' }}
+            src={'/pics/OpenLeaderboard.png'}
+            alt={t('loading')}
+          />
         </div>
         <div className="header-pc">
           <Dictionary />
@@ -58,6 +63,7 @@ const MyHeader = () => {
             style={{ height: '48px', width: '48px', cursor: 'pointer' }}
             onClick={changeLanguage}
             src="/pics/translation.png"
+            alt={t('loading')}
           />
         </div>
         <div className="header-phone">
