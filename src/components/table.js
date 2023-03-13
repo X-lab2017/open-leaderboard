@@ -293,7 +293,7 @@ function dashboard(text, index, t_month) {
     return (
       <a
         href={
-          'http://dataease.nzcer.cn/link/LeMILNSw?attachParams=' +
+          'https://dataease.nzcer.cn/link/dqMbZrBk?attachParams=' +
           btoa(JSON.stringify(params))
         }
         target="_blank"
