@@ -413,7 +413,7 @@ function MyTable(props) {
       .then((res) => {
         // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
         if (res.status == 404) {
-          message.warning('No relevant results yet');
+          message.warning(t('no_result'));
           return '';
         }
         return res.json();
@@ -436,16 +436,14 @@ function MyTable(props) {
         let queryData;
         if (search) {
           queryData = dataSource.filter((dataSource) => {
-            return dataSource.name.toLowerCase() == search.toLowerCase();
+            return dataSource.name.toLowerCase() == search.trim().toLowerCase();
           });
           if (queryData.length == 0) {
-            message.warning('No relevant results yet');
+            message.warning(t('no_result'));
           } else {
             dataSource = queryData;
           }
         }
-        console.log('queryData===');
-        console.log(queryData);
 
         // 更新属性和表格数据
         setState({

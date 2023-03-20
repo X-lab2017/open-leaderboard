@@ -76,7 +76,7 @@ const TablePanel = (props) => {
         </Col>
         <Col>
           <Search
-            placeholder="input search text"
+            placeholder={t('input_placeholder')}
             allowClear
             onSearch={(text) => {
               props.setState({ search: text });
