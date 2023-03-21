@@ -10,7 +10,7 @@ const { Search } = Input;
 const TablePanel = (props) => {
   return (
     <>
-      <Row align="middle" style={{ minHeight: '50px' }}>
+      <Row align="middle" style={{ minHeight: '50px' }} gutter={[10]}>
         <Col>
           <span className="myFontColor">{t('item')}</span>
           <Radio.Group
@@ -37,51 +37,59 @@ const TablePanel = (props) => {
           </Radio.Group>
         </Col>
       </Row>
-      <Row style={{ minHeight: '50px' }} gutter={10}>
+      <Row justify="space-between" style={{ minHeight: '50px' }} gutter={10}>
         <Col>
-          <span className="myFontColor">{t('region')}</span>
-          <Radio.Group
-            onChange={(e) => {
-              props.setState({ region: e.target.value });
+          <div style={{ marginRight: '10px', display: 'inline-block' }}>
+            <span className="myFontColor">{t('region')}</span>
+            <Radio.Group
+              onChange={(e) => {
+                props.setState({ region: e.target.value });
+              }}
+              value={props.region}
+            >
+              <Radio value={'chinese'}>{t('chinese')}</Radio>
+              <Radio value={'global'}>{t('global')}</Radio>
+            </Radio.Group>
+          </div>
+          <div style={{ marginRight: '10px', display: 'inline-block' }}>
+            <span className="myFontColor">{t('time')}</span>
+            <SwitchablePicker
+              setState={props.setState}
+              month={props.month}
+              type={props.type}
+              year={props.year}
+            />
+          </div>
+          <div
+            style={{
+              marginRight: '10px',
+              marginBottom: '10px',
+              display: 'inline-block',
             }}
-            value={props.region}
           >
-            <Radio value={'chinese'}>{t('chinese')}</Radio>
-            <Radio value={'global'}>{t('global')}</Radio>
-          </Radio.Group>
+            {props.hasDetail == true ? (
+              <>
+                <span className="myFontColor">{t('detail')}</span>{' '}
+                <Switch
+                  defaultChecked={props.showDetail}
+                  onChange={(checked) => {
+                    props.setState({ showDetail: checked });
+                  }}
+                />
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
         </Col>
-        <Col>
-          <span className="myFontColor">{t('time')}</span>
-          <SwitchablePicker
-            setState={props.setState}
-            month={props.month}
-            type={props.type}
-            year={props.year}
-          />
-        </Col>
-        <Col>
-          {props.hasDetail == true ? (
-            <>
-              <span className="myFontColor">{t('detail')}</span>{' '}
-              <Switch
-                defaultChecked={props.showDetail}
-                onChange={(checked) => {
-                  props.setState({ showDetail: checked });
-                }}
-              />
-            </>
-          ) : (
-            <></>
-          )}
-        </Col>
-        <Col>
+        <Col style={{ marginBottom: '10px' }}>
           <Search
             placeholder={t('input_placeholder')}
             allowClear
             onSearch={(text) => {
               props.setState({ search: text });
             }}
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             value={props.search}
           />
         </Col>
