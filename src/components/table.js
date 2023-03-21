@@ -326,6 +326,7 @@ function MyTable(props) {
     year: null, // 字符串格式
     month: null, // 整数格式，0表示1月，1表示2月..., null for year type time
     type: 'month',
+    search: null,
   });
 
   // 请求一次数据更新表格。如果还没读取好配置文件则不请求数据。
@@ -360,6 +361,7 @@ function MyTable(props) {
       showDetail,
       hasDetail,
       type,
+      search,
     } = state;
     // 然后把表格改为加载中的状态
     setState({ ...state, ...newstate, loading: true });
@@ -371,6 +373,7 @@ function MyTable(props) {
     if (newstate.hasOwnProperty('year')) year = newstate.year;
     if (newstate.hasOwnProperty('showDetail')) showDetail = newstate.showDetail;
     if (newstate.hasOwnProperty('type')) type = newstate.type;
+    if (newstate.hasOwnProperty('search')) search = newstate.search;
 
     //获取数据大屏的‘t_month’参数
     let myyear = newstate.year == null ? state.year : newstate.year;
@@ -410,7 +413,7 @@ function MyTable(props) {
       .then((res) => {
         // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
         if (res.status == 404) {
-          message.warning('No relevant results yet');
+          message.warning(t('no_result'));
           return '';
         }
         return res.json();
@@ -428,6 +431,20 @@ function MyTable(props) {
           dataSource.push(obj);
         });
         console.log(dataSource);
+
+        //搜索特定数据
+        let queryData;
+        if (search) {
+          queryData = dataSource.filter((dataSource) => {
+            let reg = new RegExp(search.trim(), 'i');
+            return reg.test(dataSource.name);
+          });
+          if (queryData.length == 0) {
+            message.warning(t('no_result'));
+          } else {
+            dataSource = queryData;
+          }
+        }
 
         // 更新属性和表格数据
         setState({
@@ -465,7 +482,6 @@ function MyTable(props) {
     year,
     type,
   } = state;
-
   return (
     <div className="table">
       <div className="table-content">
