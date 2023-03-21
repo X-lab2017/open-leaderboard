@@ -436,7 +436,8 @@ function MyTable(props) {
         let queryData;
         if (search) {
           queryData = dataSource.filter((dataSource) => {
-            return dataSource.name.toLowerCase() == search.trim().toLowerCase();
+            let reg = new RegExp(search.trim(), 'i');
+            return reg.test(dataSource.name);
           });
           if (queryData.length == 0) {
             message.warning(t('no_result'));
