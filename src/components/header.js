@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import './header.css';
 import Dictionary from './Dictionary';
 import QA from './QA';
+import Dashboard from "./Dashboard";
 const { Header } = Layout;
 
 const MyHeader = () => {
@@ -27,6 +28,9 @@ const MyHeader = () => {
   const MyMenu = () => {
     return (
       <Menu style={{ background: 'rgba(255,255,255,0)' }} mode="horizontal">
+        <Menu.Item key="dashboard">
+          <Dashboard type="word" />
+        </Menu.Item>
         <Menu.Item key="glossary">
           <Dictionary type="word" />
         </Menu.Item>
@@ -57,6 +61,7 @@ const MyHeader = () => {
           />
         </div>
         <div className="header-pc">
+          <Dashboard />
           <Dictionary />
           <QA />
           <img
