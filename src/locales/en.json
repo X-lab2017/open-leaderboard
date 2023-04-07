@@ -71,5 +71,17 @@
     "supported_by": "Supported By",
     "sponsor": "Partnership",
     "sponsor_info": "Leave a seat vacant for you."
+  },
+  "boardtitle":{
+    "GitHubGlobalIncreaseBoard": "GitHub GlobalIncreaseBoard",
+    "OSSSupplyChainEcoBoard": "OSSSupplyChainEcoDashboard",
+    "OSTechnologyAndLanguageBoard": "Open source technology field and programming language Board",
+    "OSDbDomainInsightBoard": "OSDbDomainInsightBoard"
+  },
+  "boardcontent": {
+    "GitHubGlobalIncreaseBoard": "GitHub 全球增长大屏着眼于 Github 全域数据，从多方面展示全球开源现状与趋势。指标包括 TOP10 开发者和 TOP10 仓库的 OpenRank 变化趋势，以及当前 OpenRank 最高的开发者和项目，直观地反应了项目和开发者的影响力。从宏观角度展示了 2015 年至今的全域日志总数、活跃仓库数量、活跃开发者数量以及编程语言趋势，从微观角度展现了开发者活跃时间段，开发者与机器人行为分布等指标。",
+    "OSSSupplyChainEcoBoard": "开源软件供应链生态大屏是可以帮助企业从整体层面了解软件供应链的情况，识别行业或领域中的潜在问题和趋势，并为企业提供全面的参考和决策支持。同时，企业也可以根据自己的业务需求，选择关注的数据类型和指标，进行自定义设置和筛选，以便更好地理解和评估自己的软件供应链。",
+    "OSTechnologyAndLanguageBoard": "开源技术领域与编程语言大屏呈现了各技术领域的发展趋势和编程语言的未来走向：首先在技术领域方面，它展示了各领域在 OpenRank 指标和活跃度指标下的分析结果，同时也呈现了各领域项目数量、活跃度以及 OpenRank 指标的占比；其次在编程语言方面，其展示了编程语言变化趋势、全域开发者榜单以及编程语言增长率对比。从中可看出各编程语言整体增长趋势以及受欢迎程度，为开发者在编程语言的选择提供了参考。",
+    "OSDbDomainInsightBoard": "开源数据库领域洞察大屏主要呈现了数据库下各子领域整体发展趋势以及各数据库项目的发展趋势。它不仅从宏观的角度提供了数据库各子领域在 OpenRank 指标和活跃度指标下的分析结果，也从微观的角度呈现了数据库具体项目的分析结果，同时还包含了数据库开发语言占比以及License 项目占比。从该大屏中可以看出数据库未来发展的大致走向，为数据库的技术选型、数据库的编程语言选择提供了一定的依据。"
   }
 }
