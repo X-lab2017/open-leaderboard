@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import './header.css';
 import Dictionary from './Dictionary';
 import QA from './QA';
-import Dashboard from "./Dashboard";
+import Dashboard from './Dashboard';
 const { Header } = Layout;
 
 const MyHeader = () => {
