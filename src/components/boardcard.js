@@ -8,8 +8,8 @@ const BoardCard=({boardtitle,boardUrl})=>{
         <Card className="board-card"
               bordered={true}
               style={{
-                  width: 850,
-                  height:640
+                  width: 820,
+                  height:680
               }}
         >
             <img alt="example" src={imageUrl} style={{ maxWidth: '100%', maxHeight: '100%' }}/>

@@ -24,17 +24,17 @@ const Dashboard = (props) => {
     <>
       {props.type == 'word' ? (
         <div style={{ width: '100%' }} onClick={showModal}>
-          {t('glossary')}
+          {t('InsightBoard')}
         </div>
       ) : (
         <img
-          style={{ height: '48px', width: '48px', cursor: 'pointer' }}
+          style={{ height: '48px', cursor: 'pointer' }}
           onClick={showModal}
-          src="/pics/Dic.png"
+          src="/pics/Board.png"
         />
       )}
       <Modal
-        title={t('glossary')}
+        title={t('InsightBoard')}
         width={'100%'}
         closable={false}
         visible={isModalVisible}
@@ -91,6 +91,50 @@ const Dashboard = (props) => {
             >
               <BoardCard boardtitle={"OSDbDomainInsightBoard"}
                          boardUrl={"https://dataease.nzcer.cn/link/4DbsV9Wb"}/>
+            </Space>
+          </Col>
+        </Row>
+        <Row style={{marginBottom: '20px'}} justify="center" gutter={[16, 16]}>
+          <Col >
+            <Space
+                direction="vertical"
+                size={'large'}
+                style={{ width: '100%' }}
+            >
+              <BoardCard boardtitle={"GlobalBusinessOSInsightBoard"}
+                         boardUrl={"https://dataease.nzcer.cn/link/vALpLgn8"}/>
+            </Space>
+          </Col>
+          <Col >
+            <Space
+                direction="vertical"
+                size={'large'}
+                style={{ width: '100%' }}
+            >
+              <BoardCard boardtitle={"MuLanOSCommunityInsightBoard"}
+                         boardUrl={"https://dataease.nzcer.cn/link/uzKtBF1Z"}/>
+            </Space>
+          </Col>
+        </Row>
+        <Row style={{marginBottom: '20px'}} justify="center" gutter={[16, 16]}>
+          <Col >
+            <Space
+                direction="vertical"
+                size={'large'}
+                style={{ width: '100%' }}
+            >
+              <BoardCard boardtitle={"OSProjectInsightBoard"}
+                         boardUrl={"https://dataease.nzcer.cn/link/dqMbZrBk?attachParams=eyJvcmdfbmFtZSI6ImRhdGFlYXNlIiwicmVwb19uYW1lIjoiZGF0YWVhc2UiLCJ0X21vbnRoIjoiMjAyMy0wMi0wMSJ9"}/>
+            </Space>
+          </Col>
+          <Col >
+            <Space
+                direction="vertical"
+                size={'large'}
+                style={{ width: '100%' }}
+            >
+              <BoardCard boardtitle={"DeveloperContributionBoard"}
+                         boardUrl={"https://dataease.nzcer.cn/link/94WJEiRl"}/>
             </Space>
           </Col>
         </Row>
