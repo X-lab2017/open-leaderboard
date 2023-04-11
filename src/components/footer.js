@@ -59,7 +59,15 @@ function MyFooter(props) {
         <Row align="middle" justify="center" style={{ minHeight: '50px' }}>
           <Col>
             <span style={{ fontSize: '18px', width: '100%' }}>
-              {t('footer.sponsor_info')}
+              <a
+                  href="https://www.fit2cloud.com/dataease"
+                  target={'_blank'}
+              >
+              <img
+                  src="/pics/DataEase.png"
+                  style={{ width: '225px', height: '58px' }}
+              />
+              </a>
             </span>
           </Col>
         </Row>
