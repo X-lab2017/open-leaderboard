@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Col, Image, Modal, Row, Space } from 'antd';
+import { Card, Col, Modal, Row, Space } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import './modal.css';
@@ -28,6 +28,7 @@ const QA = (props) => {
         </div>
       ) : (
         <img
+          alt="Q&A"
           style={{ height: '48px', width: '48px', cursor: 'pointer' }}
           onClick={showModal}
           src="/pics/Q&A.png"

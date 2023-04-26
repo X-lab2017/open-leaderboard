@@ -12,11 +12,6 @@ import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
 
-const titleDir = {
-  company: t('company'),
-  repo: t('project'),
-  actor: t('ID'),
-};
 const activityColumns = (object, t_month) => [
   {
     title: t('rank'),
@@ -54,7 +49,7 @@ const activityColumns = (object, t_month) => [
     render: function (text, row, index) {
       if (object !== 'company') {
         return (
-          <a href={'https://github.com/' + text} target="_blank">
+          <a href={'https://github.com/' + text} target="_blank" rel="noreferrer">
             {text}
           </a>
         );
@@ -127,7 +122,7 @@ const activityDetailColumns = (object, t_month) => [
     render: function (text, row, index) {
       if (object !== 'company') {
         return (
-          <a href={'https://github.com/' + text} target="_blank">
+          <a href={'https://github.com/' + text} target="_blank" rel="noreferrer">
             {text}
           </a>
         );
@@ -227,10 +222,10 @@ const open_rankColumns = (object, t_month) => [
     dataIndex: 'name',
     width: '20%',
     align: 'center',
-    render: function (text, row, index) {
+    render: function (text) {
       if (object !== 'company') {
         return (
-          <a href={'https://github.com/' + text} target="_blank">
+          <a href={'https://github.com/' + text} target="_blank" rel="noreferrer">
             {text}
           </a>
         );
@@ -296,9 +291,10 @@ function dashboard(text, index, t_month) {
           'https://dataease.nzcer.cn/link/dqMbZrBk?attachParams=' +
           btoa(JSON.stringify(params))
         }
-        target="_blank"
+        target="_blank" rel="noreferrer"
       >
         <img
+          alt='dashboard'
           src="/pics/dashboard.png"
           style={{ height: '20px', width: '20px' }}
         />

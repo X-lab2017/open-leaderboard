@@ -1,6 +1,6 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 
-const ArrowRender = (text, row, index) => {
+const ArrowRender = (text) => {
   if (text == 'UNKNOWN') {
     return '';
   }

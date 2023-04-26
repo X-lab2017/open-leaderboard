@@ -1,6 +1,6 @@
 import { TrophyOutlined } from '@ant-design/icons';
 
-const Trophy = (text, row, index) => {
+const Trophy = (text) => {
   if (text == 1) {
     return <TrophyOutlined style={{ color: 'gold', fontSize: '23px' }} />;
   }

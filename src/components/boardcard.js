@@ -25,7 +25,7 @@ const BoardCard = ({ boardtitle, boardUrl }) => {
           <h2>{t(`boardtitle.${boardtitle}`)}</h2>
         </div>
         <div style={{ flex: '0 0 auto' }}>
-          <a href={boardUrl} target={'_blank'} style={{ fontSize: '16px' }}>
+          <a href={boardUrl} target='_blank' style={{ fontSize: '16px' }} rel="noreferrer">
             查看详情
           </a>
         </div>

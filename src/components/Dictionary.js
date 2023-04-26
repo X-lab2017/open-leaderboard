@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Col, Image, Modal, Row, Space } from 'antd';
+import { Card, Col, Modal, Row, Space } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import './modal.css';
 import { t } from 'i18next';
@@ -61,7 +61,8 @@ const Dictionary = (props) => {
                 {t('Glossary.activity')}
                 <a
                   href="https://blog.frankzhao.cn/how_to_measure_open_source_1/"
-                  target={'_blank'}
+                  target='_blank'
+                  rel="noreferrer"
                 >
                   {t('Glossary.activity_blog')}
                 </a>
@@ -71,7 +72,8 @@ const Dictionary = (props) => {
                 {t('Glossary.influence')}
                 <a
                   href="https://blog.frankzhao.cn/how_to_measure_open_source_2/"
-                  target={'_blank'}
+                  target='_blank'
+                  rel="noreferrer"
                 >
                   {t('Glossary.influence_blog')}
                 </a>

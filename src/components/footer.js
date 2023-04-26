@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 import 'antd/dist/antd.css';
-import { Layout, Image } from 'antd';
+import { Layout } from 'antd';
 import { t } from 'i18next';
 const { Footer } = Layout;
 
@@ -32,9 +32,10 @@ function MyFooter(props) {
           >
             <a
               href="https://github.com/X-lab2017/open-digger"
-              target={'_blank'}
+              target='_blank' rel="noreferrer"
             >
               <img
+                alt='open-digger'
                 src="/pics/OD.png"
                 style={{ height: '80px', width: '80px' }}
               />
@@ -52,14 +53,16 @@ function MyFooter(props) {
             span={8}
           >
             <img
+              alt='GitHub'
               src="/pics/GitHub.png"
               style={{ width: '60px', height: '60px' }}
             />
           </Col>
           <Col style={{ textAlign: 'center' }} span={8}>
             <span style={{ fontSize: '18px', width: '100%' }}>
-              <a href="https://www.fit2cloud.com/dataease" target={'_blank'}>
+              <a href="https://www.fit2cloud.com/dataease" target='_blank' rel="noreferrer">
                 <img
+                  alt='DataEase'
                   src="/pics/DataEase.png"
                   style={{ width: '225px', height: '58px' }}
                 />
