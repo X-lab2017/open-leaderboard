@@ -1,6 +1,6 @@
 import { Avatar, Image } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-const MyAvatar = (text, row, index) => {
+const MyAvatar = (text) => {
   let avatar_src = 'https://avatars.githubusercontent.com/u/' + text + '?v=4';
   return (
     <Avatar

@@ -1,4 +1,4 @@
-import { Row, Col, Image, Divider, Space } from 'antd';
+import { Row, Col } from 'antd';
 import { t } from 'i18next';
 
 const Description = (props) => {
@@ -34,7 +34,7 @@ const Description = (props) => {
       </Row>
       <Row style={{ maxWidth: '1000px', margin: '20px auto' }} gutter={4}>
         <Col>
-          <img src="/pics/Ellipse BG.png" />
+          <img src="/pics/Ellipse BG.png" alt='Ellipse' />
         </Col>
         <Col>
           <span className="myFontColor">

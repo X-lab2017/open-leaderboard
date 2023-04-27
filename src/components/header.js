@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Menu, Dropdown, Image, Row, Col, message } from 'antd';
+import { Menu, Dropdown, message } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import i18n from '../util/i18n';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,6 @@ import './header.css';
 import Dictionary from './Dictionary';
 import QA from './QA';
 import Dashboard from './Dashboard';
-const { Header } = Layout;
 
 const MyHeader = () => {
   const { t } = useTranslation();

@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Layout, Image, ConfigProvider } from 'antd';
+import { Layout, Image, ConfigProvider } from 'antd';
 import 'antd/dist/antd.css';
 import Description from './Description';
 import MyFooter from './components/footer';

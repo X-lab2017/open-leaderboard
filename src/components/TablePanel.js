@@ -1,10 +1,8 @@
-import { Row, Col, Radio, Button, Switch, Input } from 'antd';
+import { Row, Col, Radio, Switch, Input } from 'antd';
 import { t } from 'i18next';
-import React, { useState } from 'react';
+import React from 'react';
 import SwitchablePicker from './datePicker';
-function onChange(checked) {
-  console.log(`switch to ${checked}`);
-}
+
 const { Search } = Input;
 
 const TablePanel = (props) => {

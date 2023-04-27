@@ -1,6 +1,6 @@
 import { FallOutlined, RiseOutlined } from '@ant-design/icons';
 
-const PointRender = (text, row, index) => {
+const PointRender = (text) => {
   if (text == 'UNKNOWN') {
     return '';
   }

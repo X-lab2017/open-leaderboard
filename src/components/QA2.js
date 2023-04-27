@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Col, Image, Modal, Row, Space } from 'antd';
+import { Card, Col, Modal, Row, Space } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import './modal.css';
