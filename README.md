@@ -52,12 +52,12 @@ git clone https://github.com/[your_username]/open-leaderboard.git
 2. install npm packages
 ```
 cd open-leaderboard
-npm install
+pnpm i
 ```
 
 3. run the project locally
 ```
-npm start
+pnpm start
 ```
 Runs the app in the development mode.
 
@@ -67,7 +67,7 @@ You will also see any lint errors in the console.
 
 4. or build static files
 ```
-npm run build
+pnpm build
 ```
 Builds the app for production to the `build` folder.
 
