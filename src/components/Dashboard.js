@@ -63,7 +63,7 @@ const Dashboard = (props) => {
             >
               <BoardCard
                 boardtitle={'GitHubGlobalIncreaseBoard'}
-                boardUrl={'https://dataease.nzcer.cn/link/CRLbP3OO'}
+                boardUrl={'https://dataease.x-lab.info/link/CRLbP3OO'}
               />
             </Space>
           </Col>
@@ -75,7 +75,7 @@ const Dashboard = (props) => {
             >
               <BoardCard
                 boardtitle={'OSSSupplyChainEcoBoard'}
-                boardUrl={'https://dataease.nzcer.cn/link/CKqVvwi2'}
+                boardUrl={'https://dataease.x-lab.info/link/CKqVvwi2'}
               />
             </Space>
           </Col>
@@ -93,7 +93,7 @@ const Dashboard = (props) => {
             >
               <BoardCard
                 boardtitle={'OSTechnologyAndLanguageBoard'}
-                boardUrl={'https://dataease.nzcer.cn/link/r6dUprs6'}
+                boardUrl={'https://dataease.x-lab.info/link/r6dUprs6'}
               />
             </Space>
           </Col>
@@ -105,7 +105,7 @@ const Dashboard = (props) => {
             >
               <BoardCard
                 boardtitle={'OSDbDomainInsightBoard'}
-                boardUrl={'https://dataease.nzcer.cn/link/4DbsV9Wb'}
+                boardUrl={'https://dataease.x-lab.info/link/4DbsV9Wb'}
               />
             </Space>
           </Col>
@@ -123,7 +123,7 @@ const Dashboard = (props) => {
             >
               <BoardCard
                 boardtitle={'GlobalBusinessOSInsightBoard'}
-                boardUrl={'https://dataease.nzcer.cn/link/vALpLgn8'}
+                boardUrl={'https://dataease.x-lab.info/link/vALpLgn8'}
               />
             </Space>
           </Col>
@@ -135,7 +135,7 @@ const Dashboard = (props) => {
             >
               <BoardCard
                 boardtitle={'MuLanOSCommunityInsightBoard'}
-                boardUrl={'https://dataease.nzcer.cn/link/uzKtBF1Z'}
+                boardUrl={'https://dataease.x-lab.info/link/uzKtBF1Z'}
               />
             </Space>
           </Col>
@@ -154,7 +154,7 @@ const Dashboard = (props) => {
               <BoardCard
                 boardtitle={'OSProjectInsightBoard'}
                 boardUrl={
-                  'https://dataease.nzcer.cn/link/dqMbZrBk?attachParams=eyJvcmdfbmFtZSI6ImRhdGFlYXNlIiwicmVwb19uYW1lIjoiZGF0YWVhc2UiLCJ0X21vbnRoIjoiMjAyMy0wMi0wMSJ9'
+                  'https://dataease.x-lab.info/link/dqMbZrBk?attachParams=eyJvcmdfbmFtZSI6ImRhdGFlYXNlIiwicmVwb19uYW1lIjoiZGF0YWVhc2UiLCJ0X21vbnRoIjoiMjAyMy0wMi0wMSJ9'
                 }
               />
             </Space>
@@ -167,7 +167,7 @@ const Dashboard = (props) => {
             >
               <BoardCard
                 boardtitle={'DeveloperContributionBoard'}
-                boardUrl={'https://dataease.nzcer.cn/link/94WJEiRl'}
+                boardUrl={'https://dataease.x-lab.info/link/94WJEiRl'}
               />
             </Space>
           </Col>
