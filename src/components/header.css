@@ -55,6 +55,10 @@
   align-items: center;
 }
 
+.header-pc * {
+  margin: 3px;
+}
+
 /* 媒体查询，适配手机端 */
 @media only screen and (max-width: 768px) {
   .header-content {
