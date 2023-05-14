@@ -8,10 +8,12 @@ import './header.css';
 import Dictionary from './Dictionary';
 import QA from './QA';
 import Dashboard from './Dashboard';
-
 const MyHeader = () => {
   const { t } = useTranslation();
   const [language, setLanguage] = useState(i18n.language);
+  const redirectToGitHub = () => {
+    window.open('https://github.com/X-lab2017/open-leaderboard', '_blank');
+  };
   const changeLanguage = () => {
     let lan;
     if (language == 'zh') {
@@ -41,6 +43,11 @@ const MyHeader = () => {
             中/En
           </a>
         </Menu.Item>
+        <Menu.Item key="translate">
+          <a href="javascript:" onClick={redirectToGitHub}>
+            GitHub
+          </a>
+        </Menu.Item>
       </Menu>
     );
   };
@@ -68,6 +75,19 @@ const MyHeader = () => {
             onClick={changeLanguage}
             src="/pics/translation.png"
             alt={t('loading')}
+          />
+          <img
+            alt="Q&A"
+            style={{
+              height: '48px',
+              width: '48px',
+              cursor: 'pointer',
+              borderRadius: '50%',
+              border: '2px solid #CFCAFA',
+              mixBlendMode: 'multiply',
+            }}
+            onClick={redirectToGitHub}
+            src="/pics/GitHub.png"
           />
         </div>
         <div className="header-phone">
