@@ -49,7 +49,11 @@ const activityColumns = (object, t_month) => [
     render: function (text, row, index) {
       if (object !== 'company') {
         return (
-          <a href={'https://github.com/' + text} target="_blank" rel="noreferrer">
+          <a
+            href={'https://github.com/' + text}
+            target="_blank"
+            rel="noreferrer"
+          >
             {text}
           </a>
         );
@@ -122,7 +126,11 @@ const activityDetailColumns = (object, t_month) => [
     render: function (text, row, index) {
       if (object !== 'company') {
         return (
-          <a href={'https://github.com/' + text} target="_blank" rel="noreferrer">
+          <a
+            href={'https://github.com/' + text}
+            target="_blank"
+            rel="noreferrer"
+          >
             {text}
           </a>
         );
@@ -225,7 +233,11 @@ const open_rankColumns = (object, t_month) => [
     render: function (text) {
       if (object !== 'company') {
         return (
-          <a href={'https://github.com/' + text} target="_blank" rel="noreferrer">
+          <a
+            href={'https://github.com/' + text}
+            target="_blank"
+            rel="noreferrer"
+          >
             {text}
           </a>
         );
@@ -291,10 +303,11 @@ function dashboard(text, index, t_month) {
           'https://dataease.x-lab.info/link/dqMbZrBk?attachParams=' +
           btoa(JSON.stringify(params))
         }
-        target="_blank" rel="noreferrer"
+        target="_blank"
+        rel="noreferrer"
       >
         <img
-          alt='dashboard'
+          alt="dashboard"
           src="/pics/dashboard.png"
           style={{ height: '20px', width: '20px' }}
         />
