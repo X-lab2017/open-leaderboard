@@ -22,11 +22,13 @@ It is warmly welcomed if you have interest to contribute to `open-leaderboard` a
 
 ### Submitting an issue
 
-If you have any questions or feature requests, please feel free to [submit an issue](https://github.com/X-lab2017/open-leaderboard/issues/new). Before you submit an issue:
+If you have any questions or feature requests, please feel free to [submit an issue](https://github.com/X-lab2017/open-leaderboard/issues/new/choose). Before you submit an issue:
 
 - Please search for related issues. Make sure you are not going to open a duplicate issue.
 
 - Please specify what kind of issue it is and explain it in the title or content, e.g. `feature`, `bug`, `documentation`, `discussion`, `help wanted`... 
+
+To make the issue details as standard as possible, we set up an Issue Template for issue reporters. Please be sure to follow the instructions to fill fields in template.
 
 ### Submitting a Pull Request
 
@@ -35,6 +37,8 @@ If you have any questions or feature requests, please feel free to [submit an is
 3. Fork and clone the repository to local, and then you can develop the code locally.
 4. Run `npm run prettier` to quickly format all your code.
 5. Send a pull request on GitHub after you finish developing the code, and wait for the community maintainer to review the code.
+
+To make sure we can easily recap what happened previously, we have prepared a pull request template. You need to fill out the PR template. If you feel that some part of the template is redundant and your description is clear enough, you can just keep the necessary parts.
 
 ### Installation
 

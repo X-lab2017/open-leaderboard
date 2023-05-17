@@ -34,7 +34,7 @@ const Description = (props) => {
       </Row>
       <Row style={{ maxWidth: '1000px', margin: '20px auto' }} gutter={4}>
         <Col>
-          <img src="/pics/Ellipse BG.png" alt='Ellipse' />
+          <img src="/pics/Ellipse BG.png" alt="Ellipse" />
         </Col>
         <Col>
           <span className="myFontColor">
