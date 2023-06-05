@@ -11,8 +11,7 @@ import Trophy from './rankTrophy';
 import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
-
-const updateDay = 4; //OpenDigger数据更新日期，每月4号更新
+import { DATA_READY_DAY } from './constant';
 
 const activityColumns = (object, t_month) => [
   {
@@ -402,7 +401,7 @@ function MyTable(props) {
     //获取't_month'的年、月参数
     if (
       //数据未更新、选择时间为今年前一月、本月不是1月的情况
-      CurrentDate.getDate() < updateDay &&
+      CurrentDate.getDate() < DATA_READY_DAY &&
       preYear == year &&
       preMonth == month &&
       month != 0
@@ -410,7 +409,7 @@ function MyTable(props) {
       mymonth = ('' + mymonth).padStart(2, '0');
     } else if (
       //数据未更新、选择时间为前一月、本月是1月（即选择了去年12月）的情况
-      CurrentDate.getDate() < updateDay &&
+      CurrentDate.getDate() < DATA_READY_DAY &&
       preYear == year &&
       preMonth == month &&
       month == 0
@@ -449,7 +448,7 @@ function MyTable(props) {
       url += year + '.json';
     } else if (
       //数据未更新、选择时间为今年前一月、本月不是1月的情况
-      CurrentDate.getDate() < updateDay &&
+      CurrentDate.getDate() < DATA_READY_DAY &&
       preYear == year &&
       preMonth == month &&
       month != 0
@@ -457,7 +456,7 @@ function MyTable(props) {
       url += year + month + '.json';
     } else if (
       //数据未更新、选择时间为前一月、本月是1月（即选择了去年12月）的情况
-      CurrentDate.getDate() < updateDay &&
+      CurrentDate.getDate() < DATA_READY_DAY &&
       preYear == year &&
       preMonth == month &&
       month == 0

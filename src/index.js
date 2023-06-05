@@ -9,11 +9,11 @@ import MyTable from './components/table';
 import './index.css';
 import { useTranslation } from 'react-i18next';
 import ScrollTopButton from './components/scrollTopButton';
+import { DATA_READY_DAY } from 'constant';
 const { Content } = Layout;
 
 const META_URL =
   'https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/meta.json';
-const updateDay = 4; //OpenDigger数据更新日期，每月4号更新
 
 const getLastMonth = (lastUpdateTime) => {
   let year = lastUpdateTime.getFullYear();
@@ -54,7 +54,7 @@ const App = () => {
   if (lastUpdateTime) {
     [year, monthIndex] = getLastMonth(lastUpdateTime);
   }
-  if (CurrentDate.getDate() < updateDay) {
+  if (CurrentDate.getDate() < DATA_READY_DAY) {
     lastUpdateTime = null;
   }
 
