@@ -357,6 +357,10 @@ function MyTable(props) {
     });
   };
   const updateDate = (newstate) => {
+    let t_month;
+    // 获取当前日期
+    const CurrentDate = new Date();
+
     console.log('table update', newstate);
     // 先获取原先的表格属性
     let {
@@ -387,9 +391,27 @@ function MyTable(props) {
     //获取数据大屏的‘t_month’参数
     let myyear = newstate.year == null ? state.year : newstate.year;
     let mymonth = newstate.month == null ? state.month : newstate.month;
-    mymonth = ('' + (1 + mymonth)).padStart(2, '0');
-    let t_month = `${myyear}-${mymonth}-01`;
 
+    if (
+      CurrentDate.getDate() < 4 &&
+      CurrentDate.getMonth() == month &&
+      month > 0
+    ) {
+      mymonth = ('' + mymonth).padStart(2, '0');
+      t_month = `${myyear}-${mymonth}-01`;
+    } else if (
+      CurrentDate.getDate() < 4 &&
+      CurrentDate.getMonth() == month &&
+      month == 0
+    ) {
+      myyear--;
+      mymonth = '12';
+      mymonth = ('' + mymonth).padStart(2, '0');
+      t_month = `${myyear}-${mymonth}-01`;
+    } else {
+      mymonth = ('' + (1 + mymonth)).padStart(2, '0');
+      t_month = `${myyear}-${mymonth}-01`;
+    }
     // 根据 index 和 showDetail 改变表格的 columns 格式
     if (index == 'activity') {
       columns = activityColumns(object, t_month);
@@ -413,6 +435,20 @@ function MyTable(props) {
     let url = base + index + '/' + object + '/' + region + '/';
     if (month === null) {
       url += year + '.json';
+    } else if (
+      CurrentDate.getDate() < 4 &&
+      CurrentDate.getMonth() == month &&
+      month > 0
+    ) {
+      url += year + month + '.json';
+    } else if (
+      CurrentDate.getDate() < 4 &&
+      CurrentDate.getMonth() == month &&
+      month == 0
+    ) {
+      year--;
+      month = '12';
+      url += year + month + '.json';
     } else {
       url += year + (1 + month) + '.json';
     }

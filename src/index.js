@@ -35,7 +35,8 @@ const App = () => {
   if (NODE_ENV !== 'development') {
     console.log = function () {};
   }
-  const [lastUpdateTime, setLastUpdateTime] = useState(null);
+  let [lastUpdateTime, setLastUpdateTime] = useState(null);
+  const CurrentDate = new Date();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -51,6 +52,9 @@ const App = () => {
     monthIndex = null;
   if (lastUpdateTime) {
     [year, monthIndex] = getLastMonth(lastUpdateTime);
+  }
+  if (CurrentDate.getDate() < 4) {
+    lastUpdateTime = null;
   }
 
   return (
