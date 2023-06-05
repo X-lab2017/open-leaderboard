@@ -12,6 +12,8 @@ import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
 
+const updateDay = 4; //OpenDigger数据更新日期，每月4号更新
+
 const activityColumns = (object, t_month) => [
   {
     title: t('rank'),
@@ -359,7 +361,6 @@ function MyTable(props) {
   const updateDate = (newstate) => {
     let t_month;
     // 获取当前日期
-    const CurrentDate = new Date();
 
     console.log('table update', newstate);
     // 先获取原先的表格属性
@@ -392,26 +393,37 @@ function MyTable(props) {
     let myyear = newstate.year == null ? state.year : newstate.year;
     let mymonth = newstate.month == null ? state.month : newstate.month;
 
+    const CurrentDate = new Date();
+    const preDate = new Date(CurrentDate);
+    preDate.setDate(0);
+    const preYear = preDate.getFullYear();
+    const preMonth = preDate.getMonth();
+
+    //获取't_month'的年、月参数
     if (
-      CurrentDate.getDate() < 4 &&
-      CurrentDate.getMonth() == month &&
-      month > 0
+      //数据未更新、选择时间为今年前一月、本月不是1月的情况
+      CurrentDate.getDate() < updateDay &&
+      preYear == year &&
+      preMonth == month &&
+      month != 0
     ) {
       mymonth = ('' + mymonth).padStart(2, '0');
-      t_month = `${myyear}-${mymonth}-01`;
     } else if (
-      CurrentDate.getDate() < 4 &&
-      CurrentDate.getMonth() == month &&
+      //数据未更新、选择时间为前一月、本月是1月（即选择了去年12月）的情况
+      CurrentDate.getDate() < updateDay &&
+      preYear == year &&
+      preMonth == month &&
       month == 0
     ) {
       myyear--;
       mymonth = '12';
       mymonth = ('' + mymonth).padStart(2, '0');
-      t_month = `${myyear}-${mymonth}-01`;
     } else {
+      //数据已更新，or数据未更新，但未选择时间为前一个月。则照旧
       mymonth = ('' + (1 + mymonth)).padStart(2, '0');
-      t_month = `${myyear}-${mymonth}-01`;
     }
+    t_month = `${myyear}-${mymonth}-01`;
+
     // 根据 index 和 showDetail 改变表格的 columns 格式
     if (index == 'activity') {
       columns = activityColumns(object, t_month);
@@ -436,20 +448,25 @@ function MyTable(props) {
     if (month === null) {
       url += year + '.json';
     } else if (
-      CurrentDate.getDate() < 4 &&
-      CurrentDate.getMonth() == month &&
-      month > 0
+      //数据未更新、选择时间为今年前一月、本月不是1月的情况
+      CurrentDate.getDate() < updateDay &&
+      preYear == year &&
+      preMonth == month &&
+      month != 0
     ) {
       url += year + month + '.json';
     } else if (
-      CurrentDate.getDate() < 4 &&
-      CurrentDate.getMonth() == month &&
+      //数据未更新、选择时间为前一月、本月是1月（即选择了去年12月）的情况
+      CurrentDate.getDate() < updateDay &&
+      preYear == year &&
+      preMonth == month &&
       month == 0
     ) {
       year--;
       month = '12';
       url += year + month + '.json';
     } else {
+      //数据已更新，or数据未更新，但未选择时间为前一个月。则照旧
       url += year + (1 + month) + '.json';
     }
     console.log(url);
