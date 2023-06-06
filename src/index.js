@@ -12,6 +12,7 @@ import ScrollTopButton from './components/scrollTopButton';
 import { DATA_READY_DAY } from './constant';
 const { Content } = Layout;
 
+console.log(undefinedVariable);
 const META_URL =
   'https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/meta.json';
 
