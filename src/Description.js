@@ -39,7 +39,7 @@ const Description = (props) => {
         <Col>
           <span className="myFontColor">
             {props.lastUpdateTime == null
-              ? t('loading')
+              ? t('waitforupdate')
               : t('desc.date', {
                   val: props.lastUpdateTime,
                   formatParams: {
