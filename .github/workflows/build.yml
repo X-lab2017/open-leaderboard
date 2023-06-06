@@ -1,0 +1,34 @@
+# build.yml
+# checks and test build on pull request to master branch
+name: build
+
+on:
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Code Format checks
+        run: |
+          npm run prettier:check
+
+      - name: Build
+        run: |
+          npm run build
+        env:
+          CI: false
