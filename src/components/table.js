@@ -11,7 +11,7 @@ import Trophy from './rankTrophy';
 import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
-import { DATA_READY_DAY } from './constant';
+import { DATA_READY_DAY } from '../constant';
 
 const activityColumns = (object, t_month) => [
   {

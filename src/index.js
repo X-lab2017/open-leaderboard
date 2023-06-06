@@ -9,7 +9,7 @@ import MyTable from './components/table';
 import './index.css';
 import { useTranslation } from 'react-i18next';
 import ScrollTopButton from './components/scrollTopButton';
-import { DATA_READY_DAY } from 'constant';
+import { DATA_READY_DAY } from './constant';
 const { Content } = Layout;
 
 const META_URL =
