@@ -5,7 +5,7 @@ name: build
 on:
   pull_request:
     branches:
-      - "main"
+      - 'main'
 
 jobs:
   build:
@@ -14,21 +14,26 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: |
-          npm install
+          pnpm i --frozen-lockfile
 
       - name: Code Format checks
         run: |
-          npm run prettier:check
+          pnpm run prettier:check
 
       - name: Build
         run: |
-          npm run build
+          pnpm build
         env:
           CI: false

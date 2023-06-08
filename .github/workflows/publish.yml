@@ -5,36 +5,37 @@ name: Publish CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v3
+      - name: Check out repository
+        uses: actions/checkout@v3
 
-    - uses: pnpm/action-setup@v2
-      with:
-        version: 8
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-        cache: pnpm
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
-    - run: pnpm i --frozen-lockfile
-    - run: pnpm build
-      env:
-        CI: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'pnpm'
 
-    - name: Publish to OSS
-      uses: tvrcgo/upload-to-oss@master
-      with:
-        key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
-        key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
-        region: ${{ secrets.OSS_REGION }}
-        bucket: ${{ secrets.OSS_BUCKET }}
-        assets: |
-          ./build/**:${{ secrets.OSS_TARGET_PATH }}
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm build
+        env:
+          CI: false
+
+      - name: Publish to OSS
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          region: ${{ secrets.OSS_REGION }}
+          bucket: ${{ secrets.OSS_BUCKET }}
+          assets: |
+            ./build/**:${{ secrets.OSS_TARGET_PATH }}
