@@ -2,7 +2,11 @@
   "name": "open-insight-front",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^16"
+  },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -10,6 +14,7 @@
     "i18next": "^21.6.4",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-http-backend": "^1.3.1",
+    "moment": "^2.29.4",
     "prettier": "^2.8.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
