@@ -60,10 +60,17 @@ const QA = (props) => {
               style={{ width: '100%' }}
             >
               <Card>
+                <h2>{t('Question.Q4')}</h2>
+                {t('Answer.A4')}
+              </Card>
+              <Card>
                 <h2>{t('Question.Q1')}</h2>
                 {t('Answer.A1')}
               </Card>
-              {/* <Card><h2>{t('Question.Q2')}</h2>{t('Answer.A2')}</Card> */}
+              <Card>
+                <h2>{t('Question.Q2')}</h2>
+                {t('Answer.A2')}
+              </Card>
               <Card>
                 <h2>{t('Question.Q3')}</h2>
                 {t('Answer.A3')}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { DatePicker, Select, Space } from 'antd';
 import moment from 'moment';
+import { DATA_READY_DAY } from '../constant';
 const { Option } = Select;
 function PickerWithType({ month, year, type, onChange }) {
   console.log('PickerWithType:', year, month, type);
@@ -15,6 +16,20 @@ function PickerWithType({ month, year, type, onChange }) {
         picker={type}
         onChange={onChange}
         allowClear={false}
+        disabledDate={(currentDate) => {
+          const C_Date = new Date();
+          if (C_Date.getDate() < DATA_READY_DAY) {
+            return (
+              currentDate < moment('2015') ||
+              currentDate >= moment().subtract(2, 'month')
+            );
+          } else {
+            return (
+              currentDate < moment('2015') ||
+              currentDate >= moment().subtract(1, 'month')
+            );
+          }
+        }}
       />
     );
   else if (type == 'year')
@@ -27,11 +42,6 @@ function PickerWithType({ month, year, type, onChange }) {
         allowClear={false}
       />
     );
-}
-
-function disabledDate(current) {
-  // Can not select days before 2015 or after today
-  return current < moment('2015') || current >= moment().endOf('day');
 }
 
 const SwitchablePicker = (props) => {
