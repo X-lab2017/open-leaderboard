@@ -10,6 +10,7 @@ import './index.css';
 import { useTranslation } from 'react-i18next';
 import ScrollTopButton from './components/scrollTopButton';
 import { DATA_READY_DAY } from './constant';
+import moment from 'moment';
 const { Content } = Layout;
 
 const META_URL =
@@ -44,7 +45,12 @@ const App = () => {
     fetch(META_URL)
       .then((res) => res.json())
       .then((data) => {
-        const date = new Date(data.lastUpdatedAt);
+        let date = new Date(data.lastUpdatedAt);
+        if (CurrentDate.getDate() < DATA_READY_DAY) {
+          console.log('date1', date);
+          date = moment(date).subtract(1, 'months').toDate();
+          console.log('date2', date);
+        }
         setLastUpdateTime(date);
       });
   }, []);
@@ -53,9 +59,6 @@ const App = () => {
     monthIndex = null;
   if (lastUpdateTime) {
     [year, monthIndex] = getLastMonth(lastUpdateTime);
-  }
-  if (CurrentDate.getDate() < DATA_READY_DAY) {
-    lastUpdateTime = null;
   }
 
   return (
