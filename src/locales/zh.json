@@ -75,6 +75,7 @@
     "sponsor_info": "虚位以待"
   },
   "InsightBoard": "洞察大屏",
+  "ViewDetails": "查看详情",
   "boardtitle": {
     "GitHubGlobalIncreaseBoard": "GitHub 全球增长大屏",
     "OSSSupplyChainEcoBoard": "开源软件生态供应链大屏",
@@ -83,7 +84,9 @@
     "GlobalBusinessOSInsightBoard": "全球商业开源洞察大屏",
     "MuLanOSCommunityInsightBoard": "木兰开源社区洞察大屏",
     "OSProjectInsightBoard": "开源项目洞察大屏",
-    "DeveloperContributionBoard": "开发者个人贡献大屏"
+    "DeveloperContributionBoard": "开发者个人贡献大屏",
+    "XSOSIInsightBoard": "XSOSI 洞察大屏",
+    "OSPOInsightBoard": "X-lab OSPO 大屏"
   },
   "boardcontent": {
     "GitHubGlobalIncreaseBoard": "GitHub 全球增长大屏着眼于 Github 全域数据，从多方面展示全球开源现状与趋势。指标包括 TOP10 开发者和 TOP10 仓库的 OpenRank 变化趋势，以及当前 OpenRank 最高的开发者和项目，直观地反应了项目和开发者的影响力。从宏观角度展示了 2015 年至今的全域日志总数、活跃仓库数量、活跃开发者数量以及编程语言趋势，从微观角度展现了开发者活跃时间段，开发者与机器人行为分布等指标。",
@@ -93,6 +96,8 @@
     "GlobalBusinessOSInsightBoard": "全球商业开源洞察大屏展示企业和组织不同时间段内的投资阶段、金额和笔数变化，为其提供决策支持。大屏包含投资金额和笔数两个指标，可根据业务需求自定义时间段和粒度，以更好地了解商业投资生态系统。通过可视化的方式，大屏直观展示投资情况、帮助发现问题、制定科学投资战略并获得更好回报。",
     "MuLanOSCommunityInsightBoard": "开源社区大屏旨在帮助开源社区负责人更好地了解和管理当前开源社区下所有的开源组织以及开源项目。它不仅提供了包括像组织总数，项目总数，合并 PR 总数，贡献者总数等统计型指标，还包括了像项目活跃度，影响力等更复杂的指标，同时也包括了 Issue，PR，许可证等多个方面的指标监控和分析功能，为开源项目的管理和发展提供了便利。",
     "OSProjectInsightBoard": "开源项目洞察大屏包含了影响力、关注度、活跃度、巴士系数、项目参与人数、Star/Fork 总数、Star/Fork 新增等指标，首先可以直观地了解项目质量、进展和问题等项目整体情况，帮助社区能够及时发现和解决问题；其次关注度和活跃度，可以激励社区成员参与项目开发和维护，从而来促进社区参与和贡献；最后项目数据和指标监控，可以提高项目质量和透明度，促进项目发展和推广。",
-    "DeveloperContributionBoard": "开发者个人贡献大屏从开发者的角度出发，围绕开发者在 GitHub 上的协作、社交等行为，展示出开发者在 GitHub 上完整的用户画像，并通过可视化的形式展现。通过开发者个人贡献大屏，可以帮助用户快速且深入地了解开发者过往行为，更全面地认识开发者。"
+    "DeveloperContributionBoard": "开发者个人贡献大屏从开发者的角度出发，围绕开发者在 GitHub 上的协作、社交等行为，展示出开发者在 GitHub 上完整的用户画像，并通过可视化的形式展现。通过开发者个人贡献大屏，可以帮助用户快速且深入地了解开发者过往行为，更全面地认识开发者。",
+    "XSOSIInsightBoard": "XSOSI 洞察大屏",
+    "OSPOInsightBoard": "X-lab OSPO 大屏"
   }
 }
