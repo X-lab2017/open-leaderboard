@@ -172,6 +172,36 @@ const Dashboard = (props) => {
             </Space>
           </Col>
         </Row>
+        <Row
+          style={{ marginBottom: '20px' }}
+          justify="center"
+          gutter={[16, 16]}
+        >
+          <Col>
+            <Space
+              direction="vertical"
+              size={'large'}
+              style={{ width: '100%' }}
+            >
+              <BoardCard
+                boardtitle={'XSOSIInsightBoard'}
+                boardUrl={'https://dataease.x-lab.info/link/E1OQKVBz'}
+              />
+            </Space>
+          </Col>
+          <Col>
+            <Space
+              direction="vertical"
+              size={'large'}
+              style={{ width: '100%' }}
+            >
+              <BoardCard
+                boardtitle={'OSPOInsightBoard'}
+                boardUrl={'https://dataease.x-lab.info/link/N1fjcnVD'}
+              />
+            </Space>
+          </Col>
+        </Row>
       </Modal>
     </>
   );

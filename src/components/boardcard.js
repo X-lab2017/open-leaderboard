@@ -31,7 +31,7 @@ const BoardCard = ({ boardtitle, boardUrl }) => {
             style={{ fontSize: '16px' }}
             rel="noreferrer"
           >
-            查看详情
+            {t('ViewDetails')}
           </a>
         </div>
       </div>
