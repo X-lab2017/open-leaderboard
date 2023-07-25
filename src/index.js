@@ -9,8 +9,6 @@ import MyTable from './components/table';
 import './index.css';
 import { useTranslation } from 'react-i18next';
 import ScrollTopButton from './components/scrollTopButton';
-import { DATA_READY_DAY } from './constant';
-import moment from 'moment';
 const { Content } = Layout;
 
 const META_URL =
@@ -38,7 +36,6 @@ const App = () => {
     console.log = function () {};
   }
   let [lastUpdateTime, setLastUpdateTime] = useState(null);
-  const CurrentDate = new Date();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -46,11 +43,6 @@ const App = () => {
       .then((res) => res.json())
       .then((data) => {
         let date = new Date(data.lastUpdatedAt);
-        if (CurrentDate.getDate() < DATA_READY_DAY) {
-          console.log('date1', date);
-          date = moment(date).subtract(1, 'months').toDate();
-          console.log('date2', date);
-        }
         setLastUpdateTime(date);
       });
   }, []);

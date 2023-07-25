@@ -1,14 +1,13 @@
 import React from 'react';
 import { DatePicker, Select, Space } from 'antd';
 import moment from 'moment';
-import { DATA_READY_DAY } from '../constant';
 const { Option } = Select;
 function PickerWithType({ month, year, type, onChange }) {
   console.log('PickerWithType:', year, month, type);
   if (year == null && month == null)
     return <DatePicker format={'YYYY/MM'} picker={type} onChange={onChange} />;
   console.log('Hi!');
-  if (type == 'month')
+  if (type === 'month')
     return (
       <DatePicker
         value={moment(String(year) + '/' + String(1 + month), 'YYYY/MM')}
@@ -16,23 +15,9 @@ function PickerWithType({ month, year, type, onChange }) {
         picker={type}
         onChange={onChange}
         allowClear={false}
-        disabledDate={(currentDate) => {
-          const C_Date = new Date();
-          if (C_Date.getDate() < DATA_READY_DAY) {
-            return (
-              currentDate < moment('2015') ||
-              currentDate >= moment().subtract(2, 'month')
-            );
-          } else {
-            return (
-              currentDate < moment('2015') ||
-              currentDate >= moment().subtract(1, 'month')
-            );
-          }
-        }}
       />
     );
-  else if (type == 'year')
+  else if (type === 'year')
     return (
       <DatePicker
         value={moment(year, 'YYYY')}

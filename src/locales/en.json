@@ -45,14 +45,12 @@
   "Question": {
     "Q1": "Your business or project is not here, and how to add it?",
     "Q2": "The items that have been fed back are not seen in the ranking.",
-    "Q3": "What is X-lab?",
-    "Q4": "Data Update Instruction"
+    "Q3": "What is X-lab?"
   },
   "Answer": {
     "A1": "Please submit feedback to GitHub warehouse: https://github.com/X-lab2017/open-digger Description of feedback method: (link to contribution process document) Open the submit modification template, fill in the project name, path, country and other information, and submit to issue. For template, please refer to: (issue template link)",
     "A2": "We have limited the number of projects. You can try to search for the name of your project in the search box at the top of the ranking to locate your item.",
-    "A3": "X-lab is an open group for open-source research and innovation, connected by experts, scholars and engineers from universities, startups, and IT companies at home and abroad. Professional backgrounds include software engineering, data science, business administration, economics and other interdisciplinary fields. It performs long-term thinking and practice of open source strategy, open source measurement, open source digital ecosystems and other topics, and has also made influential work in areas including open source governance standards development, community behavioral metrics and analysis, and data governance.",
-    "A4": "At the beginning of the month, you need to wait for OpenDigger to update the data, so the data of the previous month will be updated after the fourth of each month"
+    "A3": "X-lab is an open group for open-source research and innovation, connected by experts, scholars and engineers from universities, startups, and IT companies at home and abroad. Professional backgrounds include software engineering, data science, business administration, economics and other interdisciplinary fields. It performs long-term thinking and practice of open source strategy, open source measurement, open source digital ecosystems and other topics, and has also made influential work in areas including open source governance standards development, community behavioral metrics and analysis, and data governance."
   },
   "glossary": "GLOSSARY",
   "Glossary": {
