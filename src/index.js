@@ -14,26 +14,10 @@ const { Content } = Layout;
 const META_URL =
   'https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/meta.json';
 
-const getLastMonth = (lastUpdateTime) => {
-  let year = lastUpdateTime.getFullYear();
-  let monthIndex = lastUpdateTime.getMonth();
-  let date = lastUpdateTime.getDate();
-
-  if (date < 20) {
-    monthIndex--;
-  }
-
-  if (monthIndex < 0) {
-    monthIndex += 12;
-    year--;
-  }
-  return [year, monthIndex];
-};
-
 const App = () => {
   const NODE_ENV = process.env.NODE_ENV;
   if (NODE_ENV !== 'development') {
-    console.log = function () {};
+    console.log = function () { };
   }
   let [lastUpdateTime, setLastUpdateTime] = useState(null);
   const { t } = useTranslation();
@@ -50,7 +34,9 @@ const App = () => {
   let year = null,
     monthIndex = null;
   if (lastUpdateTime) {
-    [year, monthIndex] = getLastMonth(lastUpdateTime);
+    const lastDataAvailableMonth = new Date(lastUpdateTime.setDate(0));
+    year = lastDataAvailableMonth.getFullYear();
+    monthIndex = lastDataAvailableMonth.getMonth();
   }
 
   return (
