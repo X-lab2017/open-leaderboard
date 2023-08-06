@@ -9,28 +9,10 @@ import MyTable from './components/table';
 import './index.css';
 import { useTranslation } from 'react-i18next';
 import ScrollTopButton from './components/scrollTopButton';
-import { DATA_READY_DAY } from './constant';
-import moment from 'moment';
 const { Content } = Layout;
 
 const META_URL =
   'https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/meta.json';
-
-const getLastMonth = (lastUpdateTime) => {
-  let year = lastUpdateTime.getFullYear();
-  let monthIndex = lastUpdateTime.getMonth();
-  let date = lastUpdateTime.getDate();
-
-  if (date < 20) {
-    monthIndex--;
-  }
-
-  if (monthIndex < 0) {
-    monthIndex += 12;
-    year--;
-  }
-  return [year, monthIndex];
-};
 
 const App = () => {
   const NODE_ENV = process.env.NODE_ENV;
@@ -38,7 +20,6 @@ const App = () => {
     console.log = function () {};
   }
   let [lastUpdateTime, setLastUpdateTime] = useState(null);
-  const CurrentDate = new Date();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -46,11 +27,6 @@ const App = () => {
       .then((res) => res.json())
       .then((data) => {
         let date = new Date(data.lastUpdatedAt);
-        if (CurrentDate.getDate() < DATA_READY_DAY) {
-          console.log('date1', date);
-          date = moment(date).subtract(1, 'months').toDate();
-          console.log('date2', date);
-        }
         setLastUpdateTime(date);
       });
   }, []);
@@ -58,7 +34,9 @@ const App = () => {
   let year = null,
     monthIndex = null;
   if (lastUpdateTime) {
-    [year, monthIndex] = getLastMonth(lastUpdateTime);
+    const lastDataAvailableMonth = new Date(lastUpdateTime.setDate(0));
+    year = lastDataAvailableMonth.getFullYear();
+    monthIndex = lastDataAvailableMonth.getMonth();
   }
 
   return (

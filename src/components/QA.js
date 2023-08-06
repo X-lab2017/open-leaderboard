@@ -22,7 +22,7 @@ const QA = (props) => {
 
   return (
     <>
-      {props.type == 'word' ? (
+      {props.type === 'word' ? (
         <div style={{ width: '100%' }} onClick={showModal}>
           QA
         </div>
@@ -59,10 +59,6 @@ const QA = (props) => {
               size={'large'}
               style={{ width: '100%' }}
             >
-              <Card>
-                <h2>{t('Question.Q4')}</h2>
-                {t('Answer.A4')}
-              </Card>
               <Card>
                 <h2>{t('Question.Q1')}</h2>
                 {t('Answer.A1')}
