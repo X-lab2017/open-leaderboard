@@ -17,7 +17,7 @@ const META_URL =
 const App = () => {
   const NODE_ENV = process.env.NODE_ENV;
   if (NODE_ENV !== 'development') {
-    console.log = function () { };
+    console.log = function () {};
   }
   let [lastUpdateTime, setLastUpdateTime] = useState(null);
   const { t } = useTranslation();
