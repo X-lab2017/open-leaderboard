@@ -34,7 +34,8 @@ const App = () => {
   let year = null,
     monthIndex = null;
   if (lastUpdateTime) {
-    const lastDataAvailableMonth = new Date(lastUpdateTime.setDate(0));
+    const lastDataAvailableMonth = new Date(lastUpdateTime);
+    lastDataAvailableMonth.setDate(0);
     year = lastDataAvailableMonth.getFullYear();
     monthIndex = lastDataAvailableMonth.getMonth();
   }
