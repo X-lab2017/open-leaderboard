@@ -292,15 +292,17 @@ const solveDate = (year, month) => {
 function dashboard(text, index, t_month) {
   if (index < 300) {
     let [org_name, repo_name] = text.split('/');
+    const t_month_copy = t_month + ' ' + '00:00:00';
     let params = {
       org_name,
       repo_name,
+      t_month_copy,
       t_month,
     };
     return (
       <a
         href={
-          'https://dataease.x-lab.info/link/dqMbZrBk?attachParams=' +
+          'https://dataease.nzcer.cn/link/dqMbZrBk?attachParams=' +
           btoa(JSON.stringify(params))
         }
         target="_blank"
