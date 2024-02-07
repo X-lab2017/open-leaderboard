@@ -333,7 +333,7 @@ function MyTable(props) {
     showSize: 25,
     loading: true,
     url: '', // base + index + object + region + yearmonth + .json
-    base: 'https://xlab-open-source.oss-cn-beijing.aliyuncs.com/open_leaderboard/',
+    base: 'https://oss.x-lab.info/open_leaderboard/',
     year: null, // 字符串格式
     month: null, // 整数格式，0表示1月，1表示2月..., null for year type time
     type: 'month',
