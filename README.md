@@ -6,7 +6,7 @@ Welcome to OpenLeaderboard! This is a web project where companies, projects and 
 
 ## Website URL
 
-https://open-leaderboard.x-lab.info
+https://open-leaderboard.x-lab.info/
 
 ## About OpenLeaderboard
 You can select "Item", "Index", "Region", "Time" and other filters to view different rankings on GitHub.
