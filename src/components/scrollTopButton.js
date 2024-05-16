@@ -8,7 +8,7 @@ function scrollToTop(timestamp) {
     behavior: 'smooth',
   });
 }
-const ScrollTopButton = () => {
+const ScrollTopButton = (props) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
