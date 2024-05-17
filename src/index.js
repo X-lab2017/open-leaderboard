@@ -11,8 +11,7 @@ import { useTranslation } from 'react-i18next';
 import ScrollTopButton from './components/scrollTopButton';
 const { Content } = Layout;
 
-const META_URL =
-  'https://oss.x-lab.info/open_leaderboard/meta.json';
+const META_URL = 'https://oss.x-lab.info/open_leaderboard/meta.json';
 
 const App = () => {
   const NODE_ENV = process.env.NODE_ENV;
