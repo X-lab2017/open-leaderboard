@@ -22,29 +22,33 @@ const QAmiss = () => {
 
   return (
     <>
-      <a
+      <span
         onClick={showModal}
         style={{
           color: '#FFCC19',
           fontSize: '18px',
+          cursor: 'pointer',
         }}
       >
         {t('tip')}
-      </a>
+      </span>
       <Modal
-        title="Q&A"
+        title={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ flex: 1, textAlign: 'center' }}>Q&A</span>
+            <CloseCircleOutlined
+              style={{ fontSize: '30px', cursor: 'pointer' }}
+              onClick={handleOk}
+            />
+          </div>
+        }
         width={'100%'}
         closable={false}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         bodyStyle={{ backgroundColor: 'rgba(0,0,0,0)' }}
-        footer={[
-          <CloseCircleOutlined
-            style={{ fontSize: '30px' }}
-            onClick={handleOk}
-          />,
-        ]}
+        footer={null}
         style={{ margin: '0px auto', backgroundColor: 'rgba(0,0,0,0)' }}
         maskStyle={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
       >
