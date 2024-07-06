@@ -43,6 +43,7 @@ const TablePanel = (props) => {
                 props.setState({ source: value });
               }}
           >
+            <Option value="all">All</Option>
             <Option value="github">GitHub</Option>
             <Option value="gitee">Gitee</Option>
           </Select>
