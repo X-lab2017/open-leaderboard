@@ -1,9 +1,10 @@
-import { Row, Col, Radio, Switch, Input } from 'antd';
+import {Row, Col, Radio, Switch, Input, Select} from 'antd';
 import { t } from 'i18next';
 import React from 'react';
 import SwitchablePicker from './datePicker';
 
 const { Search } = Input;
+const { Option } = Select;
 
 const TablePanel = (props) => {
   return (
@@ -33,6 +34,18 @@ const TablePanel = (props) => {
             <Radio value={'activity'}>{t('activity')}</Radio>
             <Radio value={'open_rank'}>{t('influence')}</Radio>
           </Radio.Group>
+        </Col>
+        <Col>
+          <span className="myFontColor">{t('source')}</span>
+          <Select
+              value={props.source}
+              onChange={(value) => {
+                props.setState({ source: value });
+              }}
+          >
+            <Option value="github">GitHub</Option>
+            <Option value="gitee">Gitee</Option>
+          </Select>
         </Col>
       </Row>
       <Row justify="space-between" style={{ minHeight: '50px' }} gutter={10}>
