@@ -643,108 +643,6 @@ function MyTable(props) {
         "data": [
           {
             "rank": "1",
-            "name": "grafana/grafana",
-            "value": "7134.37",
-            "rankDelta": 1,
-            "valueDelta": 100
-          },
-          {
-            "rank": "2",
-            "name": "llvm/llvm-project",
-            "value": "7049.62",
-            "rankDelta": -2,
-            "valueDelta": -220
-          },
-          {
-            "rank": "3",
-            "name": "kubernetes/kubernetes",
-            "value": "5374.14",
-            "rankDelta": 3,
-            "valueDelta": 300
-          },
-          {
-            "rank": "4",
-            "name": "ClickHouse/ClickHouse",
-            "value": "4941.99",
-            "rankDelta": -4,
-            "valueDelta": 400
-          },
-          {
-            "rank": "5",
-            "name": "cilium/cilium",
-            "value": "3215.42",
-            "rankDelta": 5,
-            "valueDelta": -500
-          },
-          {
-            "rank": "6",
-            "name": "ceph/ceph",
-            "value": "3172.49",
-            "rankDelta": -6,
-            "valueDelta": 600
-          },
-          {
-            "rank": "7",
-            "name": "keycloak/keycloak",
-            "value": "3095.56",
-            "rankDelta": 7,
-            "valueDelta": 700
-          },
-          {
-            "rank": "8",
-            "name": "gravitational/teleport",
-            "value": "3082.18",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "9",
-            "name": "envoyproxy/envoy",
-            "value": "2929.08",
-            "rankDelta": 9,
-            "valueDelta": -900
-          },
-          {
-            "rank": "10",
-            "name": "backstage/backstage",
-            "value": "2903.39",
-            "rankDelta": 10,
-            "valueDelta": 100
-          }
-        ]
-        };
-      data = data.data;
-      let dataSource = [];
-      data.map((obj) => {
-        obj = expandObject(obj);
-        if (obj.rankDelta == 0 && obj.value == obj.valueDelta) {
-          obj.rankDelta = -10000000;
-          obj.valueDelta = 0;
-        }
-        dataSource.push(obj);
-      });
-      console.log(dataSource);
-
-      // 更新属性和表格数据
-      setState({
-        ...state,
-        ...newstate,
-        loading: false,
-        columns: columns,
-        showDetail: showDetail,
-        hasDetail: hasDetail,
-        data: dataSource,
-      });
-    }
-    else if (object== 'technology' && category == 'ai'){
-      let data = new Array();
-      // 预处理数据，对新上榜单数据进行特殊标记处理
-      data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [
-          {
-            "rank": "1",
             "name": "pytorch/pytorch",
             "value": "10182.45",
             "rankDelta": 0,
@@ -813,9 +711,50 @@ function MyTable(props) {
             "rankDelta": 0,
             "valueDelta": 0
           }
-        ]
-        
-      };
+        ]};
+      data = data.data;
+      let dataSource = [];
+      data.map((obj) => {
+        obj = expandObject(obj);
+        if (obj.rankDelta == 0 && obj.value == obj.valueDelta) {
+          obj.rankDelta = -10000000;
+          obj.valueDelta = 0;
+        }
+        dataSource.push(obj);
+      });
+      console.log(dataSource);
+
+      // 更新属性和表格数据
+      setState({
+        ...state,
+        ...newstate,
+        loading: false,
+        columns: columns,
+        showDetail: showDetail,
+        hasDetail: hasDetail,
+        data: dataSource,
+      });
+    }
+    else if (object== 'technology' && category == 'ai'){
+      let data = new Array();
+      // 预处理数据，对新上榜单数据进行特殊标记处理
+      data = {
+        "type": "Foundation_China",
+        "time": "2024",
+        "data": [{
+          "rank": "1",
+          "name": "kubernetes/kubernetes",
+          "value": "5374.14",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }, {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta":2,
+          "valueDelta": 3
+        }
+        ]};
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -845,79 +784,20 @@ function MyTable(props) {
       data = {
         "type": "Foundation_China",
         "time": "2024",
-        "data": [
-          {
-            "rank": "1",
-            "name": "elastic/kibana",
-            "value": "7601.04",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "2",
-            "name": "grafana/grafana",
-            "value": "7134.37",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "3",
-            "name": "ClickHouse/ClickHouse",
-            "value": "4941.99",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "4",
-            "name": "airbytehq/airbyte",
-            "value": "4658.86",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "5",
-            "name": "apache/doris",
-            "value": "4307.26",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "6",
-            "name": "elastic/elasticsearch",
-            "value": "3729.39",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "7",
-            "name": "apache/airflow",
-            "value": "3642.9",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "8",
-            "name": "StarRocks/starrocks",
-            "value": "3194.56",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "9",
-            "name": "trinodb/trino",
-            "value": "2703.4",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "10",
-            "name": "apache/spark",
-            "value": "2654.02",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]
-        };
+        "data": [{
+          "rank": "1",
+          "name": "kubernetes/kubernetes",
+          "value": "5374.14",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }, {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta":2,
+          "valueDelta": 3
+        }
+        ]};
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -947,79 +827,20 @@ function MyTable(props) {
       data = {
         "type": "Foundation_China",
         "time": "2024",
-        "data": [
-          {
-            "rank": "1",
-            "name": "ClickHouse/ClickHouse",
-            "value": "4941.99",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "2",
-            "name": "apache/doris",
-            "value": "4307.26",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "3",
-            "name": "elastic/elasticsearch",
-            "value": "3729.39",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "4",
-            "name": "cockroachdb/cockroach",
-            "value": "3443.7",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "5",
-            "name": "StarRocks/starrocks",
-            "value": "3194.56",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "6",
-            "name": "trinodb/trino",
-            "value": "2703.4",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "7",
-            "name": "apache/spark",
-            "value": "2654.02",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "8",
-            "name": "pingcap/tidb",
-            "value": "2200.38",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "9",
-            "name": "milvus-io/milvus",
-            "value": "2001.11",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "10",
-            "name": "yugabyte/yugabyte-db",
-            "value": "1940.75",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]
-        };
+        "data": [{
+          "rank": "1",
+          "name": "kubernetes/kubernetes",
+          "value": "5374.14",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }, {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta":2,
+          "valueDelta": 3
+        }
+        ]};
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -1049,79 +870,20 @@ function MyTable(props) {
       data = {
         "type": "Foundation_China",
         "time": "2024",
-        "data": [
-          {
-            "rank": "1",
-            "name": "flutter/flutter",
-            "value": "9361.81",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "2",
-            "name": "vercel/next.js",
-            "value": "6638.65",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "3",
-            "name": "appsmithorg/appsmith",
-            "value": "3474.07",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "4",
-            "name": "nuxt/nuxt",
-            "value": "3387.23",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "5",
-            "name": "facebook/react-native",
-            "value": "3260.55",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "6",
-            "name": "ant-design/ant-design",
-            "value": "3053.25",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "7",
-            "name": "nodejs/node",
-            "value": "2736.37",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "8",
-            "name": "angular/angular",
-            "value": "2273.82",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "9",
-            "name": "electron/electron",
-            "value": "1773.31",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "10",
-            "name": "denoland/deno",
-            "value": "1654.01",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]
-        };
+        "data": [{
+          "rank": "1",
+          "name": "kubernetes/kubernetes",
+          "value": "5374.14",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }, {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta":2,
+          "valueDelta": 3
+        }
+        ]};
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -1151,79 +913,20 @@ function MyTable(props) {
       data = {
         "type": "Foundation_China",
         "time": "2024",
-        "data": [
-          {
-            "rank": "1",
-            "name": "openharmony/docs",
-            "value": "3277.69",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "2",
-            "name": "openharmony/arkui_ace_engine",
-            "value": "2818.09",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "3",
-            "name": "SerenityOS/serenity",
-            "value": "2257.68",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "4",
-            "name": "openharmony/graphic_graphic_2d",
-            "value": "1239.6",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "5",
-            "name": "openeuler/docs",
-            "value": "1206.9",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "6",
-            "name": "openharmony/xts_acts",
-            "value": "1186.06",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "7",
-            "name": "openharmony/arkcompiler_ets_runtime",
-            "value": "961.99",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "8",
-            "name": "openharmony/interface_sdk-js",
-            "value": "910.91",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "9",
-            "name": "reactos/reactos",
-            "value": "745.23",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "10",
-            "name": "armbian/build",
-            "value": "679.1",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]
-        };
+        "data": [{
+          "rank": "1",
+          "name": "kubernetes/kubernetes",
+          "value": "5374.14",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }, {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta":2,
+          "valueDelta": 3
+        }
+        ]};
       data = data.data;
       let dataSource = [];
       data.map((obj) => {

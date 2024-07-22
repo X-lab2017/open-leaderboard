@@ -645,50 +645,50 @@ function MyTable(props) {
             "rank": "1",
             "name": "grafana/grafana",
             "value": "7134.37",
-            "rankDelta": 1,
-            "valueDelta": 100
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "2",
             "name": "llvm/llvm-project",
             "value": "7049.62",
-            "rankDelta": -2,
-            "valueDelta": -220
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "3",
             "name": "kubernetes/kubernetes",
             "value": "5374.14",
-            "rankDelta": 3,
-            "valueDelta": 300
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "4",
             "name": "ClickHouse/ClickHouse",
             "value": "4941.99",
-            "rankDelta": -4,
-            "valueDelta": 400
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "5",
             "name": "cilium/cilium",
             "value": "3215.42",
-            "rankDelta": 5,
-            "valueDelta": -500
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "6",
             "name": "ceph/ceph",
             "value": "3172.49",
-            "rankDelta": -6,
-            "valueDelta": 600
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "7",
             "name": "keycloak/keycloak",
             "value": "3095.56",
-            "rankDelta": 7,
-            "valueDelta": 700
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "8",
@@ -701,15 +701,15 @@ function MyTable(props) {
             "rank": "9",
             "name": "envoyproxy/envoy",
             "value": "2929.08",
-            "rankDelta": 9,
-            "valueDelta": -900
+            "rankDelta": 0,
+            "valueDelta": 0
           },
           {
             "rank": "10",
             "name": "backstage/backstage",
             "value": "2903.39",
-            "rankDelta": 10,
-            "valueDelta": 100
+            "rankDelta": 0,
+            "valueDelta": 0
           }
         ]
         };
@@ -1151,79 +1151,20 @@ function MyTable(props) {
       data = {
         "type": "Foundation_China",
         "time": "2024",
-        "data": [
-          {
-            "rank": "1",
-            "name": "openharmony/docs",
-            "value": "3277.69",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "2",
-            "name": "openharmony/arkui_ace_engine",
-            "value": "2818.09",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "3",
-            "name": "SerenityOS/serenity",
-            "value": "2257.68",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "4",
-            "name": "openharmony/graphic_graphic_2d",
-            "value": "1239.6",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "5",
-            "name": "openeuler/docs",
-            "value": "1206.9",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "6",
-            "name": "openharmony/xts_acts",
-            "value": "1186.06",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "7",
-            "name": "openharmony/arkcompiler_ets_runtime",
-            "value": "961.99",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "8",
-            "name": "openharmony/interface_sdk-js",
-            "value": "910.91",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "9",
-            "name": "reactos/reactos",
-            "value": "745.23",
-            "rankDelta": 0,
-            "valueDelta": 0
-          },
-          {
-            "rank": "10",
-            "name": "armbian/build",
-            "value": "679.1",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]
-        };
+        "data": [{
+          "rank": "1",
+          "name": "kubernetes/kubernetes",
+          "value": "5374.14",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }, {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta":2,
+          "valueDelta": 3
+        }
+        ]};
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
