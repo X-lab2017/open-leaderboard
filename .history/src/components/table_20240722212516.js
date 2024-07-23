@@ -12,7 +12,6 @@ import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
 
-
 const activityColumns = (object, t_month) => [
   {
     title: t('rank'),
@@ -24,15 +23,15 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -47,7 +46,7 @@ const activityColumns = (object, t_month) => [
     dataIndex: 'name',
     align: 'center',
     width: '20%',
-    render: function(text, row, index) {
+    render: function (text, row, index) {
       if (object !== 'company') {
         return (
           <a
@@ -65,16 +64,16 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function(text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -101,15 +100,15 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -124,7 +123,7 @@ const activityDetailColumns = (object, t_month) => [
     dataIndex: 'name',
     align: 'center',
     width: '5%',
-    render: function(text, row, index) {
+    render: function (text, row, index) {
       if (object !== 'company') {
         return (
           <a
@@ -142,16 +141,16 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function(text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -210,15 +209,15 @@ const open_rankColumns = (object, t_month) => [
   // 如果 object 是 'actor'，则添加头像列
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   // 第二列：排名变化
   {
@@ -235,7 +234,7 @@ const open_rankColumns = (object, t_month) => [
     dataIndex: 'name',
     width: '20%',
     align: 'center',
-    render: function(text) {
+    render: function (text) {
       if (object !== 'company') {
         return (
           <a
@@ -254,16 +253,16 @@ const open_rankColumns = (object, t_month) => [
   // 如果 object 是 'repo'，则添加 insight_board 列
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function(text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   // 第四列：影响力
   {
@@ -432,85 +431,87 @@ function MyTable(props) {
       url += year + (1 + month) + '.json';
     }
     console.log(url);
-    console.log(region)
-    if (object == 'foundation' && region == 'chinese'){
+    console.log(region);
+    if (object == 'foundation' && region == 'chinese') {
       let data = new Array();
 
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [{
-          "rank": "1",
-          "name": "apache/doris",
-          "value": "4307.26",
-          "rankDelta": 1,
-          "valueDelta": +100
-        },
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
           {
-            "rank": "2",
-            "name": "openharmony/docs",
-            "value": "3277.69",
-            "rankDelta":0,
-            "valueDelta": 0
+            rank: '1',
+            name: 'apache/doris',
+            value: '4307.26',
+            rankDelta: 1,
+            valueDelta: +100,
           },
           {
-            "rank": "3",
-            "name": "openharmony/arkui_ace_engine",
-            "value": "2818.09",
-            "rankDelta": -1,
-            "valueDelta": -3
+            rank: '2',
+            name: 'openharmony/docs',
+            value: '3277.69',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "4",
-            "name": "milvus-io/milvus",
-            "value": "2001.11",
-            "rankDelta": 3,
-            "valueDelta": -100
+            rank: '3',
+            name: 'openharmony/arkui_ace_engine',
+            value: '2818.09',
+            rankDelta: -1,
+            valueDelta: -3,
           },
           {
-            "rank": "5",
-            "name": "apache/flink",
-            "value": "1816.72",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '4',
+            name: 'milvus-io/milvus',
+            value: '2001.11',
+            rankDelta: 3,
+            valueDelta: -100,
           },
           {
-            "rank": "6",
-            "name": "apache/shardingsphere",
-            "value": "1662.8",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '5',
+            name: 'apache/flink',
+            value: '1816.72',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "7",
-            "name": "apache/ozone",
-            "value": "1281.57",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '6',
+            name: 'apache/shardingsphere',
+            value: '1662.8',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "8",
-            "name": "apache/iotdb",
-            "value": "1265.72",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '7',
+            name: 'apache/ozone',
+            value: '1281.57',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "9",
-            "name": "openharmony/graphic_graphic_2d",
-            "value": "1239.6",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '8',
+            name: 'apache/iotdb',
+            value: '1265.72',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "10",
-            "name": "apache/pulsar",
-            "value": "1227.93",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]};
+            rank: '9',
+            name: 'openharmony/graphic_graphic_2d',
+            value: '1239.6',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+          {
+            rank: '10',
+            name: 'apache/pulsar',
+            value: '1227.93',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -533,84 +534,85 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-    else if (object == 'foundation' && region == 'global'){
+    } else if (object == 'foundation' && region == 'global') {
       let data = new Array();
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [{
-          "rank": "1",
-          "name": "kubernetes/kubernetes",
-          "value": "5374.14",
-          "rankDelta": 0,
-          "valueDelta": 0
-        },
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
           {
-            "rank": "2",
-            "name": "apache/doris",
-            "value": "4307.26",
-            "rankDelta":2,
-            "valueDelta": 3
+            rank: '1',
+            name: 'kubernetes/kubernetes',
+            value: '5374.14',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "3",
-            "name": "apache/airflow",
-            "value": "3642.9",
-            "rankDelta": -1,
-            "valueDelta": -3
+            rank: '2',
+            name: 'apache/doris',
+            value: '4307.26',
+            rankDelta: 2,
+            valueDelta: 3,
           },
           {
-            "rank": "4",
-            "name": "openharmony/docs",
-            "value": "3277.69",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '3',
+            name: 'apache/airflow',
+            value: '3642.9',
+            rankDelta: -1,
+            valueDelta: -3,
           },
           {
-            "rank": "5",
-            "name": "openharmony/arkui_ace_engine",
-            "value": "2818.09",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '4',
+            name: 'openharmony/docs',
+            value: '3277.69',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "6",
-            "name": "nodejs/node",
-            "value": "2736.37",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '5',
+            name: 'openharmony/arkui_ace_engine',
+            value: '2818.09',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "7",
-            "name": "apache/spark",
-            "value": "2654.02",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '6',
+            name: 'nodejs/node',
+            value: '2736.37',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "8",
-            "name": "apache/arrow",
-            "value": "2219.95",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '7',
+            name: 'apache/spark',
+            value: '2654.02',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "9",
-            "name": "apache/beam",
-            "value": "2188.52",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '8',
+            name: 'apache/arrow',
+            value: '2219.95',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "10",
-            "name": "apache/hudi",
-            "value": "2124.67",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]};
+            rank: '9',
+            name: 'apache/beam',
+            value: '2188.52',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+          {
+            rank: '10',
+            name: 'apache/hudi',
+            value: '2124.67',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -633,85 +635,85 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-    else if (object== 'technology' && category == 'cloud-native'){
+    } else if (object == 'technology' && category == 'cloud-native') {
       let data = new Array();
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
           {
-            "rank": "1",
-            "name": "pytorch/pytorch",
-            "value": "10182.45",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '1',
+            name: 'pytorch/pytorch',
+            value: '10182.45',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "2",
-            "name": "langchain-ai/langchain",
-            "value": "6080.25",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '2',
+            name: 'langchain-ai/langchain',
+            value: '6080.25',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "3",
-            "name": "PaddlePaddle/Paddle",
-            "value": "5408.62",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '3',
+            name: 'PaddlePaddle/Paddle',
+            value: '5408.62',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "4",
-            "name": "huggingface/transformers",
-            "value": "4422.84",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '4',
+            name: 'huggingface/transformers',
+            value: '4422.84',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "5",
-            "name": "AUTOMATIC1111/stable-diffusion-webui",
-            "value": "3881.6",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '5',
+            name: 'AUTOMATIC1111/stable-diffusion-webui',
+            value: '3881.6',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "6",
-            "name": "openvinotoolkit/openvino",
-            "value": "3857.31",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '6',
+            name: 'openvinotoolkit/openvino',
+            value: '3857.31',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "7",
-            "name": "microsoft/onnxruntime",
-            "value": "3006.75",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '7',
+            name: 'microsoft/onnxruntime',
+            value: '3006.75',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "8",
-            "name": "tensorflow/tensorflow",
-            "value": "2723.26",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '8',
+            name: 'tensorflow/tensorflow',
+            value: '2723.26',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "9",
-            "name": "Significant-Gravitas/AutoGPT",
-            "value": "2664.85",
-            "rankDelta": 0,
-            "valueDelta": 0
+            rank: '9',
+            name: 'Significant-Gravitas/AutoGPT',
+            value: '2664.85',
+            rankDelta: 0,
+            valueDelta: 0,
           },
           {
-            "rank": "10",
-            "name": "ggerganov/llama.cpp",
-            "value": "2339.8",
-            "rankDelta": 0,
-            "valueDelta": 0
-          }
-        ]};
+            rank: '10',
+            name: 'ggerganov/llama.cpp',
+            value: '2339.8',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -734,27 +736,29 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-    else if (object== 'technology' && category == 'ai'){
+    } else if (object == 'technology' && category == 'ai') {
       let data = new Array();
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [{
-          "rank": "1",
-          "name": "kubernetes/kubernetes",
-          "value": "5374.14",
-          "rankDelta": 0,
-          "valueDelta": 0
-        }, {
-          "rank": "2",
-          "name": "apache/doris",
-          "value": "4307.26",
-          "rankDelta":2,
-          "valueDelta": 3
-        }
-        ]};
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
+          {
+            rank: '1',
+            name: 'kubernetes/kubernetes',
+            value: '5374.14',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+          {
+            rank: '2',
+            name: 'apache/doris',
+            value: '4307.26',
+            rankDelta: 2,
+            valueDelta: 3,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -777,27 +781,29 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-    else if (object== 'technology' && category == 'big-data'){
+    } else if (object == 'technology' && category == 'big-data') {
       let data = new Array();
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [{
-          "rank": "1",
-          "name": "kubernetes/kubernetes",
-          "value": "5374.14",
-          "rankDelta": 0,
-          "valueDelta": 0
-        }, {
-          "rank": "2",
-          "name": "apache/doris",
-          "value": "4307.26",
-          "rankDelta":2,
-          "valueDelta": 3
-        }
-        ]};
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
+          {
+            rank: '1',
+            name: 'kubernetes/kubernetes',
+            value: '5374.14',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+          {
+            rank: '2',
+            name: 'apache/doris',
+            value: '4307.26',
+            rankDelta: 2,
+            valueDelta: 3,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -820,27 +826,29 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-    else if (object== 'technology' && category == 'database'){
+    } else if (object == 'technology' && category == 'database') {
       let data = new Array();
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [{
-          "rank": "1",
-          "name": "kubernetes/kubernetes",
-          "value": "5374.14",
-          "rankDelta": 0,
-          "valueDelta": 0
-        }, {
-          "rank": "2",
-          "name": "apache/doris",
-          "value": "4307.26",
-          "rankDelta":2,
-          "valueDelta": 3
-        }
-        ]};
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
+          {
+            rank: '1',
+            name: 'kubernetes/kubernetes',
+            value: '5374.14',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+          {
+            rank: '2',
+            name: 'apache/doris',
+            value: '4307.26',
+            rankDelta: 2,
+            valueDelta: 3,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -863,27 +871,29 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-    else if (object== 'technology' && category == 'front-end'){
+    } else if (object == 'technology' && category == 'front-end') {
       let data = new Array();
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [{
-          "rank": "1",
-          "name": "kubernetes/kubernetes",
-          "value": "5374.14",
-          "rankDelta": 0,
-          "valueDelta": 0
-        }, {
-          "rank": "2",
-          "name": "apache/doris",
-          "value": "4307.26",
-          "rankDelta":2,
-          "valueDelta": 3
-        }
-        ]};
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
+          {
+            rank: '1',
+            name: 'kubernetes/kubernetes',
+            value: '5374.14',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+          {
+            rank: '2',
+            name: 'apache/doris',
+            value: '4307.26',
+            rankDelta: 2,
+            valueDelta: 3,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -906,27 +916,29 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-    else if (object== 'technology' && category == 'os'){
+    } else if (object == 'technology' && category == 'os') {
       let data = new Array();
       // 预处理数据，对新上榜单数据进行特殊标记处理
       data = {
-        "type": "Foundation_China",
-        "time": "2024",
-        "data": [{
-          "rank": "1",
-          "name": "kubernetes/kubernetes",
-          "value": "5374.14",
-          "rankDelta": 0,
-          "valueDelta": 0
-        }, {
-          "rank": "2",
-          "name": "apache/doris",
-          "value": "4307.26",
-          "rankDelta":2,
-          "valueDelta": 3
-        }
-        ]};
+        type: 'Foundation_China',
+        time: '2024',
+        data: [
+          {
+            rank: '1',
+            name: 'kubernetes/kubernetes',
+            value: '5374.14',
+            rankDelta: 0,
+            valueDelta: 0,
+          },
+          {
+            rank: '2',
+            name: 'apache/doris',
+            value: '4307.26',
+            rankDelta: 2,
+            valueDelta: 3,
+          },
+        ],
+      };
       data = data.data;
       let dataSource = [];
       data.map((obj) => {
@@ -949,69 +961,68 @@ function MyTable(props) {
         hasDetail: hasDetail,
         data: dataSource,
       });
-    }
-else {
+    } else {
       // fetch 异步请求
       fetch(url)
-          .then((res) => {
-            // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
-            if (res.status == 404) {
-              message.warning(t('no_result'));
-              return '';
+        .then((res) => {
+          // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
+          if (res.status == 404) {
+            message.warning(t('no_result'));
+            return '';
+          }
+          return res.json();
+        })
+        .then((data) => {
+          data = data.data;
+          let dataSource = [];
+          // 预处理数据，对新上榜单数据进行特殊标记处理
+          data.map((obj) => {
+            obj = expandObject(obj);
+            if (obj.rankDelta == 0 && obj.value == obj.valueDelta) {
+              obj.rankDelta = -10000000;
+              obj.valueDelta = 0;
             }
-            return res.json();
-          })
-          .then((data) => {
-            data = data.data;
-            let dataSource = [];
-            // 预处理数据，对新上榜单数据进行特殊标记处理
-            data.map((obj) => {
-              obj = expandObject(obj);
-              if (obj.rankDelta == 0 && obj.value == obj.valueDelta) {
-                obj.rankDelta = -10000000;
-                obj.valueDelta = 0;
-              }
-              dataSource.push(obj);
-            });
-            console.log(dataSource);
-
-            //搜索特定数据
-            let queryData;
-            if (search) {
-              queryData = dataSource.filter((dataSource) => {
-                let reg = new RegExp(search.trim(), 'i');
-                return reg.test(dataSource.name);
-              });
-              if (queryData.length == 0) {
-                message.warning(t('no_result'));
-              } else {
-                dataSource = queryData;
-              }
-            }
-
-            // 更新属性和表格数据
-            setState({
-              ...state,
-              ...newstate,
-              loading: false,
-              columns: columns,
-              showDetail: showDetail,
-              hasDetail: hasDetail,
-              data: dataSource,
-            });
-          })
-          .catch((err) => {
-            console.log('hi!' + err);
-            setState({
-              ...state,
-              ...newstate,
-              loading: false,
-              columns: columns,
-              data: [],
-            });
+            dataSource.push(obj);
           });
-    };
+          console.log(dataSource);
+
+          //搜索特定数据
+          let queryData;
+          if (search) {
+            queryData = dataSource.filter((dataSource) => {
+              let reg = new RegExp(search.trim(), 'i');
+              return reg.test(dataSource.name);
+            });
+            if (queryData.length == 0) {
+              message.warning(t('no_result'));
+            } else {
+              dataSource = queryData;
+            }
+          }
+
+          // 更新属性和表格数据
+          setState({
+            ...state,
+            ...newstate,
+            loading: false,
+            columns: columns,
+            showDetail: showDetail,
+            hasDetail: hasDetail,
+            data: dataSource,
+          });
+        })
+        .catch((err) => {
+          console.log('hi!' + err);
+          setState({
+            ...state,
+            ...newstate,
+            loading: false,
+            columns: columns,
+            data: [],
+          });
+        });
     }
+  };
 
   const {
     object,

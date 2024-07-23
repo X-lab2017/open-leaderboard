@@ -12,7 +12,6 @@ import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
 
-
 const activityColumns = (object, t_month) => [
   {
     title: t('rank'),
@@ -24,15 +23,15 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -47,7 +46,7 @@ const activityColumns = (object, t_month) => [
     dataIndex: 'name',
     align: 'center',
     width: '20%',
-    render: function(text, row, index) {
+    render: function (text, row, index) {
       if (object !== 'company') {
         return (
           <a
@@ -65,16 +64,16 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function(text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -101,15 +100,15 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -124,7 +123,7 @@ const activityDetailColumns = (object, t_month) => [
     dataIndex: 'name',
     align: 'center',
     width: '5%',
-    render: function(text, row, index) {
+    render: function (text, row, index) {
       if (object !== 'company') {
         return (
           <a
@@ -142,16 +141,16 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function(text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -210,15 +209,15 @@ const open_rankColumns = (object, t_month) => [
   // 如果 object 是 'actor'，则添加头像列
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   // 第二列：排名变化
   {
@@ -235,7 +234,7 @@ const open_rankColumns = (object, t_month) => [
     dataIndex: 'name',
     width: '20%',
     align: 'center',
-    render: function(text) {
+    render: function (text) {
       if (object !== 'company') {
         return (
           <a
@@ -254,16 +253,16 @@ const open_rankColumns = (object, t_month) => [
   // 如果 object 是 'repo'，则添加 insight_board 列
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function(text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   // 第四列：影响力
   {

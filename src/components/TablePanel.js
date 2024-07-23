@@ -6,7 +6,6 @@ import SwitchablePicker from './datePicker';
 const { Search } = Input;
 
 const TablePanel = (props) => {
-
   return (
     <>
       <Row align="middle" style={{ minHeight: '50px' }} gutter={[10]}>
@@ -33,7 +32,6 @@ const TablePanel = (props) => {
             }}
             value={props.index}
           >
-
             {props.object !== 'technology' && props.object !== 'foundation' && (
               <Radio value={'activity'}>{t('activity')}</Radio>
             )}
@@ -51,7 +49,6 @@ const TablePanel = (props) => {
               }}
               value={props.region}
             >
-
               {props.object !== 'technology' && (
                 <Radio value={'chinese'}>{t('chinese')}</Radio>
               )}
