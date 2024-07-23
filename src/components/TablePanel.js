@@ -1,4 +1,4 @@
-import {Row, Col, Radio, Switch, Input, Select} from 'antd';
+import { Row, Col, Radio, Switch, Input, Select } from 'antd';
 import { t } from 'i18next';
 import React from 'react';
 import SwitchablePicker from './datePicker';
@@ -38,10 +38,10 @@ const TablePanel = (props) => {
         <Col>
           <span className="myFontColor">{t('source')}</span>
           <Select
-              value={props.source}
-              onChange={(value) => {
-                props.setState({ source: value });
-              }}
+            value={props.source}
+            onChange={(value) => {
+              props.setState({ source: value });
+            }}
           >
             <Option value="all">All</Option>
             <Option value="github">GitHub</Option>

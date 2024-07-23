@@ -494,7 +494,7 @@ function MyTable(props) {
     month,
     year,
     type,
-    source
+    source,
   } = state;
   return (
     <div className="table">
