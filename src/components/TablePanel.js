@@ -37,16 +37,16 @@ const TablePanel = (props) => {
         </Col>
         <Col>
           <span className="myFontColor">{t('source')}</span>
-          <Select
-            value={props.source}
-            onChange={(value) => {
-              props.setState({ source: value });
+          <Radio.Group
+            onChange={(e) => {
+              props.setState({ source: e.target.value });
             }}
+            value={props.source}
           >
-            <Option value="all">All</Option>
-            <Option value="github">GitHub</Option>
-            <Option value="gitee">Gitee</Option>
-          </Select>
+            <Radio value={'all'}>All</Radio>
+            <Radio value={'github'}>Github</Radio>
+            <Radio value={'gitee'}>Gitee</Radio>
+          </Radio.Group>
         </Col>
       </Row>
       <Row justify="space-between" style={{ minHeight: '50px' }} gutter={10}>
