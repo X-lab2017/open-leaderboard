@@ -23,15 +23,15 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -64,16 +64,16 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function (text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -100,15 +100,15 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -141,16 +141,16 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function (text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -207,15 +207,15 @@ const open_rankColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -248,16 +248,16 @@ const open_rankColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function (text, row, index) {
-          return dashboard(text, index, t_month);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('influence'),
@@ -278,19 +278,6 @@ const open_rankColumns = (object, t_month) => [
       return PointRender(text, row, index);
     },
   },
-  ...(object == 'region2'
-    ? [
-      {
-        title: t('participants'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function (text, row, index) {
-          return dashboard(text, index, t_month);
-        },
-      },
-    ]
-    : []),
 ];
 const solveDate = (year, month) => {
   if (year === null && month === null) {
@@ -350,6 +337,7 @@ function MyTable(props) {
     year: null, // 字符串格式
     month: null, // 整数格式，0表示1月，1表示2月..., null for year type time
     type: 'month',
+    source: 'all',
     search: null,
   });
 
@@ -506,6 +494,7 @@ function MyTable(props) {
     month,
     year,
     type,
+    source,
   } = state;
   return (
     <div className="table">
@@ -518,6 +507,7 @@ function MyTable(props) {
           }}
         >
           <TablePanel
+            source={source}
             type={type}
             setState={updateDate}
             object={object}
