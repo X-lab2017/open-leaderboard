@@ -278,10 +278,10 @@ const open_rankColumns = (object, t_month) => [
       return PointRender(text, row, index);
     },
   },
-  ...(object == 'none'
+  ...(object == 'region2'
     ? [
       {
-        title: t('nation'),
+        title: t('participants'),
         dataIndex: 'name',
         align: 'center',
         width: '10%',
