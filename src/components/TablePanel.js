@@ -20,6 +20,7 @@ const TablePanel = (props) => {
             <Radio value={'company'}>{t('company')}</Radio>
             <Radio value={'repo'}>{t('repo')}</Radio>
             <Radio value={'actor'}>{t('developer')}</Radio>
+            <Radio value={'region2'}>{t('none')}</Radio>
           </Radio.Group>
         </Col>
         <Col>

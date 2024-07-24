@@ -17,6 +17,7 @@
   "year": "Yearly",
   "rank": "Rank",
   "company": "Company",
+  "none": "None",
   "repo": "Project",
   "insight_board": "Insight Board",
   "actor": "ID",

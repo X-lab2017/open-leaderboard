@@ -23,15 +23,15 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-        {
-          title: t('avatar'),
-          dataIndex: 'id',
-          width: '5%',
-          align: 'center',
-          render: MyAvatar,
-          fixed: 'left',
-        },
-      ]
+      {
+        title: t('avatar'),
+        dataIndex: 'id',
+        width: '5%',
+        align: 'center',
+        render: MyAvatar,
+        fixed: 'left',
+      },
+    ]
     : []),
   {
     title: '',
@@ -64,16 +64,16 @@ const activityColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month);
-          },
+      {
+        title: t('insight_board'),
+        dataIndex: 'name',
+        align: 'center',
+        width: '10%',
+        render: function (text, row, index) {
+          return dashboard(text, index, t_month);
         },
-      ]
+      },
+    ]
     : []),
   {
     title: t('activity'),
@@ -100,15 +100,15 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-        {
-          title: t('avatar'),
-          dataIndex: 'id',
-          width: '5%',
-          align: 'center',
-          render: MyAvatar,
-          fixed: 'left',
-        },
-      ]
+      {
+        title: t('avatar'),
+        dataIndex: 'id',
+        width: '5%',
+        align: 'center',
+        render: MyAvatar,
+        fixed: 'left',
+      },
+    ]
     : []),
   {
     title: '',
@@ -141,16 +141,16 @@ const activityDetailColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month);
-          },
+      {
+        title: t('insight_board'),
+        dataIndex: 'name',
+        align: 'center',
+        width: '10%',
+        render: function (text, row, index) {
+          return dashboard(text, index, t_month);
         },
-      ]
+      },
+    ]
     : []),
   {
     title: t('activity'),
@@ -207,15 +207,15 @@ const open_rankColumns = (object, t_month) => [
   },
   ...(object == 'actor'
     ? [
-        {
-          title: t('avatar'),
-          dataIndex: 'id',
-          width: '5%',
-          align: 'center',
-          render: MyAvatar,
-          fixed: 'left',
-        },
-      ]
+      {
+        title: t('avatar'),
+        dataIndex: 'id',
+        width: '5%',
+        align: 'center',
+        render: MyAvatar,
+        fixed: 'left',
+      },
+    ]
     : []),
   {
     title: '',
@@ -248,16 +248,16 @@ const open_rankColumns = (object, t_month) => [
   },
   ...(object == 'repo'
     ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month);
-          },
+      {
+        title: t('insight_board'),
+        dataIndex: 'name',
+        align: 'center',
+        width: '10%',
+        render: function (text, row, index) {
+          return dashboard(text, index, t_month);
         },
-      ]
+      },
+    ]
     : []),
   {
     title: t('influence'),
@@ -278,6 +278,19 @@ const open_rankColumns = (object, t_month) => [
       return PointRender(text, row, index);
     },
   },
+  ...(object == 'none'
+    ? [
+      {
+        title: t('nation'),
+        dataIndex: 'name',
+        align: 'center',
+        width: '10%',
+        render: function (text, row, index) {
+          return dashboard(text, index, t_month);
+        },
+      },
+    ]
+    : []),
 ];
 const solveDate = (year, month) => {
   if (year === null && month === null) {
