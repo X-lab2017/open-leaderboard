@@ -198,6 +198,7 @@ const activityDetailColumns = (object, t_month) => [
 ];
 const open_rankColumns = (object, t_month) => [
   {
+    // 第一列：排名
     title: t('rank'),
     dataIndex: 'rank',
     width: '5%',
@@ -205,6 +206,7 @@ const open_rankColumns = (object, t_month) => [
     align: 'center',
     fixed: 'left',
   },
+  // 如果 object 是 'actor'，则添加头像列
   ...(object == 'actor'
     ? [
         {
@@ -217,6 +219,7 @@ const open_rankColumns = (object, t_month) => [
         },
       ]
     : []),
+  // 第二列：排名变化
   {
     title: '',
     dataIndex: 'rankDelta',
@@ -225,6 +228,7 @@ const open_rankColumns = (object, t_month) => [
     width: '5%',
     fixed: 'left',
   },
+  // 第三列：对象名称（可能是 actor, repo 或 company）
   {
     title: t(object),
     dataIndex: 'name',
@@ -246,6 +250,7 @@ const open_rankColumns = (object, t_month) => [
       }
     },
   },
+  // 如果 object 是 'repo'，则添加 insight_board 列
   ...(object == 'repo'
     ? [
         {
@@ -259,6 +264,7 @@ const open_rankColumns = (object, t_month) => [
         },
       ]
     : []),
+  // 第四列：影响力
   {
     title: t('influence'),
     dataIndex: 'value',
@@ -268,6 +274,7 @@ const open_rankColumns = (object, t_month) => [
       return RoundFloat(text);
     },
   },
+  // 第五列：影响力变化
   {
     title: '',
     dataIndex: 'valueDelta',
@@ -279,6 +286,7 @@ const open_rankColumns = (object, t_month) => [
     },
   },
 ];
+
 const solveDate = (year, month) => {
   if (year === null && month === null) {
     return 'not found';
@@ -324,9 +332,9 @@ function DateTitle(props) {
 
 function MyTable(props) {
   const [state, setState] = useState({
-    object: 'company',
-    index: 'activity',
-    region: 'chinese',
+    object: 'technology',
+    index: 'open_rank',
+    region: 'global',
     showDetail: false,
     hasDetail: true,
     data: [],
@@ -338,6 +346,7 @@ function MyTable(props) {
     month: null, // 整数格式，0表示1月，1表示2月..., null for year type time
     type: 'month',
     search: null,
+    category: 'cloud-native',
   });
 
   // 请求一次数据更新表格。如果还没读取好配置文件则不请求数据。
@@ -373,6 +382,7 @@ function MyTable(props) {
       hasDetail,
       type,
       search,
+      category,
     } = state;
     // 然后把表格改为加载中的状态
     setState({ ...state, ...newstate, loading: true });
@@ -385,6 +395,7 @@ function MyTable(props) {
     if (newstate.hasOwnProperty('showDetail')) showDetail = newstate.showDetail;
     if (newstate.hasOwnProperty('type')) type = newstate.type;
     if (newstate.hasOwnProperty('search')) search = newstate.search;
+    if (newstate.hasOwnProperty('category')) category = newstate.category;
 
     //获取数据大屏的‘t_month’参数
     let myyear = newstate.year == null ? state.year : newstate.year;
@@ -420,6 +431,12 @@ function MyTable(props) {
       url += year + (1 + month) + '.json';
     }
     console.log(url);
+    console.log(region);
+    if (object == 'foundation') {
+      url = './tech-foundation/' + object + region + '.json';
+    } else if (object == 'technology') {
+      url = './tech-foundation/' + object + category + '.json';
+    }
     // fetch 异步请求
     fetch(url)
       .then((res) => {
@@ -480,6 +497,7 @@ function MyTable(props) {
         });
       });
   };
+
   const {
     object,
     index,
@@ -493,6 +511,7 @@ function MyTable(props) {
     month,
     year,
     type,
+    category,
   } = state;
   return (
     <div className="table">
@@ -514,6 +533,7 @@ function MyTable(props) {
             showDetail={showDetail}
             month={month}
             year={year}
+            category={category}
           />
           <Table
             // Todo
