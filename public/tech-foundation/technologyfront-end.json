@@ -1,76 +1,76 @@
 {
-    "type": "Technology_front-end",
-    "time": "2024",
-    "data": [
-        {
-            "rank": "1",
-            "name": "flutter/flutter",
-            "value": "9361.81",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "2",
-            "name": "vercel/next.js",
-            "value": "6638.65",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "3",
-            "name": "appsmithorg/appsmith",
-            "value": "3474.07",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "4",
-            "name": "nuxt/nuxt",
-            "value": "3387.23",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "5",
-            "name": "facebook/react-native",
-            "value": "3260.55",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "6",
-            "name": "ant-design/ant-design",
-            "value": "3053.25",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "7",
-            "name": "nodejs/node",
-            "value": "2736.37",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "8",
-            "name": "angular/angular",
-            "value": "2273.82",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "9",
-            "name": "electron/electron",
-            "value": "1773.31",
-            "rankDelta": 0,
-            "valueDelta": 0
-        },
-        {
-            "rank": "10",
-            "name": "denoland/deno",
-            "value": "1654.01",
-            "rankDelta": 0,
-            "valueDelta": 0
-        }
-    ]
+  "type": "Technology_front-end",
+  "time": "2024",
+  "data": [
+    {
+      "rank": "1",
+      "name": "flutter/flutter",
+      "value": "9361.81",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "2",
+      "name": "vercel/next.js",
+      "value": "6638.65",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "3",
+      "name": "appsmithorg/appsmith",
+      "value": "3474.07",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "4",
+      "name": "nuxt/nuxt",
+      "value": "3387.23",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "5",
+      "name": "facebook/react-native",
+      "value": "3260.55",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "6",
+      "name": "ant-design/ant-design",
+      "value": "3053.25",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "7",
+      "name": "nodejs/node",
+      "value": "2736.37",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "8",
+      "name": "angular/angular",
+      "value": "2273.82",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "9",
+      "name": "electron/electron",
+      "value": "1773.31",
+      "rankDelta": 0,
+      "valueDelta": 0
+    },
+    {
+      "rank": "10",
+      "name": "denoland/deno",
+      "value": "1654.01",
+      "rankDelta": 0,
+      "valueDelta": 0
+    }
+  ]
 }

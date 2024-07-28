@@ -432,73 +432,70 @@ function MyTable(props) {
     }
     console.log(url);
     console.log(region);
-    if (object == "foundation") {
-     url = './tech-foundation/'+ object + region +'.json'
+    if (object == 'foundation') {
+      url = './tech-foundation/' + object + region + '.json';
+    } else if (object == 'technology') {
+      url = './tech-foundation/' + object + category + '.json';
     }
-    else if (object == "technology") {
-      url = './tech-foundation/'+ object + category +'.json'
-    }
-      // fetch 异步请求
+    // fetch 异步请求
     fetch(url)
-        .then((res) => {
-          // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
-          if (res.status == 404) {
-            message.warning(t('no_result'));
-            return '';
+      .then((res) => {
+        // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
+        if (res.status == 404) {
+          message.warning(t('no_result'));
+          return '';
+        }
+        return res.json();
+      })
+      .then((data) => {
+        data = data.data;
+        let dataSource = [];
+        // 预处理数据，对新上榜单数据进行特殊标记处理
+        data.map((obj) => {
+          obj = expandObject(obj);
+          if (obj.rankDelta == 0 && obj.value == obj.valueDelta) {
+            obj.rankDelta = -10000000;
+            obj.valueDelta = 0;
           }
-          return res.json();
-        })
-        .then((data) => {
-          data = data.data;
-          let dataSource = [];
-          // 预处理数据，对新上榜单数据进行特殊标记处理
-          data.map((obj) => {
-            obj = expandObject(obj);
-            if (obj.rankDelta == 0 && obj.value == obj.valueDelta) {
-              obj.rankDelta = -10000000;
-              obj.valueDelta = 0;
-            }
-            dataSource.push(obj);
-          });
-          console.log(dataSource);
-
-          //搜索特定数据
-          let queryData;
-          if (search) {
-            queryData = dataSource.filter((dataSource) => {
-              let reg = new RegExp(search.trim(), 'i');
-              return reg.test(dataSource.name);
-            });
-            if (queryData.length == 0) {
-              message.warning(t('no_result'));
-            } else {
-              dataSource = queryData;
-            }
-          }
-
-          // 更新属性和表格数据
-          setState({
-            ...state,
-            ...newstate,
-            loading: false,
-            columns: columns,
-            showDetail: showDetail,
-            hasDetail: hasDetail,
-            data: dataSource,
-          });
-        })
-        .catch((err) => {
-          console.log('hi!' + err);
-          setState({
-            ...state,
-            ...newstate,
-            loading: false,
-            columns: columns,
-            data: [],
-          });
+          dataSource.push(obj);
         });
-      
-    
+        console.log(dataSource);
+
+        //搜索特定数据
+        let queryData;
+        if (search) {
+          queryData = dataSource.filter((dataSource) => {
+            let reg = new RegExp(search.trim(), 'i');
+            return reg.test(dataSource.name);
+          });
+          if (queryData.length == 0) {
+            message.warning(t('no_result'));
+          } else {
+            dataSource = queryData;
+          }
+        }
+
+        // 更新属性和表格数据
+        setState({
+          ...state,
+          ...newstate,
+          loading: false,
+          columns: columns,
+          showDetail: showDetail,
+          hasDetail: hasDetail,
+          data: dataSource,
+        });
+      })
+      .catch((err) => {
+        console.log('hi!' + err);
+        setState({
+          ...state,
+          ...newstate,
+          loading: false,
+          columns: columns,
+          data: [],
+        });
+      });
   };
 
   const {
