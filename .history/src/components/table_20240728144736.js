@@ -11,6 +11,7 @@ import Trophy from './rankTrophy';
 import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
+import { foundationChineseData } from './data';
 
 const activityColumns = (object, t_month) => [
   {
@@ -432,14 +433,22 @@ function MyTable(props) {
     }
     console.log(url);
     console.log(region);
-    if (object == "foundation") {
-     url = './tech-foundation/'+ object + region +'.json'
-    }
-    else if (object == "technology") {
-      url = './tech-foundation/'+ object + category +'.json'
+    if (object == "foundation" && region == 'chinese') {
+      dataSource = foundationChineseData;
+
+      // 更新属性和表格数据
+      setState({
+        ...state,
+        ...newstate,
+        loading: false,
+        columns: columns,
+        showDetail: showDetail,
+        hasDetail: hasDetail,
+        data: dataSource,
+      });
     }
       // fetch 异步请求
-    fetch(url)
+    else{fetch(url)
         .then((res) => {
           // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
           if (res.status == 404) {
@@ -500,7 +509,7 @@ function MyTable(props) {
       
     
   };
-
+  }
   const {
     object,
     index,

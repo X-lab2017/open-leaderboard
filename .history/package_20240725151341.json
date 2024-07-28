@@ -1,0 +1,52 @@
+{
+  "name": "open-insight-front",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "^16"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "antd": "^4.18.0",
+    "i18next": "^21.6.4",
+    "i18next-browser-languagedetector": "^6.1.2",
+    "i18next-http-backend": "^1.3.1",
+    "moment": "^2.29.4",
+    "prettier": "^2.8.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-i18next": "^11.15.2",
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "5.0.0",
+    "web-vitals": "^2.1.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\"",
+    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

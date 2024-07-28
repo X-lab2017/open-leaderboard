@@ -11,6 +11,7 @@ import Trophy from './rankTrophy';
 import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
+import { foundationChineseData } from './data';
 
 const activityColumns = (object, t_month) => [
   {
@@ -438,6 +439,7 @@ function MyTable(props) {
     else if (object == "technology") {
       url = './tech-foundation/'+ object + category +'.json'
     }
+    
       // fetch 异步请求
     fetch(url)
         .then((res) => {

@@ -1,0 +1,76 @@
+{
+    "type": "Foundation_Global",
+    "time": "2024",
+    "data": [
+        {
+          "rank": "1",
+          "name": "kubernetes/kubernetes",
+          "value": "5374.14",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta": 2,
+          "valueDelta": 3
+        },
+        {
+          "rank": "3",
+          "name": "apache/airflow",
+          "value": "3642.9",
+          "rankDelta": -1,
+          "valueDelta": -3
+        },
+        {
+          "rank": "4",
+          "name": "openharmony/docs",
+          "value": "3277.69",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "5",
+          "name": "openharmony/arkui_ace_engine",
+          "value": "2818.09",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "6",
+          "name": "nodejs/node",
+          "value": "2736.37",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "7",
+          "name": "apache/spark",
+          "value": "2654.02",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "8",
+          "name": "apache/arrow",
+          "value": "2219.95",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "9",
+          "name": "apache/beam",
+          "value": "2188.52",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "10",
+          "name": "apache/hudi",
+          "value": "2124.67",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }
+      ]
+}

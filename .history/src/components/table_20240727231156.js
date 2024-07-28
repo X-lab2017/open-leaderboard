@@ -432,14 +432,11 @@ function MyTable(props) {
     }
     console.log(url);
     console.log(region);
-    if (object == "foundation") {
-     url = './tech-foundation/'+ object + region +'.json'
-    }
-    else if (object == "technology") {
-      url = './tech-foundation/'+ object + category +'.json'
+    if (object == 'foundation' && region == 'chinese') {
+      url = 'https://oss.x-lab.info/open_leaderboard/open_rank/repo/chinese/20246.json'
     }
       // fetch 异步请求
-    fetch(url)
+    else{fetch(url)
         .then((res) => {
           // Todo：最好的情况是在日期选择器中，只显示可以查询的日期，
           if (res.status == 404) {
@@ -497,7 +494,7 @@ function MyTable(props) {
             data: [],
           });
         });
-      
+      }
     
   };
 

@@ -1,0 +1,77 @@
+{
+    "type": "Foundation_China",
+    "time": "2024",
+    "data":[
+        {
+          "rank": "1",
+          "name": "ClickHouse/ClickHouse",
+          "value": "4941.99",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "2",
+          "name": "apache/doris",
+          "value": "4307.26",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "3",
+          "name": "elastic/elasticsearch",
+          "value": "3729.39",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "4",
+          "name": "cockroachdb/cockroach",
+          "value": "3443.7",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "5",
+          "name": "StarRocks/starrocks",
+          "value": "3194.56",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "6",
+          "name": "trinodb/trino",
+          "value": "2703.4",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "7",
+          "name": "apache/spark",
+          "value": "2654.02",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "8",
+          "name": "pingcap/tidb",
+          "value": "2200.38",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "9",
+          "name": "milvus-io/milvus",
+          "value": "2001.11",
+          "rankDelta": 0,
+          "valueDelta": 0
+        },
+        {
+          "rank": "10",
+          "name": "yugabyte/yugabyte-db",
+          "value": "1940.75",
+          "rankDelta": 0,
+          "valueDelta": 0
+        }
+      ]
+      
+}
