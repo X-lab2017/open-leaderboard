@@ -312,8 +312,8 @@ function dashboard(text, index, t_month, object) {
     return (
       <a
         href={
-          'https://dataease.x-lab.info/link/E1fK8y3R?attachParams=' +
-          btoa(jsonString) // 这里只传入 jsonString
+          'https://dataease.x-lab.info/link/eRQu8Ddt?attachParams=' +
+          btoa(jsonString)
         }
         target="_blank"
         rel="noreferrer"
@@ -326,9 +326,9 @@ function dashboard(text, index, t_month, object) {
       </a>
     );
   } else if (object === 'actor') {
-    // 在这里添加 'actor' 的特定逻辑（如果需要）
+    // 在这里添加 'actor' 的特定逻辑
   }
-  return null; // 默认情况下，如果没有匹配的对象类型
+  return null;
 }
 
 function DateTitle(props) {
