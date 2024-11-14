@@ -62,19 +62,15 @@ const activityColumns = (object, t_month) => [
       }
     },
   },
-  ...(object == 'repo'
-    ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month);
-          },
-        },
-      ]
-    : []),
+  {
+    title: t('insight_board'),
+    dataIndex: 'name',
+    align: 'center',
+    width: '10%',
+    render: function (text, row, index) {
+      return dashboard(text, index, t_month, object);
+    },
+  },
   {
     title: t('activity'),
     dataIndex: 'value',
@@ -139,19 +135,15 @@ const activityDetailColumns = (object, t_month) => [
       }
     },
   },
-  ...(object == 'repo'
-    ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month);
-          },
-        },
-      ]
-    : []),
+  {
+    title: t('insight_board'),
+    dataIndex: 'name',
+    align: 'center',
+    width: '10%',
+    render: function (text, row, index) {
+      return dashboard(text, index, t_month, object);
+    },
+  },
   {
     title: t('activity'),
     dataIndex: 'value',
@@ -246,19 +238,15 @@ const open_rankColumns = (object, t_month) => [
       }
     },
   },
-  ...(object == 'repo'
-    ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month);
-          },
-        },
-      ]
-    : []),
+  {
+    title: t('insight_board'),
+    dataIndex: 'name',
+    align: 'center',
+    width: '10%',
+    render: function (text, row, index) {
+      return dashboard(text, index, t_month, object);
+    },
+  },
   {
     title: t('influence'),
     dataIndex: 'value',
@@ -289,8 +277,8 @@ const solveDate = (year, month) => {
   return year + '年' + (month + 1) + '月';
 };
 
-function dashboard(text, index, t_month) {
-  if (index < 300) {
+function dashboard(text, index, t_month, object) {
+  if (object === 'repo' && index < 300) {
     let [org_name, repo_name] = text.split('/');
     const t_month_copy = t_month + ' ' + '00:00:00';
     let params = {
@@ -315,7 +303,32 @@ function dashboard(text, index, t_month) {
         />
       </a>
     );
+  } else if (object === 'company') {
+    console.log('text', text);
+    let params = {
+      communityName: text,
+    };
+    let jsonString = JSON.stringify(params);
+    return (
+      <a
+        href={
+          'https://dataease.x-lab.info/link/eRQu8Ddt?attachParams=' +
+          btoa(jsonString)
+        }
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          alt="dashboard"
+          src="/pics/dashboard.png"
+          style={{ height: '20px', width: '20px' }}
+        />
+      </a>
+    );
+  } else if (object === 'actor') {
+    // 在这里添加 'actor' 的特定逻辑
   }
+  return null;
 }
 
 function DateTitle(props) {
