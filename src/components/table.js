@@ -350,6 +350,7 @@ function MyTable(props) {
     year: null, // 字符串格式
     month: null, // 整数格式，0表示1月，1表示2月..., null for year type time
     type: 'month',
+    source: 'all',
     search: null,
   });
 
@@ -506,6 +507,7 @@ function MyTable(props) {
     month,
     year,
     type,
+    source,
   } = state;
   return (
     <div className="table">
@@ -518,6 +520,7 @@ function MyTable(props) {
           }}
         >
           <TablePanel
+            source={source}
             type={type}
             setState={updateDate}
             object={object}
