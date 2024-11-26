@@ -97,12 +97,12 @@ if __name__ == '__main__':
     latest_table = "REPO_latest_month_data"
     save_to_clickhouse(target_client, latest_table, latest_data)
 
-    # # 从ClickHouse查询聚合数据表
-    # print("查询聚合数据表：")
-    # aggregated_data_from_clickhouse = query_clickhouse(target_client, aggregated_table)
-    # print(aggregated_data_from_clickhouse.head())
+    # 从ClickHouse查询聚合数据表
+    print("查询聚合数据表：")
+    aggregated_data_from_clickhouse = query_clickhouse(target_client, aggregated_table)
+    print(aggregated_data_from_clickhouse.head())
 
-    # # 从ClickHouse查询最新月份数据表
-    # print("查询最新月份数据表：")
-    # latest_data_from_clickhouse = query_clickhouse(target_client, latest_table)
-    # print(latest_data_from_clickhouse.head())
+    # 从ClickHouse查询最新月份数据表
+    print("查询最新月份数据表：")
+    latest_data_from_clickhouse = query_clickhouse(target_client, latest_table)
+    print(latest_data_from_clickhouse.head())

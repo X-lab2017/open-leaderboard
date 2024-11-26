@@ -23,7 +23,7 @@ def fetch_data(year, month, index, region):
         return []
 
 # 查询 ClickHouse 数据
-def query_clickhouse(client, project_names, batch_size=50):
+def query_clickhouse(client, project_names, batch_size=100):
     all_results = []
 
     for i in range(0, len(project_names), batch_size):

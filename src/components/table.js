@@ -286,7 +286,7 @@ function dashboard(text, index, t_month, object) {
       repo_name,
       t_month_copy,
       t_month,
-      org_repo: `${org_name}/${repo_name}`, 
+      org_repo: `${org_name}/${repo_name}`,
     };
     return (
       <a
