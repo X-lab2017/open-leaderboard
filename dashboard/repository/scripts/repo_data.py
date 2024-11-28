@@ -6,36 +6,30 @@ from clickhouse_driver import Client
 
 # 月度数据下载与聚合
 def down_data_and_aggregate_monthly(url, org_repo_platform_df, metric):
-    """下载近六个月的数据并聚合到一个DataFrame"""
-    all_data = pd.DataFrame()  # 初始化空的DataFrame以聚合所有数据
-
-    # 计算近六个月的月份
+    all_data = pd.DataFrame()
     current_date = datetime.now()
     recent_six_months = [(current_date - timedelta(days=30 * i)).strftime("%Y-%m") for i in range(6)]
 
-    # 遍历每个仓库和平台
     for index, row in org_repo_platform_df.iterrows():
         org_repo = row['repo_name']
         platform = row['platform']
         
-        # 构建URL
         cur_url = f"{url}{platform}/{org_repo}/{metric}"
         response = requests.get(cur_url)
         
         if response.status_code == 200:
             data = response.json()
-            
-            # 只保留日期为"yyyy-mm"格式并且属于近六个月的数据
             filtered_data = {k: v for k, v in data.items() if re.match(r"^\d{4}-\d{2}$", k) and k in recent_six_months}
             
-            # 创建DataFrame并整合数据
             rows = []
             for month, contributors in filtered_data.items():
                 for contributor, value in contributors:
+                    if value is None:
+                        value = None  # Explicitly set to None if no value
                     rows.append([org_repo, month, contributor, value])
 
             df = pd.DataFrame(rows, columns=['org_repo', 't_month', 'contributor', 'value'])
-            all_data = pd.concat([all_data, df], axis=0)  # 聚合数据
+            all_data = pd.concat([all_data, df], axis=0)
         else:
             print(f"Error: {cur_url} - HTTP Status Code: {response.status_code}")
 
@@ -83,9 +77,9 @@ def save_to_clickhouse(client, table_name, df, columns):
     
     # 清空目标表
     client.execute(f"TRUNCATE TABLE {table_name}")
-    
+
     # 转换为记录字典列表并插入
-    records = df.to_dict('records')
+    records = df.where(pd.notnull(df), None).to_dict('records')
     client.execute(f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES", records)
     print(f"数据已成功保存到表 {table_name}")
 
