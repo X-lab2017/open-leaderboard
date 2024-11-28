@@ -303,7 +303,7 @@ function dashboard(text, index, t_month, object) {
         />
       </a>
     );
-  } else if (object === 'company') {
+  } else if (object === 'company' && index < 130) {
     console.log('text', text);
     let params = {
       communityName: text,
@@ -312,7 +312,7 @@ function dashboard(text, index, t_month, object) {
     return (
       <a
         href={
-          'https://dataease.x-lab.info/link/eRQu8Ddt?attachParams=' +
+          'https://dataease.x-lab.info/link/9X2VqE9V?attachParams=' +
           btoa(jsonString)
         }
         target="_blank"
