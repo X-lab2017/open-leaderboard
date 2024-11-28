@@ -303,7 +303,7 @@ function dashboard(text, index, t_month, object) {
         />
       </a>
     );
-  } else if (object === 'company') {
+  } else if (object === 'company' && index < 130) {
     console.log('text', text);
     let params = {
       communityName: text,
