@@ -6,25 +6,6 @@ import SwitchablePicker from './datePicker';
 const { Search } = Input;
 
 const TablePanel = (props) => {
-  // const [showRegion, setShowRegion] = useState(true);  // 控制显示地区选择框
-  // const [showAppField, setShowAppField] = useState(false); // 控制显示应用领域选择框
-  // const [showLargeModel, setShowLargeModel] = useState(false); // 控制显示大模型选择框
-  // // 处理 'repo' 的选择逻辑
-  // const handleRepoOptionChange = (value) => {
-  //   if (value === 'region') {
-  //     setShowRegion(true);
-  //     setShowAppField(false);
-  //     setShowLargeModel(false);
-  //   } else if (value === 'appField') {
-  //     setShowRegion(false);
-  //     setShowAppField(true);
-  //     setShowLargeModel(false);
-  //   } else if (value === 'largeModel') {
-  //     setShowRegion(false);
-  //     setShowAppField(false);
-  //     setShowLargeModel(true);
-  //   }
-  // };
 
   return (
     <>
