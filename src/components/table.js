@@ -12,7 +12,7 @@ import expandObject from '../util/expandObject';
 import { t } from 'i18next';
 import './table.css';
 
-const activityColumns = (object, t_month) => [
+const activityColumns = (object, boardType, t_month) => [
   {
     title: t('rank'),
     dataIndex: 'rank',
@@ -62,7 +62,7 @@ const activityColumns = (object, t_month) => [
       }
     },
   },
-  ...(object == 'repo'
+  ...(object == 'repo' && boardType == 'region'
     ? [
         {
           title: t('insight_board'),
@@ -89,7 +89,7 @@ const activityColumns = (object, t_month) => [
     render: PointRender,
   },
 ];
-const activityDetailColumns = (object, t_month) => [
+const activityDetailColumns = (object, boardType, t_month) => [
   {
     title: t('rank'),
     dataIndex: 'rank',
@@ -139,7 +139,7 @@ const activityDetailColumns = (object, t_month) => [
       }
     },
   },
-  ...(object == 'repo'
+  ...(object == 'repo' && boardType == 'region'
     ? [
         {
           title: t('insight_board'),
@@ -196,7 +196,7 @@ const activityDetailColumns = (object, t_month) => [
     align: 'center',
   },
 ];
-const open_rankColumns = (object, t_month) => [
+const open_rankColumns = (object, boardType, t_month) => [
   {
     title: t('rank'),
     dataIndex: 'rank',
@@ -246,7 +246,7 @@ const open_rankColumns = (object, t_month) => [
       }
     },
   },
-  ...(object == 'repo'
+  ...(object == 'repo' && boardType == 'region'
     ? [
         {
           title: t('insight_board'),
@@ -338,6 +338,10 @@ function MyTable(props) {
     month: null, // 整数格式，0表示1月，1表示2月..., null for year type time
     type: 'month',
     search: null,
+    boardType: 'region',
+    purpose: 'academic',
+    appDomain: 'application_software',
+    llm: 'Application_Development_Framework',
   });
 
   // 请求一次数据更新表格。如果还没读取好配置文件则不请求数据。
@@ -373,6 +377,10 @@ function MyTable(props) {
       hasDetail,
       type,
       search,
+      boardType,
+      purpose,
+      appDomain,
+      llm
     } = state;
     // 然后把表格改为加载中的状态
     setState({ ...state, ...newstate, loading: true });
@@ -385,6 +393,10 @@ function MyTable(props) {
     if (newstate.hasOwnProperty('showDetail')) showDetail = newstate.showDetail;
     if (newstate.hasOwnProperty('type')) type = newstate.type;
     if (newstate.hasOwnProperty('search')) search = newstate.search;
+    if (newstate.hasOwnProperty('boardType')) boardType = newstate.boardType;
+    if (newstate.hasOwnProperty('purpose')) purpose = newstate.purpose;
+    if (newstate.hasOwnProperty('appDomain')) appDomain = newstate.appDomain;
+    if (newstate.hasOwnProperty('llm')) llm = newstate.llm;
 
     //获取数据大屏的‘t_month’参数
     let myyear = newstate.year == null ? state.year : newstate.year;
@@ -395,15 +407,15 @@ function MyTable(props) {
 
     // 根据 index 和 showDetail 改变表格的 columns 格式
     if (index == 'activity') {
-      columns = activityColumns(object, t_month);
+      columns = activityColumns(object, boardType, t_month);
       hasDetail = true;
     }
     if (index == 'activity' && showDetail == true) {
-      columns = activityDetailColumns(object, t_month);
+      columns = activityDetailColumns(object, boardType, t_month);
       hasDetail = true;
     }
     if (index == 'open_rank') {
-      columns = open_rankColumns(object, t_month);
+      columns = open_rankColumns(object, boardType, t_month);
       hasDetail = false;
       showDetail = false;
     }
@@ -412,8 +424,20 @@ function MyTable(props) {
     if (type == 'year') {
       month = null;
     }
+
+    let url = base + index + '/' + object;
     // 以当前的属性构造请求 url
-    let url = base + index + '/' + object + '/' + region + '/';
+    if(object != 'repo' || boardType == 'region') {
+      url = url + '/' + region + '/';
+    } else {
+      if(boardType=='appDomain')
+        url = url + '/' + 'application_domain' + '/' + appDomain + '/';
+      else if(boardType=='llm')
+        url = url + '/' + 'LLM' + '/' + llm + '/';
+      else if(boardType=='purpose')
+        url = url + '/' + 'purpose' + '/' + purpose + '/';
+    }
+
     if (month === null) {
       url += year + '.json';
     } else {
@@ -467,6 +491,11 @@ function MyTable(props) {
           showDetail: showDetail,
           hasDetail: hasDetail,
           data: dataSource,
+          region: region,
+          boardType: boardType,
+          purpose: purpose,
+          appDomain: appDomain,
+          llm: llm,
         });
       })
       .catch((err) => {
@@ -493,6 +522,10 @@ function MyTable(props) {
     month,
     year,
     type,
+    boardType,
+    purpose,
+    appDomain,
+    llm,
   } = state;
   return (
     <div className="table">
@@ -514,6 +547,10 @@ function MyTable(props) {
             showDetail={showDetail}
             month={month}
             year={year}
+            boardType={boardType}
+            purpose={purpose}
+            appDomain={appDomain}
+            llm={llm}
           />
           <Table
             // Todo
