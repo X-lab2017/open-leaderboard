@@ -6,7 +6,6 @@ import SwitchablePicker from './datePicker';
 const { Search } = Input;
 
 const TablePanel = (props) => {
-
   return (
     <>
       <Row align="middle" style={{ minHeight: '50px' }} gutter={[10]}>
