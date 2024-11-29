@@ -332,8 +332,11 @@ function dashboard(text, index, t_month, object) {
       actor_login: text,
     };
     let jsonString = JSON.stringify(params);
-    console.log('actor_login_text', 'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
-          btoa(jsonString));
+    console.log(
+      'actor_login_text',
+      'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
+        btoa(jsonString)
+    );
     //https://dataease.x-lab.info/link/SToKUlSU?attachParams=eyJhY3Rvcl9sb2dpbiI6ImNobmNhcHRpb24ifQ==
     return (
       <a
@@ -341,7 +344,6 @@ function dashboard(text, index, t_month, object) {
           'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
           btoa(jsonString)
         }
-
         target="_blank"
         rel="noreferrer"
       >
