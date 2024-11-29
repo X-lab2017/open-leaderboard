@@ -6,7 +6,6 @@ import SwitchablePicker from './datePicker';
 const { Search } = Input;
 
 const TablePanel = (props) => {
-
   // const [showRegion, setShowRegion] = useState(true);  // 控制显示地区选择框
   // const [showAppField, setShowAppField] = useState(false); // 控制显示应用领域选择框
   // const [showLargeModel, setShowLargeModel] = useState(false); // 控制显示大模型选择框
@@ -26,7 +25,6 @@ const TablePanel = (props) => {
   //     setShowLargeModel(true);
   //   }
   // };
-
 
   return (
     <>
@@ -58,10 +56,10 @@ const TablePanel = (props) => {
         </Col>
       </Row>
       {(props.object === 'company' || props.object === 'actor') && (
-      <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
-        <Col>
-          {/* 条件渲染区域：选择 'company' 或 'actor' 直接显示 region */}
-          
+        <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
+          <Col>
+            {/* 条件渲染区域：选择 'company' 或 'actor' 直接显示 region */}
+
             <div style={{ marginRight: '10px', display: 'inline-block' }}>
               <span className="myFontColor">{t('region')}</span>
               <Radio.Group
@@ -74,33 +72,32 @@ const TablePanel = (props) => {
                 <Radio value={'global'}>{t('global')}</Radio>
               </Radio.Group>
             </div>
-          
-        </Col>
-      </Row>
+          </Col>
+        </Row>
       )}
       {props.object === 'repo' && (
-      <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
-        <Col>
-          {/* 如果选择了 'repo'，显示三个选择框：地区、应用领域、大模型 */}
-              <div style={{ marginRight: '10px', display: 'inline-block' }}>
-                <span className="myFontColor">{t('type')}</span>
-                <Radio.Group
-                  onChange={(e) => {
-                    props.setState({ boardType: e.target.value });
-                  }}
-                  value={props.boardType}
-                >
-                  <Radio value={'region'}>{t('region_name')}</Radio>
-                  <Radio value={'purpose'}>{t('purpose')}</Radio>
-                  <Radio value={'appDomain'}>{t('app_domain')}</Radio>
-                  <Radio value={'llm'}>{t('llm')}</Radio>
-                </Radio.Group>
-              </div>
-        </Col>
-      </Row>
+        <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
+          <Col>
+            {/* 如果选择了 'repo'，显示三个选择框：地区、应用领域、大模型 */}
+            <div style={{ marginRight: '10px', display: 'inline-block' }}>
+              <span className="myFontColor">{t('type')}</span>
+              <Radio.Group
+                onChange={(e) => {
+                  props.setState({ boardType: e.target.value });
+                }}
+                value={props.boardType}
+              >
+                <Radio value={'region'}>{t('region_name')}</Radio>
+                <Radio value={'purpose'}>{t('purpose')}</Radio>
+                <Radio value={'appDomain'}>{t('app_domain')}</Radio>
+                <Radio value={'llm'}>{t('llm')}</Radio>
+              </Radio.Group>
+            </div>
+          </Col>
+        </Row>
       )}
       {/* 动态显示区域选择框 */}
-      {props.object === 'repo' && props.boardType==='region' && (
+      {props.object === 'repo' && props.boardType === 'region' && (
         <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
           <Col>
             <div style={{ marginRight: '10px', display: 'inline-block' }}>
@@ -119,7 +116,7 @@ const TablePanel = (props) => {
         </Row>
       )}
 
-      {props.object === 'repo' && props.boardType==='purpose' && (
+      {props.object === 'repo' && props.boardType === 'purpose' && (
         <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
           <Col>
             <div style={{ marginRight: '10px', display: 'inline-block' }}>
@@ -132,7 +129,9 @@ const TablePanel = (props) => {
               >
                 <Radio value={'academic'}>{t('academic')}</Radio>
                 <Radio value={'be_invested'}>{t('invested')}</Radio>
-                <Radio value={'open_source_community'}>{t('open_source_community')}</Radio>
+                <Radio value={'open_source_community'}>
+                  {t('open_source_community')}
+                </Radio>
                 <Radio value={'personal'}>{t('personal')}</Radio>
               </Radio.Group>
             </div>
@@ -141,7 +140,7 @@ const TablePanel = (props) => {
       )}
 
       {/* 动态显示应用领域选择框 */}
-      {props.object === 'repo' && props.boardType==='appDomain' && (
+      {props.object === 'repo' && props.boardType === 'appDomain' && (
         <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
           <Col>
             <div style={{ marginRight: '10px', display: 'inline-block' }}>
@@ -152,8 +151,12 @@ const TablePanel = (props) => {
                 }}
                 value={props.appDomain}
               >
-                <Radio value={'application_software'}>{t('application_software')}</Radio>
-                <Radio value={'libraries_and_frameworks'}>{t('libraries_and_frameworks')}</Radio>
+                <Radio value={'application_software'}>
+                  {t('application_software')}
+                </Radio>
+                <Radio value={'libraries_and_frameworks'}>
+                  {t('libraries_and_frameworks')}
+                </Radio>
                 <Radio value={'software_tools'}>{t('software_tools')}</Radio>
                 <Radio value={'system_software'}>{t('system_software')}</Radio>
                 <Radio value={'non_software'}>{t('non_software')}</Radio>
@@ -164,7 +167,7 @@ const TablePanel = (props) => {
       )}
 
       {/* 动态显示应用领域选择框 */}
-      {props.object === 'repo' && props.boardType==='llm' && (
+      {props.object === 'repo' && props.boardType === 'llm' && (
         <Row justify="space-between" style={{ minHeight: '43px' }} gutter={10}>
           <Col>
             <div style={{ marginRight: '10px', display: 'inline-block' }}>
@@ -175,16 +178,20 @@ const TablePanel = (props) => {
                 }}
                 value={props.llm}
               >
-                <Radio value={'Application_Development_Framework'}>{t('application_development_framework')}</Radio>
+                <Radio value={'Application_Development_Framework'}>
+                  {t('application_development_framework')}
+                </Radio>
                 <Radio value={'fine_tuned_task'}>{t('fine_tuned_task')}</Radio>
                 <Radio value={'base_llm'}>{t('base_llm')}</Radio>
-                <Radio value={'Model_Optimization_and_Compression'}>{t('model_optimization_and_compression')}</Radio>
+                <Radio value={'Model_Optimization_and_Compression'}>
+                  {t('model_optimization_and_compression')}
+                </Radio>
               </Radio.Group>
             </div>
           </Col>
         </Row>
       )}
-         
+
       <Row justify="space-between" style={{ minHeight: '50px' }} gutter={10}>
         <Col>
           <div style={{ marginRight: '10px', display: 'inline-block' }}>

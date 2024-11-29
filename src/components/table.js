@@ -405,7 +405,7 @@ function MyTable(props) {
       boardType,
       purpose,
       appDomain,
-      llm
+      llm,
     } = state;
     // 然后把表格改为加载中的状态
     setState({ ...state, ...newstate, loading: true });
@@ -452,14 +452,13 @@ function MyTable(props) {
 
     let url = base + index + '/' + object;
     // 以当前的属性构造请求 url
-    if(object != 'repo' || boardType == 'region') {
+    if (object != 'repo' || boardType == 'region') {
       url = url + '/' + region + '/';
     } else {
-      if(boardType=='appDomain')
+      if (boardType == 'appDomain')
         url = url + '/' + 'application_domain' + '/' + appDomain + '/';
-      else if(boardType=='llm')
-        url = url + '/' + 'LLM' + '/' + llm + '/';
-      else if(boardType=='purpose')
+      else if (boardType == 'llm') url = url + '/' + 'LLM' + '/' + llm + '/';
+      else if (boardType == 'purpose')
         url = url + '/' + 'purpose' + '/' + purpose + '/';
     }
 

@@ -98,7 +98,7 @@
     "XSOSIInsightBoard": "The XSOSI Insights Dashboard is used to present various indicators and data related to the XSOSI project. The dashboard displays basic metrics such as the number of participants, current phase, total number of organizations, and total number of projects. Additionally, it presents the latest OpenRank distribution chart for the project, individual OpenRank leaderboard, latest OpenRank leaderboard for the project, and monthly change chart of the overall OpenRank value for the project. Through the XSOSI Insights Dashboard, users can understand the ranking and allowances of contributors, the overall contribution of the project, and encourage more members to actively participate in the project, thus promoting the development and prosperity of open-source projects.",
     "OSPOInsightBoard": "The X-lab OSPO Insights Dashboard primarily showcases the activity of X-lab in the open-source domain. The dashboard not only provides basic metrics such as the activity level, new stars, and new issues in X-lab's GitHub open-source projects but also presents detailed data such as OpenDigger metrics breakdown and OpenRank comparisons. Additionally, the dashboard displays data from X-lab's knowledge base on Yuque and its publication record in the open-source field. Through the X-lab OSPO Insights Dashboard, users can gain a comprehensive understanding of X-lab's activity in the open-source domain, thereby promoting collaboration and development with the open-source community."
   },
-  "type": "Type: ", 
+  "type": "Type: ",
   "region_name": "Region",
   "app_domain": "Application Domain",
   "application_software": "Application Software",
