@@ -301,7 +301,7 @@ def fetch_and_upload_issuecount_to_clickhouse(csv_file_path):
         for row in csv_reader:
             # 构造插入的 SQL 语句
             insert_query = """
-                INSERT INTO community_issue_count (community, isssuecount)
+                INSERT INTO community_issue_count (community, issuecount)
                 VALUES
             """
             values = f"('{row['community']}', {row['issuecount']})"
