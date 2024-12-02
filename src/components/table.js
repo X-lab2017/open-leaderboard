@@ -337,8 +337,35 @@ function dashboard(text, index, t_month, object) {
         />
       </a>
     );
-  } else if (object === 'actor') {
-    // 在这里添加 'actor' 的特定逻辑
+  } else if (object === 'actor' && index < 300) {
+    // 在这里添加 'actor' 的特定逻辑\
+
+    let params = {
+      actor_login: text,
+    };
+    let jsonString = JSON.stringify(params);
+    console.log(
+      'actor_login_text',
+      'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
+        btoa(jsonString)
+    );
+    //https://dataease.x-lab.info/link/SToKUlSU?attachParams=eyJhY3Rvcl9sb2dpbiI6ImNobmNhcHRpb24ifQ==
+    return (
+      <a
+        href={
+          'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
+          btoa(jsonString)
+        }
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          alt="dashboard"
+          src="/pics/dashboard.png"
+          style={{ height: '20px', width: '20px' }}
+        />
+      </a>
+    );
   }
   return null;
 }
