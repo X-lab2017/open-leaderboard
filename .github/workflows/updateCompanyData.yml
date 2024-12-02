@@ -44,9 +44,9 @@ jobs:
           cd dashboard/company/scripts
           python workflow.py
         env:
-          xlabDB_HOST: ${{ secrets.DB_HOST }}
-          xlabDB_USER: ${{ secrets.DB_USER }}
-          xlabDB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          dashboardDB_HOST: ${{ secrets.DASHBOARD_DB_HOST }}
-          dashboardDB_USER: ${{ secrets.DASHBOARD_DB_USER }}
-          dashboardDB_PASSWORD: ${{ secrets.DASHBOARD_DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DASHBOARDS_DB_HOST: ${{ secrets.DASHBOARD_DB_HOST }}
+          DASHBOARDS_DB_USER: ${{ secrets.DASHBOARD_DB_USER }}
+          DASHBOARDS_DB_PASSWORD: ${{ secrets.DASHBOARD_DB_PASSWORD }}
