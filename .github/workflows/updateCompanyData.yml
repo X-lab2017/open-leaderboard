@@ -27,11 +27,17 @@ jobs:
       - name: Start ClickHouse service
         run: |
           docker run -d --name clickhouse-server --ulimit nofile=262144:262144 -p 9000:9000 clickhouse/clickhouse-server
-          sleep 10
+          sleep 30
 
-      - name: Verify ClickHouse service
+      - name: List running containers
+        run: docker ps -a
+
+      - name: Check ClickHouse logs
+        run: docker logs clickhouse-server
+
+      - name: Verify ClickHouse is running
         run: |
-          echo "SELECT 1" | clickhouse-client --host=localhost
+          echo "SELECT 1" | docker exec -i clickhouse-server clickhouse-client --query
 
       - name: Run the Python script
         run: |
