@@ -24,6 +24,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Start ClickHouse service
+        run: |
+          docker run -d --name clickhouse-server --ulimit nofile=262144:262144 -p 9000:9000 clickhouse/clickhouse-server
+          sleep 10
+
+      - name: Verify ClickHouse service
+        run: |
+          echo "SELECT 1" | clickhouse-client --host=localhost
+
       - name: Run the Python script
         run: |
           cd dashboard/company/scripts
