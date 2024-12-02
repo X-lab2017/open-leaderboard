@@ -1,4 +1,4 @@
-name: Monthly Python Script Execution
+name: Monthly company data Script Execution
 
 on:
   schedule:
@@ -35,9 +35,9 @@ jobs:
       - name: Check ClickHouse logs
         run: docker logs clickhouse-server
 
-      - name: Verify ClickHouse is running
+      - name: Test ClickHouse query
         run: |
-          echo "SELECT 1" | docker exec -i clickhouse-server clickhouse-client --query
+          docker exec -i clickhouse-server clickhouse-client --query "SELECT 1"
 
       - name: Run the Python script
         run: |
