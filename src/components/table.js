@@ -62,7 +62,7 @@ const activityColumns = (object, boardType, t_month) => [
       }
     },
   },
-  ...(object == 'repo' && boardType == 'region'
+  ...(object != 'repo' || boardType == 'region'
     ? [
         {
           title: t('insight_board'),
@@ -139,7 +139,7 @@ const activityDetailColumns = (object, boardType, t_month) => [
       }
     },
   },
-  ...(object == 'repo' && boardType == 'region'
+  ...(object != 'repo' || boardType == 'region'
     ? [
         {
           title: t('insight_board'),
@@ -246,7 +246,7 @@ const open_rankColumns = (object, boardType, t_month) => [
       }
     },
   },
-  ...(object == 'repo' && boardType == 'region'
+  ...(object != 'repo' || boardType == 'region'
     ? [
         {
           title: t('insight_board'),
@@ -350,7 +350,6 @@ function dashboard(text, index, t_month, object) {
       'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
         btoa(jsonString)
     );
-    //https://dataease.x-lab.info/link/SToKUlSU?attachParams=eyJhY3Rvcl9sb2dpbiI6ImNobmNhcHRpb24ifQ==
     return (
       <a
         href={
