@@ -13,7 +13,7 @@ xlabDB_password = os.getenv('DB_PASSWORD')
 
 dashboard_host = os.getenv('DASHBOARDS_DB_HOST')
 dashboard_user = os.getenv('DASHBOARDS_DB_USER')
-dashboard_password = os.getenv('DASHBOARDS_DB_PASSWORD')
+dashboard_password = os.getenv('DASHBOARDS_DB_PASSWORD', '').strip()
 
 
 def fetch_and_upload_starcount_to_clickhouse(csv_file_path):
