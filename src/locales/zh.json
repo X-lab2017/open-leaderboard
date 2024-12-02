@@ -97,5 +97,23 @@
     "DeveloperContributionBoard": "开发者个人贡献大屏从开发者的角度出发，围绕开发者在 GitHub 上的协作、社交等行为，展示出开发者在 GitHub 上完整的用户画像，并通过可视化的形式展现。通过开发者个人贡献大屏，可以帮助用户快速且深入地了解开发者过往行为，更全面地认识开发者。",
     "XSOSIInsightBoard": "XSOSI 洞察大屏",
     "OSPOInsightBoard": "X-lab OSPO 大屏"
-  }
+  },
+  "type": "类型: ",
+  "region_name": "地区",
+  "app_domain": "应用领域",
+  "application_software": "应用软件",
+  "libraries_and_frameworks": "库和框架",
+  "software_tools": "软件工具",
+  "system_software": "系统软件",
+  "non_software": "非软件相关",
+  "llm": "大语言模型",
+  "purpose": "目的",
+  "academic": "学术",
+  "invested": "被投资",
+  "open_source_community": "开源社区",
+  "personal": "个人",
+  "application_development_framework": "应用开发框架",
+  "fine_tuned_task": "微调任务",
+  "base_llm": "基础大语言模型",
+  "model_optimization_and_compression": "模型量化与压缩"
 }
