@@ -16,7 +16,7 @@ dashboard_user = os.getenv('DASHBOARDS_DB_USER')
 dashboard_password = os.getenv('DASHBOARDS_DB_PASSWORD', '').strip()
 
 
-def fetch_and_upload_contributorcount_by_month_to_clickhouse(csv_file_path):
+def fetch_and_upload_contributorcount_by_month_to_clickhouse(csv_file_path, data):
     # Step 1: 生成 CSV 文件并填充数据
     with open(csv_file_path, 'w', newline='') as csvfile:
         fieldnames = ['community', 'repository', 'month', 'count']
@@ -125,7 +125,7 @@ def fetch_and_upload_contributorcount_by_month_to_clickhouse(csv_file_path):
     print("筛选后的 CSV 数据已成功上传到目标 ClickHouse 数据库")
 
 
-def fetch_and_upload_api_data_to_clickhouse(csv_file_path):
+def fetch_and_upload_api_data_to_clickhouse(csv_file_path, data):
     # 获取最近6个月的日期
     def get_last_six_months():
         today = datetime.today()
@@ -247,7 +247,7 @@ with open('../data/repository_names.json', 'r') as file:
 
 
 fetch_and_upload_contributorcount_by_month_to_clickhouse(
-    '../data/community_contributorbymonth.csv')
+    '../data/community_contributorbymonth.csv', data)
 
 fetch_and_upload_api_data_to_clickhouse(
-    '../data/community_repository_data_cleaned.csv')
+    '../data/community_repository_data_cleaned.csv', data)
