@@ -42,7 +42,7 @@ jobs:
       - name: Run the Python script
         run: |
           cd dashboard/company/scripts
-          python workflow.py
+          python workflow_2.py
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
