@@ -1,4 +1,4 @@
-name: Monthly company data Script Execution
+name: Monthly company data Script Execution 4
 
 on:
   schedule:
@@ -42,7 +42,7 @@ jobs:
       - name: Run the Python script
         run: |
           cd dashboard/company/scripts
-          python workflow.py
+          python workflow_4.py
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
