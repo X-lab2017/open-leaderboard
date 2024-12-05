@@ -1,4 +1,4 @@
-name: Monthly company data Script Execution
+name: Monthly company data Script Execution 2
 
 on:
   schedule:
