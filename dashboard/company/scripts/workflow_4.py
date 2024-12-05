@@ -138,7 +138,7 @@ def fetch_and_upload_api_data_to_clickhouse(csv_file_path):
     openrank_url_template = "https://oss.x-lab.info/open_digger/github/{}/openrank.json"
 
     # 数据存储
-    data = []
+    apidata = []
 
     # 从URL获取数据并过滤最近六个月的数据
     def fetch_and_filter(url, months):
@@ -165,7 +165,7 @@ def fetch_and_upload_api_data_to_clickhouse(csv_file_path):
 
             # 将数据存储到目标格式
             for month in last_six_months:
-                data.append({
+                apidata.append({
                     "community": community,
                     "repo_name": repo_name,
                     "month": month,
@@ -174,7 +174,7 @@ def fetch_and_upload_api_data_to_clickhouse(csv_file_path):
                 })
 
     # 转换为DataFrame
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(apidata)
 
     # 删除 activity 和 openrank 列中有空值的行
     df_cleaned = df.dropna(subset=['activity', 'openrank'])
