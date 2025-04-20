@@ -8,45 +8,61 @@ on:
 
 jobs:
   run_python_script:
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DASHBOARD_DB_HOST: ${{ secrets.DASHBOARD_DB_HOST }}
+      DASHBOARD_DB_USER: ${{ secrets.DASHBOARD_DB_USER }}
+      DASHBOARD_DB_PASSWORD: ${{ secrets.DASHBOARD_DB_PASSWORD }}
+
     runs-on: ubuntu-latest # 使用 GitHub 提供的 Ubuntu 环境
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4 # 检出仓库代码
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
         with:
           python-version: '3.12' # 设置 Python 版本
 
       - name: Install Python dependencies
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Start ClickHouse service
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
         run: |
           docker run -d --name clickhouse-server --ulimit nofile=262144:262144 -p 9000:9000 clickhouse/clickhouse-server
           sleep 30
 
       - name: List running containers
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
         run: docker ps -a
 
       - name: Check ClickHouse logs
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
         run: docker logs clickhouse-server
 
       - name: Test ClickHouse query
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
         run: |
           docker exec -i clickhouse-server clickhouse-client --query "SELECT 1"
 
       - name: Run the Python script
+        if: ${{ env.DB_HOST && env.DB_USER && env.DB_PASSWORD && env.DASHBOARD_DB_HOST && env.DASHBOARD_DB_USER && env.DASHBOARD_DB_PASSWORD }}
         run: |
           cd dashboard/company/scripts
           python workflow_3.py
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DASHBOARDS_DB_HOST: ${{ secrets.DASHBOARD_DB_HOST }}
-          DASHBOARDS_DB_USER: ${{ secrets.DASHBOARD_DB_USER }}
-          DASHBOARDS_DB_PASSWORD: ${{ secrets.DASHBOARD_DB_PASSWORD }}
+          DB_HOST: ${{ env.DB_HOST }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+          DASHBOARDS_DB_HOST: ${{ env.DASHBOARD_DB_HOST }}
+          DASHBOARDS_DB_USER: ${{ env.DASHBOARD_DB_USER }}
+          DASHBOARDS_DB_PASSWORD: ${{ env.DASHBOARD_DB_PASSWORD }}
