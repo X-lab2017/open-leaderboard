@@ -20,16 +20,16 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
         if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
         with:
           version: 10
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
         with:
           node-version: '22'
