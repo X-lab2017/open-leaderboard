@@ -9,29 +9,42 @@ on:
 
 jobs:
   publish:
+    env:
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_REGION: ${{ secrets.OSS_REGION }}
+      OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+      OSS_TARGET_PATH: ${{ secrets.OSS_TARGET_PATH }}
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+        if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
 
       - uses: pnpm/action-setup@v2
+        if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
         with:
-          version: 8
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
+        if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
         with:
-          node-version: '16'
+          node-version: '22'
           cache: 'pnpm'
 
       - run: pnpm i --frozen-lockfile
+        if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
       - run: pnpm build
+        if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
         env:
           CI: false
 
       - name: Publish to OSS
         uses: tvrcgo/upload-to-oss@master
+        if: ${{ env.OSS_ACCESS_KEY_ID && env.OSS_ACCESS_KEY_SECRET && env.OSS_REGION && env.OSS_BUCKET && env.OSS_TARGET_PATH }}
         with:
           key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
           key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
