@@ -42,7 +42,7 @@ To make sure we can easily recap what happened previously, we have prepared a pu
 
 ### Installation
 
-Please make sure that `node v16.x` and `pnpm v8.x` are used in your environment. [nvm](https://github.com/nvm-sh/nvm) is recommended to manage node versions on your machine.
+Please make sure that `node v22.x` and `pnpm v10.x` are used in your environment. [nvm](https://github.com/nvm-sh/nvm) is recommended to manage node versions on your machine.
 
 1. clone this project
 ```
