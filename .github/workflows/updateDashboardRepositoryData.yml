@@ -11,19 +11,28 @@ jobs:
     runs-on: ubuntu-latest # 使用 GitHub 提供的 Ubuntu 环境
 
     steps:
+      - name: Check if all secret exists
+        run: |
+          # 如果所有运行本 job 的 secrets 存在，则将 SECRETS_ALL_EXISTS 设为 true
+          echo "SECRETS_ALL_EXISTS=${{ secrets.DB_HOST && secrets.DB_USER && secrets.DB_PASSWORD && secrets.DASHBOARD_DB_HOST && secrets.DASHBOARD_DB_USER && secrets.DASHBOARD_DB_PASSWORD }}" >> $GITHUB_ENV
+
       - name: Checkout code
-        uses: actions/checkout@v3 # 检出仓库代码
+        uses: actions/checkout@v4 # 检出仓库代码
+        if: ${{ env.SECRETS_ALL_EXISTS }}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
+        if: ${{ env.SECRETS_ALL_EXISTS }}
         with:
           python-version: '3.10' # 设置 Python 版本
 
       - name: Install Python dependencies
+        if: ${{ env.SECRETS_ALL_EXISTS }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # 安装 Python 依赖
       - name: Run the Python script
+        if: ${{ env.SECRETS_ALL_EXISTS }}
         run: |
           python dashboard/company/scripts/workflow.py  # 执行 workflow.py 脚本
           python dashboard/repository/scripts/repo_name.py
