@@ -578,8 +578,8 @@ function MyTable(props) {
         <Card
           style={{
             width: '100%',
-            background: '#FFFFFF',
-            boxShadow: '0px 15px 20px 15px #F7F7FF',
+            background: '#000',
+            boxShadow: '0px 15px 20px 15px #000',
           }}
         >
           <TablePanel
@@ -606,6 +606,7 @@ function MyTable(props) {
             pagination={{ position: ['bottomRight'], pageSize: showSize }}
             loading={loading}
             scroll={{ x: 'max-content' }}
+            style={{ backgroundColor: '#000' }}
           />
           <Row style={{ marginTop: '10px' }}>
             <Col span={24}>
