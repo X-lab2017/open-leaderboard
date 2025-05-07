@@ -23,15 +23,15 @@ const activityColumns = (object, boardType, t_month) => [
   },
   ...(object == 'actor'
     ? [
-        {
-          title: t('avatar'),
-          dataIndex: 'id',
-          width: '5%',
-          align: 'center',
-          render: MyAvatar,
-          fixed: 'left',
-        },
-      ]
+      {
+        title: t('avatar'),
+        dataIndex: 'id',
+        width: '5%',
+        align: 'center',
+        render: MyAvatar,
+        fixed: 'left',
+      },
+    ]
     : []),
   {
     title: '',
@@ -64,16 +64,16 @@ const activityColumns = (object, boardType, t_month) => [
   },
   ...(object != 'repo' || boardType == 'region'
     ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month, object);
-          },
+      {
+        title: t('insight_board'),
+        dataIndex: 'name',
+        align: 'center',
+        width: '10%',
+        render: function (text, row, index) {
+          return dashboard(text, index, t_month, object);
         },
-      ]
+      },
+    ]
     : []),
   {
     title: t('activity'),
@@ -100,15 +100,15 @@ const activityDetailColumns = (object, boardType, t_month) => [
   },
   ...(object == 'actor'
     ? [
-        {
-          title: t('avatar'),
-          dataIndex: 'id',
-          width: '5%',
-          align: 'center',
-          render: MyAvatar,
-          fixed: 'left',
-        },
-      ]
+      {
+        title: t('avatar'),
+        dataIndex: 'id',
+        width: '5%',
+        align: 'center',
+        render: MyAvatar,
+        fixed: 'left',
+      },
+    ]
     : []),
   {
     title: '',
@@ -141,16 +141,16 @@ const activityDetailColumns = (object, boardType, t_month) => [
   },
   ...(object != 'repo' || boardType == 'region'
     ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month, object);
-          },
+      {
+        title: t('insight_board'),
+        dataIndex: 'name',
+        align: 'center',
+        width: '10%',
+        render: function (text, row, index) {
+          return dashboard(text, index, t_month, object);
         },
-      ]
+      },
+    ]
     : []),
   {
     title: t('activity'),
@@ -207,15 +207,15 @@ const open_rankColumns = (object, boardType, t_month) => [
   },
   ...(object == 'actor'
     ? [
-        {
-          title: t('avatar'),
-          dataIndex: 'id',
-          width: '5%',
-          align: 'center',
-          render: MyAvatar,
-          fixed: 'left',
-        },
-      ]
+      {
+        title: t('avatar'),
+        dataIndex: 'id',
+        width: '5%',
+        align: 'center',
+        render: MyAvatar,
+        fixed: 'left',
+      },
+    ]
     : []),
   {
     title: '',
@@ -248,16 +248,16 @@ const open_rankColumns = (object, boardType, t_month) => [
   },
   ...(object != 'repo' || boardType == 'region'
     ? [
-        {
-          title: t('insight_board'),
-          dataIndex: 'name',
-          align: 'center',
-          width: '10%',
-          render: function (text, row, index) {
-            return dashboard(text, index, t_month, object);
-          },
+      {
+        title: t('insight_board'),
+        dataIndex: 'name',
+        align: 'center',
+        width: '10%',
+        render: function (text, row, index) {
+          return dashboard(text, index, t_month, object);
         },
-      ]
+      },
+    ]
     : []),
   {
     title: t('influence'),
@@ -348,7 +348,7 @@ function dashboard(text, index, t_month, object) {
     console.log(
       'actor_login_text',
       'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
-        btoa(jsonString)
+      btoa(jsonString)
     );
     return (
       <a
@@ -408,6 +408,12 @@ function MyTable(props) {
     });
   }, [props]);
 
+  const expandData = () => {
+    setState({
+      ...state,
+      showSize: state.showSize + 25,
+    });
+  };
   const updateDate = (newstate) => {
     console.log('table update', newstate);
     // 先获取原先的表格属性
@@ -602,13 +608,39 @@ function MyTable(props) {
             // scroll={{ x: 1500, y: 300 }}
             columns={columns}
             rowKey={(record) => record.rank}
-            dataSource={data}
-            pagination={{ position: ['bottomRight'], pageSize: showSize }}
+            dataSource={data.slice(0, Math.min(showSize, data.length))}
+            pagination={false}
             loading={loading}
             scroll={{ x: 'max-content' }}
           />
           <Row style={{ marginTop: '10px' }}>
-            <Col span={24}>
+            <Col span={12}>
+              <Row justify="start">
+                <Col>
+                  {showSize < data.length ? (
+                    <a
+                      style={{
+                        color: '#FFCC19',
+                        fontSize: '18px',
+                      }}
+                      onClick={expandData}
+                    >
+                      {t('showMore') + '>>'}
+                    </a>
+                  ) : (
+                    <span
+                      style={{
+                        color: 'gray',
+                        fontSize: '18px',
+                      }}
+                    >
+                      {t('noMore')}
+                    </span>
+                  )}
+                </Col>
+              </Row>
+            </Col>
+            <Col span={12}>
               <Row justify="end">
                 <Col>
                   <QAmiss />
