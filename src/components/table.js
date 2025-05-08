@@ -408,6 +408,12 @@ function MyTable(props) {
     });
   }, [props]);
 
+  const expandData = () => {
+    setState({
+      ...state,
+      showSize: state.showSize + 25,
+    });
+  };
   const updateDate = (newstate) => {
     console.log('table update', newstate);
     // 先获取原先的表格属性
@@ -602,13 +608,39 @@ function MyTable(props) {
             // scroll={{ x: 1500, y: 300 }}
             columns={columns}
             rowKey={(record) => record.rank}
-            dataSource={data}
-            pagination={{ position: ['bottomRight'], pageSize: showSize }}
+            dataSource={data.slice(0, Math.min(showSize, data.length))}
+            pagination={false}
             loading={loading}
             scroll={{ x: 'max-content' }}
           />
           <Row style={{ marginTop: '10px' }}>
-            <Col span={24}>
+            <Col span={12}>
+              <Row justify="start">
+                <Col>
+                  {showSize < data.length ? (
+                    <a
+                      style={{
+                        color: '#FFCC19',
+                        fontSize: '18px',
+                      }}
+                      onClick={expandData}
+                    >
+                      {t('showMore') + '>>'}
+                    </a>
+                  ) : (
+                    <span
+                      style={{
+                        color: 'gray',
+                        fontSize: '18px',
+                      }}
+                    >
+                      {t('noMore')}
+                    </span>
+                  )}
+                </Col>
+              </Row>
+            </Col>
+            <Col span={12}>
               <Row justify="end">
                 <Col>
                   <QAmiss />
