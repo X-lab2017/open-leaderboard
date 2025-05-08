@@ -23,15 +23,15 @@ const activityColumns = (object, boardType, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -64,16 +64,16 @@ const activityColumns = (object, boardType, t_month) => [
   },
   ...(object != 'repo' || boardType == 'region'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function (text, row, index) {
-          return dashboard(text, index, t_month, object);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month, object);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -100,15 +100,15 @@ const activityDetailColumns = (object, boardType, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -141,16 +141,16 @@ const activityDetailColumns = (object, boardType, t_month) => [
   },
   ...(object != 'repo' || boardType == 'region'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function (text, row, index) {
-          return dashboard(text, index, t_month, object);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month, object);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('activity'),
@@ -207,15 +207,15 @@ const open_rankColumns = (object, boardType, t_month) => [
   },
   ...(object == 'actor'
     ? [
-      {
-        title: t('avatar'),
-        dataIndex: 'id',
-        width: '5%',
-        align: 'center',
-        render: MyAvatar,
-        fixed: 'left',
-      },
-    ]
+        {
+          title: t('avatar'),
+          dataIndex: 'id',
+          width: '5%',
+          align: 'center',
+          render: MyAvatar,
+          fixed: 'left',
+        },
+      ]
     : []),
   {
     title: '',
@@ -248,16 +248,16 @@ const open_rankColumns = (object, boardType, t_month) => [
   },
   ...(object != 'repo' || boardType == 'region'
     ? [
-      {
-        title: t('insight_board'),
-        dataIndex: 'name',
-        align: 'center',
-        width: '10%',
-        render: function (text, row, index) {
-          return dashboard(text, index, t_month, object);
+        {
+          title: t('insight_board'),
+          dataIndex: 'name',
+          align: 'center',
+          width: '10%',
+          render: function (text, row, index) {
+            return dashboard(text, index, t_month, object);
+          },
         },
-      },
-    ]
+      ]
     : []),
   {
     title: t('influence'),
@@ -348,7 +348,7 @@ function dashboard(text, index, t_month, object) {
     console.log(
       'actor_login_text',
       'https://dataease.x-lab.info/link/SToKUlSU?attachParams=' +
-      btoa(jsonString)
+        btoa(jsonString)
     );
     return (
       <a
