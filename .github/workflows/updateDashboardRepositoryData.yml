@@ -35,3 +35,4 @@ jobs:
           dashboardDB_HOST: ${{ secrets.DASHBOARD_DB_HOST }}
           dashboardDB_USER: ${{ secrets.DASHBOARD_DB_USER }}
           dashboardDB_PASSWORD: ${{ secrets.DASHBOARD_DB_PASSWORD }}
+          github_TOKEN: ${{ secrets.GITHUB_TOKEN }}
