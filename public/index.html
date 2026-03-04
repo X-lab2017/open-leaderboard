@@ -1,52 +1,1626 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Open Leaderboard"
-    />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenLeaderboard</title>
+  <!-- Design: Open source + tech style (ui-ux-pro-max) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://open-digger.cn/open_leaderboard/js/tailwindcss.3.4.17.js"></script>
+  <script src="https://open-digger.cn/open_leaderboard/js/iconify-icon.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Fira Sans', 'system-ui', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            // Design system: dark tech + status green (OpenLeaderboard)
+            dark: {
+              900: '#0F172A',
+              800: '#1E293B',
+              700: '#334155',
+              600: '#475569',
+              500: '#64748B',
+            },
+            accent: {
+              DEFAULT: '#22C55E',
+              hover: '#16A34A',
+              muted: 'rgba(34, 197, 94, 0.15)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      .star, .particle, .transition-all, .animate-spin { animation: none !important; }
+      .network-canvas { animation: none !important; }
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #22C55E 0%, #4ADE80 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .title-background {
+      position: relative;
+      overflow: hidden;
+      /* 负边距上拉，使动效覆盖至页面顶部（含 banner 背后） */
+      margin-top: -7rem;
+      padding: calc(2rem + 7rem) 1rem 2.5rem;
+      border-radius: 0 0 1rem 1rem;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+    }
+    
+    /* 网络节点画布 */
+    .network-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+    
+    /* 星星闪烁动画 */
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% {
+        opacity: 0.2;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+    
+    /* 粒子飘动动画（科技绿） */
+    .particle {
+      position: absolute;
+      background: radial-gradient(circle, rgba(34, 197, 94, 0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 15s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.3;
+      }
+      25% {
+        transform: translate(30px, -30px) scale(1.2);
+        opacity: 0.6;
+      }
+      50% {
+        transform: translate(-20px, -50px) scale(0.8);
+        opacity: 0.4;
+      }
+      75% {
+        transform: translate(20px, -20px) scale(1.1);
+        opacity: 0.5;
+      }
+    }
+    
+    /* 页码下拉菜单样式 */
+    .page-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .page-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      background: #1E293B;
+      border: 1px solid #475569;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      z-index: 50;
+      max-height: 200px;
+      overflow-y: auto;
+      min-width: 80px;
+      display: none;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 #1E293B;
+    }
+    
+    .page-dropdown-menu::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .page-dropdown-menu::-webkit-scrollbar-track {
+      background: #1E293B;
+      border-radius: 0.5rem;
+    }
+    
+    .page-dropdown-menu::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 3px;
+    }
+    
+    .page-dropdown-menu::-webkit-scrollbar-thumb:hover {
+      background: #64748B;
+    }
+    
+    .page-dropdown-menu.show {
+      display: block;
+    }
+    
+    .page-dropdown-item {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      color: #e2e8f0;
+      transition: background-color 0.2s;
+      text-align: center;
+      white-space: nowrap;
+    }
+    
+    .page-dropdown-item:hover {
+      background-color: #334155;
+    }
+    
+    .page-dropdown-item.active {
+      background-color: #22C55E;
+      color: #0F172A;
+    }
+    
+    /* 左侧筛选下拉菜单：统一样式 */
+    .filter-select {
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+      padding-right: 2.25rem;
+    }
+    .filter-select:hover {
+      border-color: #64748b;
+      background-color: rgba(51, 65, 85, 0.8);
+    }
+    .filter-select option {
+      background: #1E293B;
+      color: #F8FAFC;
+    }
+    
+    /* 时间选择器下拉面板 */
+    .time-picker-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 0.25rem;
+      background: #1E293B;
+      border: 1px solid #475569;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+      z-index: 50;
+      padding: 0.75rem;
+      display: none;
+    }
+    .time-picker-dropdown.show {
+      display: block;
+    }
+    .time-picker-month-btn {
+      width: calc(33.333% - 0.25rem);
+      padding: 0.375rem 0.25rem;
+      font-size: 0.75rem;
+      border-radius: 0.375rem;
+    }
+  </style>
+</head>
+<body class="bg-dark-900 min-h-screen text-slate-100 font-sans antialiased">
+  <!-- 浮动导航：开源科技风 -->
+  <header class="fixed top-4 left-4 right-4 z-50 max-w-7xl mx-auto">
+    <div class="bg-dark-800/95 backdrop-blur-sm border border-dark-600 rounded-xl shadow-xl px-4 md:px-6">
+      <div class="flex items-center justify-between h-14">
+        <div class="flex items-center gap-3">
+          <img src="https://open-digger.cn/open_leaderboard/images/logo.png" alt="OpenLeaderboard Logo" class="h-9 w-9 object-contain">
+          <span class="text-lg font-mono font-semibold text-slate-100">OpenLeaderboard</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button 
+            id="languageToggle"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-dark-700 text-slate-200 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-900"
+            onclick="toggleLanguage()"
+          >
+            <iconify-icon icon="mdi:translate" class="text-lg"></iconify-icon>
+            <span id="languageText">中文</span>
+          </button>
+          <a 
+            href="https://github.com/X-lab2017/open-leaderboard" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="flex items-center justify-center w-10 h-10 rounded-lg bg-dark-700 text-slate-200 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-900"
+            title="GitHub Repository"
+          >
+            <iconify-icon icon="mdi:github" class="text-xl"></iconify-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>Open Leaderboard</title>
-    <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?7c55cb11f5ddb75495189f40881b8f47";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-    </script>
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-10">
+    <!-- 网站标题：科技感背景 + 绿色强调 -->
+    <div class="text-center title-background">
+      <canvas id="networkCanvas" class="network-canvas"></canvas>
+      <div id="starsContainer"></div>
+      <div id="particlesContainer"></div>
+      <div class="relative z-10">
+        <h1 id="mainTitle" class="text-4xl sm:text-5xl font-mono font-bold text-slate-100"></h1>
+        <p id="updateTime" class="text-sm text-slate-500 mt-3"></p>
+      </div>
+    </div>
 
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <!-- 主要内容：左侧筛选 + 右侧排行榜 -->
+    <div class="flex gap-6">
+      <div id="filterPanel" class="w-1/6 flex-shrink-0 transition-all duration-300 overflow-hidden">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 sticky top-24 shadow-lg">
+          <button 
+            id="filterToggle"
+            class="w-full text-base font-mono font-semibold mb-4 flex items-center justify-between gap-2 text-slate-200 hover:text-accent transition-colors duration-200 whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800 rounded-lg"
+            onclick="toggleFilterPanel()"
+            title="点击折叠/展开筛选条件"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <iconify-icon icon="mdi:filter" class="flex-shrink-0"></iconify-icon>
+              <span data-i18n="filterConditions" id="filterTitleText" class="truncate">筛选条件</span>
+            </div>
+            <iconify-icon id="filterToggleIcon" icon="mdi:chevron-up" class="transition-transform duration-200 flex-shrink-0"></iconify-icon>
+          </button>
+          <div id="filterContent" class="space-y-4">
+            <div>
+              <label class="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
+                <iconify-icon icon="mdi:earth"></iconify-icon>
+                <span data-i18n="leaderboardScope">排行范围</span>
+              </label>
+              <select 
+                id="scopeSelect"
+                class="filter-select w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer"
+                onchange="handleFilterChange()"
+              >
+                <option value="" data-i18n="loading">加载中...</option>
+              </select>
+            </div>
+            <div>
+              <label class="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
+                <iconify-icon icon="mdi:chart-bar"></iconify-icon>
+                <span data-i18n="rankingUnit">排行单元</span>
+              </label>
+              <select 
+                id="unitSelect"
+                class="filter-select w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer"
+                onchange="handleFilterChange()"
+              >
+                <option value="" data-i18n="loading">加载中...</option>
+              </select>
+            </div>
+            <div>
+              <label class="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
+                <iconify-icon icon="mdi:calendar"></iconify-icon>
+                <span data-i18n="timeRangeType">时间范围类型</span>
+              </label>
+              <select 
+                id="timeTypeSelect"
+                class="filter-select w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer"
+                onchange="handleTimeTypeChange()"
+              >
+                <option value="month" data-i18n-option="byMonth">按月</option>
+                <option value="year" data-i18n-option="byYear">按年</option>
+              </select>
+            </div>
+            <div id="timeRangeContainer">
+              <!-- 由 initTimeInputs 动态生成左右箭头选择器 -->
+            </div>
+            <div>
+              <label class="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
+                <iconify-icon icon="mdi:magnify"></iconify-icon>
+                <span data-i18n="search">搜索</span>
+              </label>
+              <input 
+                type="text"
+                id="openLeaderboardSearchInput"
+                placeholder=""
+                data-i18n-placeholder="searchPlaceholder"
+                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-accent focus:border-accent/50 hover:border-slate-500 hover:bg-dark-600/50 transition-colors duration-200"
+                oninput="handleSearchChange()"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+      <!-- 右侧排行榜内容区域 -->
+      <div id="leaderboardContent" class="flex-1 space-y-4 min-w-0">
+        <!-- 内容将通过JavaScript动态生成 -->
+      </div>
+    </div>
+  </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+  <script>
+    // 数据根路径
+    const DATA_BASE_URL = 'https://oss.open-digger.cn/open_leaderboard/';
+    
+    // 语言设置
+    let currentLanguage = localStorage.getItem('language') || 'zh';
+    
+    // 元数据
+    let metaData = null;
+    
+    // 分页设置
+    const ITEMS_PER_PAGE = 10;
+    let currentPage = 1;
+    let currentLeaderboardData = [];
+    let searchKeyword = ''; // 搜索关键词
+    let savedDropdownScrollTop = 0; // 保存下拉菜单的滚动位置
+    let shouldRestoreDropdownScroll = false; // 是否需要恢复下拉菜单滚动位置
+    
+    // 翻译对象
+    const translations = {
+      zh: {
+        languageText: '中文',
+        filterConditions: '筛选条件',
+        leaderboardScope: '排行范围',
+        rankingUnit: '排行单元',
+        timeRangeType: '时间范围类型',
+        timeSelection: '时间选择',
+        global: '全域',
+        techArea: '技术领域',
+        repository: '仓库',
+        project: '项目',
+        entity: '发起实体',
+        country: '发起国家',
+        byMonth: '按月',
+        byYear: '按年',
+        leaderboard: '排行榜',
+        dataPoweredBy: '数据支持',
+        supportedBy: '官方支持',
+        loading: '加载中...',
+        error: '加载失败',
+        previousPage: '上一页',
+        nextPage: '下一页',
+        page: '页',
+        totalItems: '共',
+        items: '条',
+        headerRank: '#',
+        headerName: '名称',
+        headerOpenRank: 'OpenRank',
+        headerCommunityParticipants: '参与者数量',
+        search: '搜索',
+        searchPlaceholder: '输入名称或ID'
+      },
+      en: {
+        languageText: 'English',
+        filterConditions: 'Filters',
+        leaderboardScope: 'Data Scope',
+        rankingUnit: 'Ranking Unit',
+        timeRangeType: 'Time Range Type',
+        timeSelection: 'Time Selection',
+        global: 'Global',
+        techArea: 'Tech Area',
+        repository: 'Repository',
+        project: 'Project',
+        entity: 'Entity',
+        country: 'Country',
+        byMonth: 'By Month',
+        byYear: 'By Year',
+        leaderboard: 'Leaderboard',
+        dataPoweredBy: 'Data Powered By',
+        supportedBy: 'Supported By',
+        loading: 'Loading...',
+        error: 'Failed to load',
+        previousPage: 'Previous',
+        nextPage: 'Next',
+        page: 'Page',
+        totalItems: 'Total',
+        items: 'items',
+        headerRank: '#',
+        headerName: 'Name',
+        headerOpenRank: 'OpenRank',
+        headerCommunityParticipants: 'Participants',
+        search: 'Search',
+        searchPlaceholder: 'Enter name or ID'
+      }
+    };
+
+    // 切换语言
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'zh' ? 'en' : 'zh';
+      localStorage.setItem('language', currentLanguage);
+      document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
+      updateTranslations();
+      populateFilters(true); // 重新填充过滤器以更新选项文本，保持当前选择的值
+    }
+
+    // 更新翻译
+    function updateTranslations() {
+      const t = translations[currentLanguage];
+      
+      // 更新所有带有 data-i18n 属性的元素
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) {
+          el.textContent = t[key];
+        }
+      });
+
+      // 更新语言切换按钮文本
+      const languageText = document.getElementById('languageText');
+      if (languageText) {
+        languageText.textContent = t.languageText;
+      }
+
+      // 更新 select 选项
+      document.querySelectorAll('select option[data-i18n-option]').forEach(option => {
+        const key = option.getAttribute('data-i18n-option');
+        if (t[key]) {
+          option.textContent = t[key];
+        }
+      });
+
+      // 更新 input placeholder
+      document.querySelectorAll('input[data-i18n-placeholder]').forEach(input => {
+        const key = input.getAttribute('data-i18n-placeholder');
+        if (t[key]) {
+          input.placeholder = t[key];
+        }
+      });
+
+      // 更新主标题，并添加颜色标识
+      const mainTitle = document.getElementById('mainTitle');
+      if (mainTitle) {
+        if (currentLanguage === 'zh') {
+          mainTitle.innerHTML = '一得之见，<span class="text-accent">开源世界</span>';
+        } else {
+          mainTitle.innerHTML = 'An insight to the world of <span class="text-accent">open source</span>';
+        }
+      }
+
+      // 更新页面标题
+      document.title = currentLanguage === 'zh' 
+        ? 'OpenLeaderboard - 开源项目排行榜' 
+        : 'OpenLeaderboard - Open Source Leaderboard';
+
+      // 更新更新时间显示
+      updateUpdateTimeDisplay();
+    }
+
+    // 获取翻译文本
+    function t(key) {
+      return translations[currentLanguage][key] || key;
+    }
+
+    function formatUpdateTime(timestamp) {
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      return currentLanguage === 'zh'
+        ? `数据更新于 ${year} 年 ${month} 月`
+        : `Data updated at ${date.toLocaleString('en', { month: 'long' })}, ${year}`;
+    }
+
+    // 更新更新时间显示
+    function updateUpdateTimeDisplay() {
+      const updateTimeElement = document.getElementById('updateTime');
+      if (updateTimeElement && metaData && metaData.updatedAt) {
+        updateTimeElement.textContent = formatUpdateTime(metaData.updatedAt);
+      }
+    }
+
+    // 加载元数据
+    async function loadMetaData() {
+      try {
+        const response = await fetch(`${DATA_BASE_URL}meta.json`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        metaData = await response.json();
+        updateUpdateTimeDisplay();
+        populateFilters();
+      } catch (error) {
+        console.error('Failed to load meta data:', error);
+        const contentArea = document.getElementById('leaderboardContent');
+        contentArea.innerHTML = `
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+            <div class="text-center text-red-400">
+              <iconify-icon icon="mdi:alert-circle" class="text-3xl mb-2" aria-hidden="true"></iconify-icon>
+              <p>${t('error')}: ${error.message}</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // 填充过滤器选项
+    function populateFilters(preserveValues = false) {
+      if (!metaData) return;
+
+      // 保存当前选中的值（如果需要保持）
+      const scopeSelect = document.getElementById('scopeSelect');
+      const unitSelect = document.getElementById('unitSelect');
+      const timeTypeSelect = document.getElementById('timeTypeSelect');
+      const savedScope = preserveValues && scopeSelect ? scopeSelect.value : null;
+      const savedUnit = preserveValues && unitSelect ? unitSelect.value : null;
+      const savedTimeType = preserveValues && timeTypeSelect ? timeTypeSelect.value : null;
+
+      // 填充 scope 选择器
+      scopeSelect.innerHTML = '';
+      if (metaData.scopes && Array.isArray(metaData.scopes)) {
+        metaData.scopes.forEach(scope => {
+          const option = document.createElement('option');
+          option.value = scope.name;
+          option.textContent = currentLanguage === 'zh' ? (scope.name_zh || scope.name) : scope.name;
+          scopeSelect.appendChild(option);
+        });
+        
+        // 如果保存了值且该值存在，则恢复；否则设置默认值
+        if (savedScope && metaData.scopes.find(s => s.name === savedScope)) {
+          scopeSelect.value = savedScope;
+        } else {
+          const defaultScope = metaData.scopes.find(s => s.name === 'Global');
+          if (defaultScope) {
+            scopeSelect.value = 'Global';
+          } else if (metaData.scopes.length > 0) {
+            scopeSelect.value = metaData.scopes[0].name;
+          }
+        }
+      }
+
+      // 填充 groupType 选择器
+      unitSelect.innerHTML = '';
+      if (metaData.groupTypes && Array.isArray(metaData.groupTypes)) {
+        metaData.groupTypes.forEach(groupType => {
+          const option = document.createElement('option');
+          option.value = groupType.name;
+          option.textContent = currentLanguage === 'zh' ? (groupType.name_zh || groupType.name) : groupType.name;
+          unitSelect.appendChild(option);
+        });
+        
+        // 如果保存了值且该值存在，则恢复；否则设置默认值
+        if (savedUnit && metaData.groupTypes.find(g => g.name === savedUnit)) {
+          unitSelect.value = savedUnit;
+        } else {
+          const defaultGroupType = metaData.groupTypes.find(g => g.name === 'Project');
+          if (defaultGroupType) {
+            unitSelect.value = 'Project';
+          } else if (metaData.groupTypes.length > 0) {
+            unitSelect.value = metaData.groupTypes[0].name;
+          }
+        }
+      }
+
+      if (timeTypeSelect) {
+        if (preserveValues && savedTimeType) timeTypeSelect.value = savedTimeType;
+        initTimeInputs();
+      }
+
+      updateTranslations();
+      handleFilterChange();
+    }
+
+    // 月份名称（英文显示用）
+    const MONTH_NAMES_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const MONTH_NAMES_ZH = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+    // 格式化时间显示（用于左右箭头选择器）
+    function formatTimeDisplay(value, timeType) {
+      if (timeType === 'year') {
+        return currentLanguage === 'zh' ? `${value}年` : value;
+      }
+      const [y, m] = value.split('-');
+      const monthIdx = parseInt(m, 10) - 1;
+      return currentLanguage === 'zh' 
+        ? `${y}年${MONTH_NAMES_ZH[monthIdx]}`
+        : `${MONTH_NAMES_EN[monthIdx]} ${y}`;
+    }
+
+    function getTimeBounds() {
+      let baseDate = metaData?.updatedAt ? new Date(metaData.updatedAt) : new Date();
+      baseDate.setMonth(baseDate.getMonth() - 1);
+      return {
+        minYear: 2015,
+        maxYear: baseDate.getFullYear(),
+        maxMonth: `${baseDate.getFullYear()}-${String(baseDate.getMonth() + 1).padStart(2, '0')}`
+      };
+    }
+
+    function toggleTimePicker() {
+      const dropdown = document.getElementById('timePickerDropdown');
+      const chevron = document.getElementById('timePickerChevron');
+      if (!dropdown) return;
+      dropdown.classList.toggle('show');
+      if (chevron) chevron.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : '';
+      if (dropdown.classList.contains('show')) {
+        updatePickerYearDisplay();
+        setTimeout(() => document.addEventListener('click', closeTimePickerOnClickOutside), 0);
+      } else {
+        document.removeEventListener('click', closeTimePickerOnClickOutside);
+      }
+    }
+
+    function closeTimePickerOnClickOutside(e) {
+      const wrap = document.getElementById('timePickerWrap');
+      if (wrap && !wrap.contains(e.target)) {
+        const dropdown = document.getElementById('timePickerDropdown');
+        const chevron = document.getElementById('timePickerChevron');
+        if (dropdown) dropdown.classList.remove('show');
+        if (chevron) chevron.style.transform = '';
+        document.removeEventListener('click', closeTimePickerOnClickOutside);
+      }
+    }
+
+    function updateTimeDisplay() {
+      const displayEl = document.getElementById('timeDisplay');
+      const timeInput = document.getElementById('timeInput');
+      const timeType = document.getElementById('timeTypeSelect').value;
+      if (displayEl && timeInput) {
+        displayEl.textContent = formatTimeDisplay(timeInput.value, timeType);
+      }
+    }
+
+    function stepYearInPicker(delta) {
+      const timeInput = document.getElementById('timeInput');
+      const timeType = document.getElementById('timeTypeSelect').value;
+      const bounds = getTimeBounds();
+      if (timeType === 'year') {
+        let y = parseInt(timeInput.value || bounds.maxYear, 10);
+        y = Math.max(bounds.minYear, Math.min(bounds.maxYear, y + delta));
+        timeInput.value = String(y);
+        updateTimeDisplay();
+        updatePickerYearDisplay();
+        handleFilterChange();
+      } else {
+        const [y, m] = (timeInput.value || bounds.maxMonth).split('-').map(Number);
+        let ny = Math.max(bounds.minYear, Math.min(bounds.maxYear, y + delta));
+        let val = `${ny}-${String(m).padStart(2, '0')}`;
+        if (val > bounds.maxMonth) val = bounds.maxMonth;
+        if (val < '2015-01') val = '2015-01';
+        timeInput.value = val;
+        updatePickerYearDisplay();
+      }
+    }
+
+    function updatePickerYearDisplay() {
+      const el = document.getElementById('timePickerYearDisplay');
+      const timeInput = document.getElementById('timeInput');
+      if (el && timeInput) {
+        const timeType = document.getElementById('timeTypeSelect').value;
+        el.textContent = timeType === 'year' ? timeInput.value : timeInput.value.split('-')[0];
+      }
+      refreshMonthButtonsState();
+    }
+
+    function refreshMonthButtonsState() {
+      const timeInput = document.getElementById('timeInput');
+      const timeType = document.getElementById('timeTypeSelect').value;
+      if (timeType !== 'month' || !timeInput) return;
+      const currentMonth = parseInt((timeInput.value || '').split('-')[1], 10) || 0;
+      document.querySelectorAll('.time-picker-month-btn').forEach((btn, i) => {
+        const isActive = (i + 1) === currentMonth;
+        btn.className = 'time-picker-month-btn ' + (isActive ? 'bg-accent/20 text-accent border-accent/50' : 'bg-dark-600 hover:bg-dark-500 hover:text-accent text-slate-300 border border-dark-500') + ' rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent transition-colors duration-200';
+      });
+    }
+
+    function selectMonthInPicker(month) {
+      const timeInput = document.getElementById('timeInput');
+      const year = timeInput.value.split('-')[0];
+      const m = String(month).padStart(2, '0');
+      const bounds = getTimeBounds();
+      let val = `${year}-${m}`;
+      if (val < '2015-01') val = '2015-01';
+      if (val > bounds.maxMonth) val = bounds.maxMonth;
+      timeInput.value = val;
+      updateTimeDisplay();
+      document.getElementById('timePickerDropdown')?.classList.remove('show');
+      document.removeEventListener('click', closeTimePickerOnClickOutside);
+      handleFilterChange();
+    }
+
+    // 初始化时间选择器（可点击打开，年份左右箭头，月份网格）
+    function initTimeInputs() {
+      const timeType = document.getElementById('timeTypeSelect').value;
+      const timeContainer = document.getElementById('timeRangeContainer');
+      const existingTimeInput = document.getElementById('timeInput');
+      const savedValue = existingTimeInput ? existingTimeInput.value : '';
+
+      timeContainer.innerHTML = '';
+
+      const label = document.createElement('label');
+      label.className = 'flex items-center gap-2 text-sm font-medium mb-2 text-slate-400';
+      label.innerHTML = '<iconify-icon icon="mdi:calendar"></iconify-icon> <span data-i18n="timeSelection">时间选择</span>';
+
+      const wrap = document.createElement('div');
+      wrap.id = 'timePickerWrap';
+      wrap.className = 'relative';
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'w-full flex items-center justify-between gap-2 bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:border-slate-500 hover:bg-dark-600/50 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent/50';
+      trigger.onclick = (e) => { e.stopPropagation(); toggleTimePicker(); };
+      trigger.innerHTML = `
+        <span id="timeDisplay" class="truncate"></span>
+        <iconify-icon icon="mdi:chevron-down" class="flex-shrink-0 text-slate-400 transition-transform duration-200" id="timePickerChevron" aria-hidden="true"></iconify-icon>
+      `;
+
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.id = 'timeInput';
+
+      const bounds = getTimeBounds();
+      if (timeType === 'year') {
+        let yearVal = bounds.maxYear.toString();
+        if (savedValue) {
+          const parsed = savedValue.includes('-') ? parseInt(savedValue.split('-')[0], 10) : parseInt(savedValue, 10);
+          if (!isNaN(parsed) && parsed >= 2015 && parsed <= bounds.maxYear) yearVal = String(parsed);
+        }
+        hiddenInput.value = yearVal;
+      } else {
+        let monthVal;
+        if (savedValue && /^\d{4}-\d{2}$/.test(savedValue)) {
+          monthVal = savedValue;
+        } else if (savedValue && /^\d{4}$/.test(savedValue)) {
+          monthVal = savedValue + '-12';
+        } else {
+          monthVal = getLastMonth(metaData?.updatedAt || null);
+        }
+        if (monthVal < '2015-01') monthVal = '2015-01';
+        if (monthVal > bounds.maxMonth) monthVal = bounds.maxMonth;
+        hiddenInput.value = monthVal;
+      }
+
+      const dropdown = document.createElement('div');
+      dropdown.id = 'timePickerDropdown';
+      dropdown.className = 'time-picker-dropdown';
+
+      const yearRow = document.createElement('div');
+      yearRow.className = 'flex items-center justify-between gap-2 mb-3';
+      const prevYear = document.createElement('button');
+      prevYear.type = 'button';
+      prevYear.className = 'flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent';
+      prevYear.setAttribute('aria-label', currentLanguage === 'zh' ? '上一年' : 'Previous year');
+      prevYear.innerHTML = '<iconify-icon icon="mdi:chevron-left" class="text-lg" aria-hidden="true"></iconify-icon>';
+      prevYear.onclick = (e) => { e.stopPropagation(); stepYearInPicker(-1); };
+      const yearDisplay = document.createElement('span');
+      yearDisplay.id = 'timePickerYearDisplay';
+      yearDisplay.className = 'text-sm font-medium text-slate-200 flex-1 text-center';
+      const nextYear = document.createElement('button');
+      nextYear.type = 'button';
+      nextYear.className = 'flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent';
+      nextYear.setAttribute('aria-label', currentLanguage === 'zh' ? '下一年' : 'Next year');
+      nextYear.innerHTML = '<iconify-icon icon="mdi:chevron-right" class="text-lg" aria-hidden="true"></iconify-icon>';
+      nextYear.onclick = (e) => { e.stopPropagation(); stepYearInPicker(1); };
+      yearRow.appendChild(prevYear);
+      yearRow.appendChild(yearDisplay);
+      yearRow.appendChild(nextYear);
+
+      dropdown.appendChild(yearRow);
+
+      if (timeType === 'month') {
+        const monthGrid = document.createElement('div');
+        monthGrid.className = 'flex flex-wrap gap-1';
+        const names = currentLanguage === 'zh' ? MONTH_NAMES_ZH : MONTH_NAMES_EN;
+        const currentMonth = hiddenInput.value ? parseInt(hiddenInput.value.split('-')[1], 10) : 0;
+        for (let i = 0; i < 12; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const isActive = (i + 1) === currentMonth;
+          btn.className = 'time-picker-month-btn ' + (isActive ? 'bg-accent/20 text-accent border-accent/50' : 'bg-dark-600 hover:bg-dark-500 hover:text-accent text-slate-300 border border-dark-500') + ' rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent transition-colors duration-200';
+          btn.textContent = names[i];
+          btn.onclick = (e) => { e.stopPropagation(); selectMonthInPicker(i + 1); };
+          monthGrid.appendChild(btn);
+        }
+        dropdown.appendChild(monthGrid);
+      }
+
+      wrap.appendChild(trigger);
+      wrap.appendChild(dropdown);
+      wrap.appendChild(hiddenInput);
+      timeContainer.appendChild(label);
+      timeContainer.appendChild(wrap);
+
+      updateTimeDisplay();
+      updatePickerYearDisplay();
+
+      updateTranslations();
+    }
+
+    // 获取上个月（YYYY-MM格式）
+    // 如果提供了 baseDate，则基于该日期计算上个月；否则基于当前日期
+    function getLastMonth(baseDate = null) {
+      const date = baseDate ? new Date(baseDate) : new Date();
+      date.setMonth(date.getMonth() - 1);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      return `${year}-${month}`;
+    }
+
+    // 处理时间类型变化
+    function handleTimeTypeChange() {
+      initTimeInputs();
+      handleFilterChange();
+    }
+
+    // 处理筛选器变化
+    function handleFilterChange() {
+      // 重置搜索关键词
+      searchKeyword = '';
+      const searchInput = document.getElementById('openLeaderboardSearchInput');
+      if (searchInput) {
+        searchInput.value = '';
+      }
+      loadLeaderboardData();
+    }
+
+    // 处理搜索变化
+    function handleSearchChange() {
+      const searchInput = document.getElementById('openLeaderboardSearchInput');
+      if (searchInput) {
+        searchKeyword = searchInput.value.trim();
+        currentPage = 1; // 重置到第一页
+        renderLeaderboard(currentLeaderboardData);
+      }
+    }
+
+    // 切换筛选面板折叠/展开
+    function toggleFilterPanel() {
+      const filterPanel = document.getElementById('filterPanel');
+      const filterContent = document.getElementById('filterContent');
+      const filterToggle = document.getElementById('filterToggle');
+      const filterToggleIcon = document.getElementById('filterToggleIcon');
+      const filterTitleText = document.getElementById('filterTitleText');
+      const isCollapsed = filterPanel.classList.contains('collapsed');
+      
+      if (isCollapsed) {
+        // 展开
+        filterPanel.classList.remove('collapsed');
+        filterPanel.style.width = '16.666667%'; // w-1/6
+        filterContent.style.display = 'block';
+        if (filterTitleText) {
+          filterTitleText.style.display = 'inline';
+        }
+        if (filterToggle) {
+          filterToggle.style.justifyContent = 'space-between';
+        }
+        filterToggleIcon.style.transform = 'rotate(0deg)';
+        filterToggleIcon.setAttribute('icon', 'mdi:chevron-up');
+      } else {
+        // 折叠
+        filterPanel.classList.add('collapsed');
+        filterPanel.style.width = '60px'; // 只显示图标按钮的宽度
+        filterContent.style.display = 'none';
+        if (filterTitleText) {
+          filterTitleText.style.display = 'none';
+        }
+        if (filterToggle) {
+          filterToggle.style.justifyContent = 'center';
+        }
+        filterToggleIcon.style.transform = 'rotate(180deg)';
+        filterToggleIcon.setAttribute('icon', 'mdi:chevron-down');
+      }
+    }
+
+    // 构建数据 URL
+    function buildDataUrl() {
+      const scopeSelect = document.getElementById('scopeSelect');
+      const unitSelect = document.getElementById('unitSelect');
+      const timeTypeSelect = document.getElementById('timeTypeSelect');
+      const timeInput = document.getElementById('timeInput');
+      
+      if (!scopeSelect || !unitSelect || !timeTypeSelect || !timeInput) {
+        return null;
+      }
+
+      const scopeName = scopeSelect.value;
+      const groupTypeName = unitSelect.value;
+      const timeType = timeTypeSelect.value;
+      const timeValue = timeInput.value;
+
+      if (!scopeName || !groupTypeName || !timeValue) {
+        return null;
+      }
+
+      // 转换为小写
+      const scopeLower = scopeName.toLowerCase();
+      const groupTypeLower = groupTypeName.toLowerCase();
+
+      // 构建时间部分
+      let timePart = '';
+      if (timeType === 'year') {
+        timePart = `${timeType}/${timeValue}`;
+      } else {
+        // month: 将 YYYY-MM 转换为 YYYYM（去掉月份前导零）
+        const [year, month] = timeValue.split('-');
+        const monthNoZero = parseInt(month, 10); // 去掉前导零
+        timePart = `${timeType}/${year}${monthNoZero}`;
+      }
+
+      // 构建完整 URL
+      const url = `${DATA_BASE_URL}${scopeLower}/${groupTypeLower}/${timePart}/data.json`;
+      return url;
+    }
+
+    // 加载排行榜数据
+    async function loadLeaderboardData() {
+      const contentArea = document.getElementById('leaderboardContent');
+      
+      // 显示加载状态
+      contentArea.innerHTML = `
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-8">
+          <div class="text-center text-slate-400">
+            <iconify-icon icon="mdi:loading" class="text-3xl mb-2 animate-spin" aria-hidden="true"></iconify-icon>
+            <p>${t('loading')}</p>
+          </div>
+        </div>
+      `;
+
+      const dataUrl = buildDataUrl();
+      if (!dataUrl) {
+        contentArea.innerHTML = `
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+            <div class="text-center text-slate-400"><p>${t('loading')}</p></div>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const response = await fetch(dataUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        currentLeaderboardData = data.data || [];
+        currentPage = 1; // 重置到第一页
+        renderLeaderboard(currentLeaderboardData);
+      } catch (error) {
+        console.error('Failed to load leaderboard data:', error);
+        contentArea.innerHTML = `
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+            <div class="text-center text-red-400">
+              <iconify-icon icon="mdi:alert-circle" class="text-3xl mb-2" aria-hidden="true"></iconify-icon>
+              <p>${t('error')}: ${error.message}</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // 获取首字母
+    function getInitial(name) {
+      if (!name) return '?';
+      // 处理中文字符
+      if (/[\u4e00-\u9fa5]/.test(name)) {
+        return name.charAt(0);
+      }
+      // 处理英文，取第一个字母
+      const match = name.match(/[a-zA-Z]/);
+      return match ? match[0].toUpperCase() : name.charAt(0).toUpperCase();
+    }
+
+    function formatDeltaHtml(value, isInt = false) {
+      const display = isInt ? Math.round(Math.abs(value)) : Math.abs(value).toFixed(1);
+      if (value > 0) return `<span class="inline-flex items-center gap-1 text-sm font-semibold text-green-400"><iconify-icon icon="mdi:arrow-up" class="text-base" aria-hidden="true"></iconify-icon><span>${display}</span></span>`;
+      if (value < 0) return `<span class="inline-flex items-center gap-1 text-sm font-semibold text-red-400"><iconify-icon icon="mdi:arrow-down" class="text-base" aria-hidden="true"></iconify-icon><span>${display}</span></span>`;
+      return `<span class="inline-flex items-center text-sm font-semibold text-slate-500"><span>-</span></span>`;
+    }
+
+    function getAvatarColor(name) {
+      if (!name) return '#6b7280';
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      // 生成较柔和的颜色
+      const hue = Math.abs(hash % 360);
+      return `hsl(${hue}, 65%, 50%)`;
+    }
+
+    // 渲染排行榜
+    function renderLeaderboard(data) {
+      const scopeSelect = document.getElementById('scopeSelect');
+      const unitSelect = document.getElementById('unitSelect');
+      const timeTypeSelect = document.getElementById('timeTypeSelect');
+      const timeInput = document.getElementById('timeInput');
+      
+      if (!scopeSelect || !unitSelect || !timeTypeSelect || !timeInput) {
+        return;
+      }
+
+      // 保存下拉菜单的滚动位置和打开状态
+      const dropdownMenu = document.getElementById('pageDropdownMenu');
+      const wasDropdownOpen = dropdownMenu && dropdownMenu.classList.contains('show');
+      if (dropdownMenu && wasDropdownOpen) {
+        savedDropdownScrollTop = dropdownMenu.scrollTop;
+        shouldRestoreDropdownScroll = true;
+      } else {
+        shouldRestoreDropdownScroll = false;
+      }
+
+      const scopeName = scopeSelect.value;
+      const groupTypeName = unitSelect.value;
+      const timeType = timeTypeSelect.value;
+      const timeValue = timeInput.value;
+
+      // 查找当前选中的 scope 和 groupType 对象
+      const currentScope = metaData?.scopes?.find(s => s.name === scopeName);
+      const currentGroupType = metaData?.groupTypes?.find(g => g.name === groupTypeName);
+
+      // 构建标题
+      const title = currentLanguage === 'zh' 
+        ? (currentScope?.name_zh || currentScope?.name || scopeName)
+        : (currentScope?.name || scopeName);
+      
+      const unitName = currentLanguage === 'zh'
+        ? (currentGroupType?.name_zh || currentGroupType?.name || groupTypeName)
+        : (currentGroupType?.name || groupTypeName);
+
+      let timeRange = '';
+      if (timeType === 'year') {
+        timeRange = currentLanguage === 'zh' 
+          ? `${timeValue}年` 
+          : timeValue;
+      } else {
+        // 按月显示，格式为 YYYY-MM
+        timeRange = timeValue;
+      }
+
+      // 根据搜索关键词过滤数据
+      let filteredData = data && Array.isArray(data) ? data : [];
+      if (searchKeyword) {
+        const keywordLower = searchKeyword.toLowerCase();
+        filteredData = filteredData.filter(item => {
+          const name = (item.name || '').toLowerCase();
+          const nameZh = (item.name_zh || '').toLowerCase();
+          const id = (item.id || '').toLowerCase();
+          return name.includes(keywordLower) || 
+                 nameZh.includes(keywordLower) || 
+                 id.includes(keywordLower);
+        });
+      }
+
+      // 分页计算（基于过滤后的数据）
+      const totalItems = filteredData.length;
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+      const currentPageData = filteredData.slice(startIndex, endIndex);
+
+      const contentArea = document.getElementById('leaderboardContent');
+      
+      // 构建排行榜标题
+      const leaderboardTitle = currentLanguage === 'zh'
+        ? `${title}${unitName} OpenRank 排行榜`
+        : `${title} ${unitName} OpenRank Leaderboard`;
+      
+      // 构建分页控件HTML（仅在有多页时显示）
+      let paginationHtml = '';
+      if (totalPages > 1) {
+        // 生成页码选项
+        let pageOptions = '';
+        for (let i = 1; i <= totalPages; i++) {
+          pageOptions += `<div class="page-dropdown-item ${i === currentPage ? 'active' : ''}" onclick="changePage(${i});">${i}</div>`;
+        }
+        
+        paginationHtml = `
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button 
+              id="prevPageBtn"
+              onclick="changePage(${currentPage - 1})"
+              class="px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-200 hover:bg-dark-600 hover:border-accent/50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+              ${currentPage === 1 ? 'disabled' : ''}
+            >
+              <iconify-icon icon="mdi:chevron-left" class="text-base" aria-hidden="true"></iconify-icon>
+            </button>
+            <div class="page-dropdown">
+              <button 
+                id="pageDropdownBtn"
+                onclick="togglePageDropdown(event)"
+                class="px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-200 hover:bg-dark-600 hover:border-accent/50 transition-colors duration-200 flex items-center gap-1 min-w-[80px] justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+              >
+                <span>${currentPage} / ${totalPages}</span>
+                <iconify-icon icon="mdi:chevron-down" class="text-sm" aria-hidden="true"></iconify-icon>
+              </button>
+              <div id="pageDropdownMenu" class="page-dropdown-menu">
+                ${pageOptions}
+              </div>
+            </div>
+            <button 
+              id="nextPageBtn"
+              onclick="changePage(${currentPage + 1})"
+              class="px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-200 hover:bg-dark-600 hover:border-accent/50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+              ${currentPage === totalPages ? 'disabled' : ''}
+            >
+              <iconify-icon icon="mdi:chevron-right" class="text-base" aria-hidden="true"></iconify-icon>
+            </button>
+          </div>
+        `;
+      }
+      
+      let html = `
+        <div id="leaderboardTitle" class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-4 shadow-lg">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <h2 class="text-xl sm:text-2xl font-mono font-bold mb-2 flex items-center gap-2 text-slate-100">
+                <img src="https://open-digger.cn/open_leaderboard/images/earth-animation.gif" alt="" class="w-8 h-8 object-contain flex-shrink-0" aria-hidden="true">
+                <span class="truncate">${leaderboardTitle}</span>
+              </h2>
+              <p class="text-slate-400 text-sm flex items-center gap-1">
+                <iconify-icon icon="mdi:calendar-range" class="text-base" aria-hidden="true"></iconify-icon>
+                ${timeRange}
+              </p>
+            </div>
+            ${paginationHtml}
+          </div>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 shadow-lg">
+          <div class="flex items-center gap-3 px-3 mb-0.5 border-b border-dark-600 pb-3" style="padding-top: 0.125rem;">
+            <div class="flex-shrink-0 flex items-center gap-2 w-24">
+              <div class="flex-shrink-0 w-12 text-center">
+                <span class="text-sm font-mono font-semibold text-slate-400 leading-tight">${t('headerRank')}</span>
+              </div>
+              <div class="flex-shrink-0 w-12"></div>
+            </div>
+            <div class="w-9 h-9 flex-shrink-0"></div>
+            <div class="flex-1 min-w-0">
+              <span class="text-sm font-mono font-semibold text-slate-400 leading-tight">${t('headerName')}</span>
+            </div>
+            <div class="flex-shrink-0 text-right w-32">
+              <span class="text-sm font-mono font-semibold text-slate-400 leading-tight">${t('headerOpenRank')}</span>
+            </div>
+            <div class="flex-shrink-0 text-right w-48">
+              <span class="text-sm font-mono font-semibold text-slate-400 leading-tight whitespace-nowrap">${t('headerCommunityParticipants')}</span>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+      `;
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        html += `
+          <div class="text-center text-slate-400 py-10 font-mono text-sm">
+            <p>暂无数据</p>
+          </div>
+        `;
+      } else {
+        currentPageData.forEach((item, index) => {
+          // 计算全局排名：在原始数据中的位置（从1开始）
+          const originalIndex = data.findIndex(d => {
+            // 通过 id 或其他唯一标识符匹配
+            return d.id === item.id || 
+                   (d.name === item.name && d.name_zh === item.name_zh);
+          });
+          const rank = originalIndex >= 0 ? originalIndex + 1 : startIndex + index + 1;
+          const medalClass = rank === 1 ? 'text-yellow-400' : rank === 2 ? 'text-slate-300' : rank === 3 ? 'text-orange-400' : 'text-slate-500';
+          const medalIcon = rank === 1 ? 'mdi:trophy' : rank === 2 ? 'mdi:trophy-outline' : rank === 3 ? 'mdi:medal' : 'mdi:numeric-' + rank + '-circle';
+          
+          // 获取名称：英文使用 name，中文使用 name_zh
+          const displayName = currentLanguage === 'zh' 
+            ? (item.name_zh || item.name || '')
+            : (item.name || '');
+          
+          // 获取分数
+          const score = item.openrank || 0;
+          
+          // 获取 openrankDelta（分数变化）
+          const openrankDelta = item.openrankDelta !== undefined && item.openrankDelta !== null ? item.openrankDelta : 0;
+          
+          // 获取 participants（社区规模）
+          const participants = item.participants || 0;
+          
+          // 获取 participantsDelta（社区规模变化）
+          const participantsDelta = item.participantsDelta !== undefined && item.participantsDelta !== null ? item.participantsDelta : 0;
+          
+          // 获取 rankDelta（名次变化）
+          const rankDelta = item.rankDelta !== undefined && item.rankDelta !== null ? item.rankDelta : 0;
+          
+          const rankDeltaHtml = formatDeltaHtml(rankDelta, true);
+          const openrankDeltaHtml = formatDeltaHtml(openrankDelta, false);
+          const participantsDeltaHtml = formatDeltaHtml(participantsDelta, true);
+          
+          // 获取头像
+          const avatar = item.avatar || '';
+          const initial = getInitial(displayName);
+          const avatarColor = getAvatarColor(displayName);
+          const uniqueId = `avatar-${startIndex + index}-${Date.now()}`;
+          
+          html += `
+            <div class="flex items-center gap-3 py-2 px-3 bg-dark-700/40 rounded-lg border border-dark-600 hover:bg-dark-700/60 hover:border-accent/40 transition-colors duration-200 cursor-default">
+              <div class="flex-shrink-0 flex items-center gap-2 w-24">
+                <div class="text-lg font-mono font-bold ${medalClass} flex-shrink-0 w-12 text-center">
+                  ${rank < 4 ? `<iconify-icon icon="${medalIcon}" class="text-xl" aria-hidden="true"></iconify-icon>` : `<span>${rank}</span>`}
+                </div>
+                <div class="flex-shrink-0 w-12 flex items-center justify-start">
+                  ${rankDeltaHtml}
+                </div>
+              </div>
+              
+              <!-- 头像 -->
+              <div class="w-9 h-9 flex-shrink-0 relative">
+                ${avatar ? `
+                  <img 
+                    id="${uniqueId}"
+                    src="${avatar}" 
+                    alt="${displayName}"
+                    class="w-9 h-9 rounded border-2 border-dark-600 object-cover"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                  >
+                  <div class="w-9 h-9 rounded border-2 border-dark-600 flex items-center justify-center text-white font-bold text-sm" style="background-color: ${avatarColor}; display: none;">
+                    ${initial}
+                  </div>
+                ` : `
+                  <div class="w-9 h-9 rounded border-2 border-dark-600 flex items-center justify-center text-white font-bold text-sm" style="background-color: ${avatarColor};">
+                    ${initial}
+                  </div>
+                `}
+              </div>
+              
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-sm mb-0.5 truncate text-slate-200">${displayName}</div>
+              </div>
+              <div class="flex-shrink-0 text-right w-32">
+                <div class="text-lg font-mono font-bold text-slate-300">${score.toFixed(1)}</div>
+                <div class="flex items-center justify-end mt-0.5">
+                  ${openrankDeltaHtml}
+                </div>
+              </div>
+              
+              <div class="flex-shrink-0 text-right w-48">
+                <div class="text-lg font-mono font-bold text-slate-300">${Math.round(participants)}</div>
+                <div class="flex items-center justify-end mt-0.5">
+                  ${participantsDeltaHtml}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      contentArea.innerHTML = html;
+
+      // 恢复下拉菜单的滚动位置和打开状态
+      if (shouldRestoreDropdownScroll) {
+        setTimeout(() => {
+          const newDropdownMenu = document.getElementById('pageDropdownMenu');
+          if (newDropdownMenu) {
+            newDropdownMenu.classList.add('show');
+            // 恢复滚动位置
+            newDropdownMenu.scrollTop = savedDropdownScrollTop;
+            // 确保当前页码项在可视区域内
+            const activeItem = newDropdownMenu.querySelector('.page-dropdown-item.active');
+            if (activeItem) {
+              const menuRect = newDropdownMenu.getBoundingClientRect();
+              const itemRect = activeItem.getBoundingClientRect();
+              const menuScrollTop = newDropdownMenu.scrollTop;
+              const itemOffsetTop = activeItem.offsetTop;
+              const itemHeight = activeItem.offsetHeight;
+              const menuHeight = newDropdownMenu.clientHeight;
+              
+              // 如果当前项不在可视区域内，调整滚动位置使其可见
+              if (itemOffsetTop < menuScrollTop) {
+                // 当前项在可视区域上方，滚动到当前项
+                newDropdownMenu.scrollTop = itemOffsetTop;
+              } else if (itemOffsetTop + itemHeight > menuScrollTop + menuHeight) {
+                // 当前项在可视区域下方，滚动使当前项可见
+                newDropdownMenu.scrollTop = itemOffsetTop + itemHeight - menuHeight;
+              }
+            }
+            // 重新添加点击外部区域关闭的事件监听
+            setTimeout(() => {
+              document.addEventListener('click', closePageDropdownOnClickOutside);
+            }, 0);
+          }
+          shouldRestoreDropdownScroll = false;
+        }, 0);
+      }
+    }
+
+    // 切换页码
+    function changePage(page) {
+      // 计算过滤后的数据长度（考虑搜索关键词）
+      let filteredData = currentLeaderboardData && Array.isArray(currentLeaderboardData) ? currentLeaderboardData : [];
+      if (searchKeyword) {
+        const keywordLower = searchKeyword.toLowerCase();
+        filteredData = filteredData.filter(item => {
+          const name = (item.name || '').toLowerCase();
+          const nameZh = (item.name_zh || '').toLowerCase();
+          const id = (item.id || '').toLowerCase();
+          return name.includes(keywordLower) || 
+                 nameZh.includes(keywordLower) || 
+                 id.includes(keywordLower);
+        });
+      }
+      const totalPages = Math.ceil((filteredData.length || 0) / ITEMS_PER_PAGE);
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        renderLeaderboard(currentLeaderboardData);
+        // 不关闭下拉菜单，让 renderLeaderboard 恢复之前的状态
+        // 滚动到排行榜标题位置
+        setTimeout(() => {
+          const leaderboardTitle = document.getElementById('leaderboardTitle');
+          if (leaderboardTitle) {
+            const headerHeight = 80; // 浮动导航：top-4 + h-14
+            const titlePosition = leaderboardTitle.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+            window.scrollTo({ top: titlePosition, behavior: 'smooth' });
+          }
+        }, 0);
+      }
+    }
+
+    // 切换页码下拉菜单
+    function togglePageDropdown(event) {
+      if (event) {
+        event.stopPropagation();
+      }
+      const dropdownMenu = document.getElementById('pageDropdownMenu');
+      if (dropdownMenu) {
+        const isOpen = dropdownMenu.classList.contains('show');
+        if (isOpen) {
+          closePageDropdown();
+        } else {
+          openPageDropdown();
+        }
+      }
+    }
+
+    // 打开页码下拉菜单
+    function openPageDropdown() {
+      const dropdownMenu = document.getElementById('pageDropdownMenu');
+      if (dropdownMenu) {
+        dropdownMenu.classList.add('show');
+        // 点击外部区域关闭下拉菜单
+        setTimeout(() => {
+          document.addEventListener('click', closePageDropdownOnClickOutside);
+        }, 0);
+      }
+    }
+
+    // 关闭页码下拉菜单
+    function closePageDropdown() {
+      const dropdownMenu = document.getElementById('pageDropdownMenu');
+      if (dropdownMenu) {
+        dropdownMenu.classList.remove('show');
+        document.removeEventListener('click', closePageDropdownOnClickOutside);
+      }
+    }
+
+    // 点击外部区域关闭下拉菜单
+    function closePageDropdownOnClickOutside(event) {
+      const dropdown = document.querySelector('.page-dropdown');
+      const dropdownMenu = document.getElementById('pageDropdownMenu');
+      if (dropdown && dropdownMenu && !dropdown.contains(event.target)) {
+        closePageDropdown();
+      }
+    }
+
+    // 初始化标题背景动效
+    function initTitleBackground() {
+      const titleContainer = document.querySelector('.title-background');
+      if (!titleContainer) return;
+      
+      const canvas = document.getElementById('networkCanvas');
+      const starsContainer = document.getElementById('starsContainer');
+      const particlesContainer = document.getElementById('particlesContainer');
+      
+      if (!canvas || !starsContainer || !particlesContainer) return;
+      
+      const ctx = canvas.getContext('2d');
+      
+      function resizeCanvas() {
+        const rect = titleContainer.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      // 网络节点配置
+      const nodeCount = 15;
+      const nodes = [];
+      const maxDistance = 150; // 节点连接的最大距离
+      
+      // 创建节点
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          radius: Math.random() * 2 + 1
+        });
+      }
+      
+      // 绘制网络
+      function drawNetwork() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // 更新节点位置
+        nodes.forEach(node => {
+          node.x += node.vx;
+          node.y += node.vy;
+          
+          // 边界反弹
+          if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+          if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+          
+          // 限制在边界内
+          node.x = Math.max(0, Math.min(canvas.width, node.x));
+          node.y = Math.max(0, Math.min(canvas.height, node.y));
+        });
+        
+        // 绘制连接线（科技绿）
+        ctx.strokeStyle = 'rgba(34, 197, 94, 0.2)';
+        ctx.lineWidth = 0.5;
+        
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < maxDistance) {
+              const opacity = 1 - (distance / maxDistance);
+              ctx.strokeStyle = `rgba(34, 197, 94, ${opacity * 0.35})`;
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        
+        // 绘制节点
+        nodes.forEach(node => {
+          ctx.fillStyle = 'rgba(34, 197, 94, 0.5)';
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+      
+      // 创建星星
+      function createStars() {
+        const starCount = 20;
+        starsContainer.innerHTML = '';
+        
+        for (let i = 0; i < starCount; i++) {
+          const star = document.createElement('div');
+          star.className = 'star';
+          const size = Math.random() * 3 + 1;
+          const x = Math.random() * 100;
+          const y = Math.random() * 100;
+          const delay = Math.random() * 3;
+          
+          star.style.width = size + 'px';
+          star.style.height = size + 'px';
+          star.style.left = x + '%';
+          star.style.top = y + '%';
+          star.style.animationDelay = delay + 's';
+          star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          
+          starsContainer.appendChild(star);
+        }
+      }
+      
+      // 创建粒子
+      function createParticles() {
+        const particleCount = 8;
+        particlesContainer.innerHTML = '';
+        
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          const size = Math.random() * 60 + 40;
+          const x = Math.random() * 100;
+          const y = Math.random() * 100;
+          const delay = Math.random() * 5;
+          
+          particle.style.width = size + 'px';
+          particle.style.height = size + 'px';
+          particle.style.left = x + '%';
+          particle.style.top = y + '%';
+          particle.style.animationDelay = delay + 's';
+          particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+          
+          particlesContainer.appendChild(particle);
+        }
+      }
+      
+      createStars();
+      createParticles();
+      
+      function animate() {
+        drawNetwork();
+        requestAnimationFrame(animate);
+      }
+      
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        animate();
+      } else {
+        drawNetwork();
+      }
+    }
+
+    // 页面加载完成后初始化
+    window.addEventListener('load', async () => {
+      // 设置初始语言
+      document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
+      updateTranslations();
+      initTimeInputs();
+      
+      // 初始化标题背景动效
+      initTitleBackground();
+      
+      // 加载元数据
+      await loadMetaData();
+    });
+  </script>
+
+  <footer class="bg-dark-800 border-t border-dark-600 mt-12">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-6">
+        <div class="flex items-center gap-3">
+          <span class="text-slate-400 text-sm" data-i18n="dataPoweredBy">数据支持</span>
+          <a 
+            href="https://open-digger.cn" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="flex items-center justify-center w-9 h-9 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 hover:border-accent/50 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+            title="OpenDigger"
+          >
+            <img src="https://open-digger.cn/open_leaderboard/images/open_digger_logo.png" alt="OpenDigger Logo" class="h-7 object-contain">
+          </a>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-slate-400 text-sm" data-i18n="supportedBy">官方支持</span>
+          <a 
+            href="https://github.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="flex items-center justify-center w-9 h-9 rounded-lg bg-dark-700 text-slate-200 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+            title="GitHub"
+          >
+            <iconify-icon icon="mdi:github" class="text-xl" aria-hidden="true"></iconify-icon>
+          </a>
+        </div>
+      </div>
+      <div class="text-center">
+        <p class="text-slate-500 text-sm font-sans">Copyright © 2026 X-lab</p>
+      </div>
+    </div>
+  </footer>
+</body>
 </html>
