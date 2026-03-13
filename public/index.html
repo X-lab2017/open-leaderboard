@@ -254,7 +254,7 @@
       border: 1px solid #475569;
       border-radius: 1rem;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
       max-height: calc(100vh - 6rem);
       overflow-y: auto;
@@ -655,7 +655,14 @@
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        metaData = await response.json();
+        const raw = await response.json();
+        // 规范化 meta 数据，为缺失字段提供默认值，防止报错
+        metaData = {
+          ...(raw && typeof raw === 'object' ? raw : {}),
+          updatedAt: raw?.updatedAt ?? null,
+          scopes: Array.isArray(raw?.scopes) ? raw.scopes : [],
+          groupTypes: Array.isArray(raw?.groupTypes) ? raw.groupTypes : [],
+        };
         updateUpdateTimeDisplay();
         populateFilters();
       } catch (error) {
@@ -668,57 +675,61 @@
     function populateFilters(preserveValues = false) {
       if (!metaData) return;
 
-      // 保存当前选中的值（如果需要保持）
       const scopeSelect = document.getElementById('scopeSelect');
       const unitSelect = document.getElementById('unitSelect');
       const timeTypeSelect = document.getElementById('timeTypeSelect');
+      if (!scopeSelect || !unitSelect) return;
+
       const savedScope = preserveValues && scopeSelect ? scopeSelect.value : null;
       const savedUnit = preserveValues && unitSelect ? unitSelect.value : null;
       const savedTimeType = preserveValues && timeTypeSelect ? timeTypeSelect.value : null;
 
+      const scopes = Array.isArray(metaData.scopes) ? metaData.scopes : [];
+      const groupTypes = Array.isArray(metaData.groupTypes) ? metaData.groupTypes : [];
+
       // 填充 scope 选择器
       scopeSelect.innerHTML = '';
-      if (metaData.scopes && Array.isArray(metaData.scopes)) {
-        metaData.scopes.forEach(scope => {
-          const option = document.createElement('option');
-          option.value = scope.name;
-          option.textContent = currentLanguage === 'zh' ? (scope.name_zh || scope.name) : scope.name;
-          scopeSelect.appendChild(option);
-        });
-        
-        // 如果保存了值且该值存在，则恢复；否则设置默认值
-        if (savedScope && metaData.scopes.find(s => s.name === savedScope)) {
-          scopeSelect.value = savedScope;
-        } else {
-          const defaultScope = metaData.scopes.find(s => s.name === 'Global');
-          if (defaultScope) {
-            scopeSelect.value = 'Global';
-          } else if (metaData.scopes.length > 0) {
-            scopeSelect.value = metaData.scopes[0].name;
-          }
+      scopes.forEach(scope => {
+        if (!scope || typeof scope !== 'object') return;
+        const name = scope.name ?? scope.name_zh ?? '';
+        if (!name) return;
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = currentLanguage === 'zh' ? (scope.name_zh ?? scope.name ?? name) : (scope.name ?? scope.name_zh ?? name);
+        scopeSelect.appendChild(option);
+      });
+      if (savedScope && scopes.some(s => s && (s.name === savedScope || s.name_zh === savedScope))) {
+        scopeSelect.value = savedScope;
+      } else {
+        const defaultScope = scopes.find(s => s && s.name === 'Global');
+        if (defaultScope) {
+          scopeSelect.value = 'Global';
+        } else if (scopes.length > 0) {
+          const first = scopes[0];
+          scopeSelect.value = first?.name ?? first?.name_zh ?? '';
         }
       }
 
       // 填充 groupType 选择器
       unitSelect.innerHTML = '';
-      if (metaData.groupTypes && Array.isArray(metaData.groupTypes)) {
-        metaData.groupTypes.forEach(groupType => {
-          const option = document.createElement('option');
-          option.value = groupType.name;
-          option.textContent = currentLanguage === 'zh' ? (groupType.name_zh || groupType.name) : groupType.name;
-          unitSelect.appendChild(option);
-        });
-        
-        // 如果保存了值且该值存在，则恢复；否则设置默认值
-        if (savedUnit && metaData.groupTypes.find(g => g.name === savedUnit)) {
-          unitSelect.value = savedUnit;
-        } else {
-          const defaultGroupType = metaData.groupTypes.find(g => g.name === 'Project');
-          if (defaultGroupType) {
-            unitSelect.value = 'Project';
-          } else if (metaData.groupTypes.length > 0) {
-            unitSelect.value = metaData.groupTypes[0].name;
-          }
+      groupTypes.forEach(groupType => {
+        if (!groupType || typeof groupType !== 'object') return;
+        const name = groupType.name ?? groupType.name_zh ?? '';
+        if (!name) return;
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = currentLanguage === 'zh' ? (groupType.name_zh ?? groupType.name ?? name) : (groupType.name ?? groupType.name_zh ?? name);
+        unitSelect.appendChild(option);
+      });
+      if (savedUnit && groupTypes.some(g => g && (g.name === savedUnit || g.name_zh === savedUnit))) {
+        unitSelect.value = savedUnit;
+      } else {
+        const defaultGroupType = groupTypes.find(g => g && g.name === 'Project');
+        if (defaultGroupType) {
+          unitSelect.value = 'Project';
+        } else if (groupTypes.length > 0) {
+          const first = groupTypes[0];
+          unitSelect.value = first?.name ?? first?.name_zh ?? '';
         }
       }
 
@@ -1522,6 +1533,18 @@
     const EMPTY_TREND = { months: [], values: [] };
     const EMPTY_TREND_PAIR = { monthly: EMPTY_TREND, yearly: EMPTY_TREND };
 
+    // label_type 类型描述映射（中英双语）
+    const LABEL_TYPE_MAP = {
+      'repo': { en: 'Repo', zh: '仓库' },
+      'Project': { en: 'Project', zh: '项目' },
+      'Company': { en: 'Company', zh: '公司' },
+      'University-0': { en: 'University', zh: '学校' },
+      'Institution-0': { en: 'Institution', zh: '研究机构' },
+      'Foundation': { en: 'Foundation', zh: '基金会' },
+      'Agency-0': { en: 'Agency', zh: '政府机构' },
+      'Tech-0': { en: 'Tech', zh: '技术领域' },
+    };
+
     function getNumericValueFromJsonEntry(v) {
       if (typeof v === 'number') return v;
       if (v && typeof v === 'object' && (v.value != null || v.openrank != null)) return v.value ?? v.openrank;
@@ -1766,20 +1789,69 @@
       });
     }
 
-    // 渲染 label/repo 详情面板；trendData 为 repo 或 label 的趋势数据；trendMode 为 'month' | 'year'
-    function renderDetailLabelRepo(item, trendData, trendMode) {
+    // 从仓库/标签数据根路径获取 meta.json，返回 labels（name、name_zh）与 repos（仅 label 类型）
+    async function fetchItemMeta(itemType, item) {
+      if (!item) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+      let metaUrl = '';
+      if (itemType === 'repo') {
+        const p = (item.platform || 'github').toLowerCase();
+        const name = item.name || (currentLanguage === 'zh' ? item.name_zh : item.name) || '';
+        if (!name) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+        metaUrl = `${TREND_DATA_BASE}${p}/${name}/meta.json`;
+      } else if (itemType === 'label') {
+        const labelId = (item.id || '').slice(1);
+        if (!labelId) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+        metaUrl = `${TREND_DATA_BASE}${labelId}/meta.json`;
+      } else {
+        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+      }
+      try {
+        const res = await fetch(metaUrl);
+        const meta = res.ok ? await res.json() : null;
+        const rawLabels = (meta && Array.isArray(meta.labels)) ? meta.labels : [];
+        const labels = rawLabels.map(l => {
+          if (!l || typeof l !== 'object') return { name: '', name_zh: '' };
+          return { name: l.name ?? '', name_zh: l.name_zh ?? '' };
+        });
+        const rawRepos = (itemType === 'label' && meta && Array.isArray(meta.repos)) ? meta.repos : [];
+        const repos = rawRepos.filter(r => r != null);
+        const labelType = (itemType === 'label' && meta) ? (meta.label_type ?? null) : null;
+        const description = (itemType === 'label' && meta) ? (meta.description ?? null) : null;
+        const descriptionZh = (itemType === 'label' && meta) ? (meta.description_zh ?? null) : null;
+        return { labels, repos, labelType, description, descriptionZh };
+      } catch (e) {
+        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+      }
+    }
+
+    // 渲染 label/repo 详情面板；trendData 为 repo 或 label 的趋势数据；trendMode 为 'month' | 'year'；metaLabels 为 meta.json 中的 labels；metaRepos 为 meta.json 中的 repos；metaLabelType/metaDesc/metaDescZh 为 label 的 meta 字段（仅 label 使用）
+    function renderDetailLabelRepo(item, trendData, trendMode, metaLabels, metaRepos, metaLabelType, metaDesc, metaDescZh) {
       const mode = (trendMode || 'month');
       const itemType = (item.itemType || getItemType()).toLowerCase();
       const isRepo = itemType === 'repo';
       const isLabel = itemType === 'label';
       const displayName = currentLanguage === 'zh' ? (item.name_zh || item.name || '') : (item.name || '');
       const repoName = item.name || displayName || '';
-      const desc = currentLanguage === 'zh' 
-        ? (item.desc_zh || item.description || item.desc || '暂无描述')
-        : (item.description || item.desc || item.desc_zh || 'No description');
-      const parentLabel = item.parent_label || item.parentLabel || '-';
+      // label 类型优先使用 meta 的 description/description_zh；为空则不显示描述
+      const desc = isLabel
+        ? (currentLanguage === 'zh' ? (metaDescZh || item.desc_zh || item.description || item.desc || '') : (metaDesc || item.description || item.desc || item.desc_zh || ''))
+        : (currentLanguage === 'zh' ? (item.desc_zh || item.description || item.desc || '') : (item.description || item.desc || item.desc_zh || ''));
+      const labelTypeDesc = (metaLabelType && LABEL_TYPE_MAP[metaLabelType])
+        ? (currentLanguage === 'zh' ? LABEL_TYPE_MAP[metaLabelType].zh : LABEL_TYPE_MAP[metaLabelType].en)
+        : (metaLabelType || '');
+      const badgeText = isRepo
+        ? (currentLanguage === 'zh' ? LABEL_TYPE_MAP['repo'].zh : LABEL_TYPE_MAP['repo'].en)
+        : (isLabel && labelTypeDesc ? labelTypeDesc : '');
+      const labelTypeBadgeHtml = badgeText
+        ? `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-accent/20 text-accent border border-accent/40">${badgeText}</span>`
+        : '';
+      const rawMetaLabels = metaLabels || [];
       const rawRepos = item.repos || item.repositories || [];
-      const repos = rawRepos.map(r => typeof r === 'object' ? r : { name: r, url: '#' });
+      const rawReposNormalized = rawRepos.map(r => typeof r === 'object' ? r : { name: r, url: '#' });
+      const metaReposNormalized = (metaRepos && Array.isArray(metaRepos))
+        ? metaRepos.map(r => typeof r === 'object' ? { ...r, name: r.name || r } : { name: r, url: '#', platform: null })
+        : [];
+      const repos = (isLabel && metaReposNormalized.length) ? metaReposNormalized : rawReposNormalized;
       const dataKey = mode === 'year' ? 'yearly' : 'monthly';
       const getTrend = (key) => (trendData && trendData[key] && trendData[key][dataKey]?.values?.length ? trendData[key][dataKey] : null);
       const useReal = (isRepo || isLabel) && trendData && (getTrend('influence') || getTrend('activity'));
@@ -1788,24 +1860,40 @@
       const devCountTrend = useReal && getTrend('participants') ? getTrend('participants') : EMPTY_TREND;
       const issuePrTrend = useReal && getTrend('issuePr') ? getTrend('issuePr') : EMPTY_TREND;
       const contributors = item.contributors || [];
-      const repoLinkHtml = isRepo
-        ? `<div>
+      const getRepoHref = (r) => { const p = r.platform || r.Platform; return p ? getRepoUrlByPlatform(p, r.name || r) : (r.url || '#'); };
+      const getRepoIcon = (r) => getRepoPlatformIcon(r.platform || r.Platform || 'github');
+      const repoSectionHtml = isRepo
+        ? `<div class="w-full">
             <h4 class="text-sm font-mono font-semibold text-slate-300 mb-2">${currentLanguage === 'zh' ? '仓库' : 'Repository'}</h4>
-            <a href="${getRepoUrlByPlatform(item.platform, repoName)}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 text-slate-300 hover:border-accent/50 text-sm font-mono">
-              <iconify-icon icon="${getRepoPlatformIcon(item.platform)}" class="text-lg flex-shrink-0" aria-hidden="true"></iconify-icon>
+            <a href="${getRepoUrlByPlatform(item.platform, repoName)}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-300 hover:border-accent/50 text-xs font-mono">
+              <iconify-icon icon="${getRepoPlatformIcon(item.platform)}" class="text-sm flex-shrink-0" aria-hidden="true"></iconify-icon>
               <span class="truncate">${repoName}</span>
             </a>
           </div>`
         : (repos.length ? `
-            <div>
+            <div class="w-full">
               <h4 class="text-sm font-mono font-semibold text-slate-300 mb-2">${currentLanguage === 'zh' ? '仓库列表' : 'Repositories'}</h4>
-              <div class="flex flex-wrap gap-2">
-                ${repos.slice(0, 10).map(r => `
-                  <a href="${r.url || '#'}" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-300 hover:border-accent/50 text-sm font-mono">${r.name || r}</a>
-                `).join('')}
+              <div class="flex flex-wrap gap-1.5">
+                ${repos.map(r => {
+                  const name = r.name || r;
+                  const href = getRepoHref(r);
+                  const icon = getRepoIcon(r);
+                  return `<a href="${href}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-dark-700 border border-dark-600 text-slate-300 hover:border-accent/50 text-[11px] font-mono leading-tight"><iconify-icon icon="${icon}" class="text-xs flex-shrink-0" aria-hidden="true"></iconify-icon><span class="truncate max-w-[8rem]">${name}</span></a>`;
+                }).join('')}
               </div>
             </div>
           ` : '');
+      const labelSectionHtml = (isRepo || isLabel) && (rawMetaLabels.length || rawMetaLabels.some(l => l.name || l.name_zh)) ? `
+            <div class="w-full">
+              <h4 class="text-sm font-mono font-semibold text-slate-300 mb-2">${currentLanguage === 'zh' ? '标签' : 'Labels'}</h4>
+              <div class="flex flex-wrap gap-1.5">
+                ${rawMetaLabels.length ? rawMetaLabels.map(l => {
+                  const text = currentLanguage === 'zh' ? (l.name_zh || l.name || '') : (l.name || l.name_zh || '');
+                  return text ? `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-dark-600 text-slate-300 border border-dark-500">${text}</span>` : '';
+                }).filter(Boolean).join('') : `<span class="text-[11px] font-mono text-slate-400">-</span>`}
+              </div>
+            </div>
+          ` : '';
       return `
         <div class="flex flex-col gap-6">
           <div class="flex items-start gap-4 pr-12">
@@ -1813,23 +1901,26 @@
               ${renderAvatarHtml(item.avatar || item.logo || '', displayName, 'w-16 h-16')}
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="text-xl font-mono font-bold text-slate-100 mb-1">${displayName}</h3>
-              <p class="text-slate-400 text-sm mb-2">${desc}</p>
-              <p class="text-slate-500 text-xs"><span class="text-slate-500">${currentLanguage === 'zh' ? '父标签' : 'Parent Label'}:</span> ${parentLabel}</p>
+              <div class="flex items-center flex-wrap gap-2 mb-1">
+                <h3 class="text-xl font-mono font-bold text-slate-100">${displayName}</h3>
+                ${labelTypeBadgeHtml}
+              </div>
+              ${desc ? `<p class="text-slate-400 text-sm mb-2">${desc}</p>` : ''}
             </div>
           </div>
-          <div class="flex items-center justify-between gap-4 flex-wrap">
-            <div class="flex-1 min-w-0">${repoLinkHtml}</div>
-            ${(isRepo || isLabel) ? `
-            <div class="flex-shrink-0">
+          ${(isRepo || isLabel) ? labelSectionHtml : ''}
+          ${(isRepo || (isLabel && repos.length)) ? repoSectionHtml : ''}
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center justify-between gap-4 flex-wrap">
+              <h4 class="text-sm font-mono font-semibold text-slate-300">${currentLanguage === 'zh' ? '历史数据趋势' : 'Historical Trend'}</h4>
+              ${(isRepo || isLabel) ? `
               <div class="flex rounded-lg bg-dark-700 border border-dark-600 p-0.5" role="group" aria-label="月度/年度切换">
                 <button type="button" id="detailPanelTrendMonth" class="detail-trend-toggle ${mode === 'month' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="month">月度</button>
                 <button type="button" id="detailPanelTrendYear" class="detail-trend-toggle ${mode === 'year' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="year">年度</button>
               </div>
+              ` : ''}
             </div>
-            ` : ''}
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="bg-dark-800 rounded-lg p-4 border border-dark-600">
               ${renderTrendChart(influenceTrend.values, currentLanguage === 'zh' ? '影响力历史趋势' : 'Influence Trend', null, influenceTrend.months)}
             </div>
@@ -1841,6 +1932,7 @@
             </div>
             <div class="bg-dark-800 rounded-lg p-4 border border-dark-600">
               ${renderTrendChart(issuePrTrend.values, currentLanguage === 'zh' ? '活跃 Issue/PR 数量历史趋势' : 'Active Issue/PR Trend', null, issuePrTrend.months)}
+            </div>
             </div>
           </div>
           <div>
@@ -1901,13 +1993,13 @@
       `;
     }
 
-    let detailPanelTrendState = { item: null, trendData: null, trendMode: 'month' };
+    let detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null };
 
     function setDetailPanelTrendMode(mode) {
       detailPanelTrendState.trendMode = mode;
       const body = document.getElementById('detailPanelBody');
       if (body && detailPanelTrendState.item && detailPanelTrendState.trendData) {
-        body.innerHTML = renderDetailLabelRepo(detailPanelTrendState.item, detailPanelTrendState.trendData, mode);
+        body.innerHTML = renderDetailLabelRepo(detailPanelTrendState.item, detailPanelTrendState.trendData, mode, detailPanelTrendState.metaLabels, detailPanelTrendState.metaRepos, detailPanelTrendState.metaLabelType, detailPanelTrendState.metaDesc, detailPanelTrendState.metaDescZh);
         initTrendChartTooltips(body);
         bindDetailPanelTrendToggle();
       }
@@ -1928,7 +2020,7 @@
       const overlay = document.getElementById('detailPanelOverlay');
       const body = document.getElementById('detailPanelBody');
       if (!overlay || !body) return;
-      detailPanelTrendState = { item: null, trendData: null, trendMode: 'month' };
+      detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null };
       if (itemType === 'developer') {
         body.innerHTML = renderDetailDeveloper(item);
         initTrendChartTooltips(body);
@@ -1940,13 +2032,17 @@
         const platform = item.platform || 'github';
         const name = item.name || (currentLanguage === 'zh' ? item.name_zh : item.name) || '';
         let repoTrendData = null;
+        let itemMeta = { labels: [], repos: [] };
         try {
-          repoTrendData = await fetchRepoTrendData(platform, name);
+          [repoTrendData, itemMeta] = await Promise.all([
+            fetchRepoTrendData(platform, name).catch(() => ({})),
+            fetchItemMeta('repo', item),
+          ]);
         } catch (e) {
-          repoTrendData = {};
+          repoTrendData = repoTrendData || {};
         }
-        detailPanelTrendState = { item, trendData: repoTrendData, trendMode: 'month' };
-        body.innerHTML = renderDetailLabelRepo(item, repoTrendData, 'month');
+        detailPanelTrendState = { item, trendData: repoTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null };
+        body.innerHTML = renderDetailLabelRepo(item, repoTrendData, 'month', itemMeta.labels, [], null, null, null);
         initTrendChartTooltips(body);
         setDetailPanelTrendMode('month');
         bindDetailPanelTrendToggle();
@@ -1957,18 +2053,22 @@
         document.body.style.overflow = 'hidden';
         const labelId = (item.id || '').slice(1);
         let labelTrendData = null;
+        let itemMeta = { labels: [], repos: [] };
         try {
-          labelTrendData = await fetchLabelTrendData(labelId);
+          [labelTrendData, itemMeta] = await Promise.all([
+            fetchLabelTrendData(labelId).catch(() => ({})),
+            fetchItemMeta('label', item),
+          ]);
         } catch (e) {
-          labelTrendData = {};
+          labelTrendData = labelTrendData || {};
         }
-        detailPanelTrendState = { item, trendData: labelTrendData, trendMode: 'month' };
-        body.innerHTML = renderDetailLabelRepo(item, labelTrendData, 'month');
+        detailPanelTrendState = { item, trendData: labelTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: itemMeta.repos, metaLabelType: itemMeta.labelType, metaDesc: itemMeta.description, metaDescZh: itemMeta.descriptionZh };
+        body.innerHTML = renderDetailLabelRepo(item, labelTrendData, 'month', itemMeta.labels, itemMeta.repos, itemMeta.labelType, itemMeta.description, itemMeta.descriptionZh);
         initTrendChartTooltips(body);
         setDetailPanelTrendMode('month');
         bindDetailPanelTrendToggle();
       } else {
-        body.innerHTML = renderDetailLabelRepo(item, null, 'month');
+        body.innerHTML = renderDetailLabelRepo(item, null, 'month', [], [], null, null, null);
         initTrendChartTooltips(body);
       }
       overlay.classList.remove('hidden');
