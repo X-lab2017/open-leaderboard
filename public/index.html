@@ -415,14 +415,26 @@
                 <iconify-icon icon="mdi:magnify"></iconify-icon>
                 <span data-i18n="search">搜索</span>
               </label>
-              <input 
-                type="text"
-                id="openLeaderboardSearchInput"
-                placeholder=""
-                data-i18n-placeholder="searchPlaceholder"
-                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-accent focus:border-accent/50 hover:border-slate-500 hover:bg-dark-600/50 transition-colors duration-200"
-                oninput="handleSearchChange()"
-              >
+              <div class="relative">
+                <input 
+                  type="text"
+                  id="openLeaderboardSearchInput"
+                  placeholder=""
+                  data-i18n-placeholder="searchPlaceholder"
+                  class="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 pr-9 text-sm text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-accent focus:border-accent/50 hover:border-slate-500 hover:bg-dark-600/50 transition-colors duration-200"
+                  oninput="handleSearchChange(); updateSearchClearBtnVisibility();"
+                >
+                <button
+                  type="button"
+                  id="searchClearBtn"
+                  data-i18n-title="clearSearch"
+                  onclick="clearSearchInput()"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-md text-slate-400 hover:text-slate-200 hover:bg-dark-600 transition-colors cursor-pointer hidden"
+                  aria-label=""
+                >
+                  <iconify-icon icon="mdi:close" class="text-base"></iconify-icon>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -504,6 +516,7 @@
         headerCommunityParticipants: '参与者数量',
         search: '搜索',
         searchPlaceholder: '输入名称或ID',
+        clearSearch: '清空搜索',
         noData: '暂无数据',
         loadingRepository: '加载仓库数据中...',
         loadingLabel: '加载标签数据中...'
@@ -539,6 +552,7 @@
         headerCommunityParticipants: 'Participants',
         search: 'Search',
         searchPlaceholder: 'Enter name or ID',
+        clearSearch: 'Clear search',
         noData: 'No data',
         loadingRepository: 'Loading repository data...',
         loadingLabel: 'Loading label data...'
@@ -585,6 +599,15 @@
         const key = input.getAttribute('data-i18n-placeholder');
         if (t[key]) {
           input.placeholder = t[key];
+        }
+      });
+
+      // 更新 title 和 aria-label（如清空按钮）
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (t[key]) {
+          el.title = t[key];
+          el.setAttribute('aria-label', t[key]);
         }
       });
 
@@ -994,7 +1017,34 @@
       if (searchInput) {
         searchInput.value = '';
       }
+      updateSearchClearBtnVisibility();
       loadLeaderboardData();
+    }
+
+    // 更新搜索框清空按钮的显示状态
+    function updateSearchClearBtnVisibility() {
+      const searchInput = document.getElementById('openLeaderboardSearchInput');
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (searchInput && clearBtn) {
+        if (searchInput.value.trim()) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+      }
+    }
+
+    // 清空搜索框
+    function clearSearchInput() {
+      const searchInput = document.getElementById('openLeaderboardSearchInput');
+      if (searchInput) {
+        searchInput.value = '';
+        searchKeyword = '';
+        currentPage = 1;
+        renderLeaderboard(currentLeaderboardData);
+        updateSearchClearBtnVisibility();
+        searchInput.focus();
+      }
     }
 
     // 处理搜索变化
@@ -1903,7 +1953,7 @@
       const basicInfoHtml = (isRepo || isLabel) ? `
         <div class="mb-2">
           <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
-            <h4 class="text-sm font-mono font-semibold text-slate-300">${currentLanguage === 'zh' ? '基本信息' : 'Basic Info'}</h4>
+            <h4 class="text-sm font-mono font-semibold text-slate-300">${currentLanguage === 'zh' ? '基本统计数据' : 'Basic Statistics'}</h4>
             <div class="flex rounded-lg bg-dark-700 border border-dark-600 p-0.5" role="group" aria-label="${currentLanguage === 'zh' ? '月度/年度切换' : 'Month/Year toggle'}">
               <button type="button" id="detailPanelTrendMonth" class="detail-trend-toggle ${mode === 'month' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="month">${currentLanguage === 'zh' ? '月度' : 'Month'}</button>
               <button type="button" id="detailPanelTrendYear" class="detail-trend-toggle ${mode === 'year' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="year">${currentLanguage === 'zh' ? '年度' : 'Year'}</button>
@@ -1911,43 +1961,49 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-dark-800 rounded-xl px-5 pt-5 pb-4 border border-dark-600 shadow-lg">
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-purple-500/20 rounded-lg">
-                  <iconify-icon icon="mdi:lightning-bolt" class="w-5 h-5 text-purple-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-purple-500/20 rounded-lg">
+                    <iconify-icon icon="mdi:lightning-bolt" class="w-5 h-5 text-purple-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+                  </div>
+                  <div class="text-3xl font-bold text-slate-100">${infLatest.toLocaleString()}</div>
                 </div>
                 <div class="flex items-center gap-1 text-sm font-medium ${parseFloat(infPct) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
                   <iconify-icon icon="mdi:trending-${parseFloat(infPct) >= 0 ? 'up' : 'down'}" class="w-4 h-4"></iconify-icon>
                   <span>${Math.abs(parseFloat(infPct))}%</span>
                 </div>
               </div>
-              <div class="text-3xl font-bold text-slate-100 mb-0.5">${infLatest.toLocaleString()}</div>
-              <div class="text-sm text-slate-400">${currentLanguage === 'zh' ? 'OpenRank 影响力' : 'OpenRank Influence'}${timeKey ? ` (${timeKey})` : ''}</div>
+              <div class="text-sm text-slate-400 mt-1">${currentLanguage === 'zh' ? 'OpenRank 影响力' : 'OpenRank Influence'}${timeKey ? ` (${timeKey})` : ''}</div>
             </div>
             <div class="bg-dark-800 rounded-xl px-5 pt-5 pb-4 border border-dark-600 shadow-lg">
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-emerald-500/20 rounded-lg">
-                  <iconify-icon icon="mdi:chart-line" class="w-5 h-5 text-emerald-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-emerald-500/20 rounded-lg">
+                    <iconify-icon icon="mdi:chart-line" class="w-5 h-5 text-emerald-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+                  </div>
+                  <div class="text-3xl font-bold text-slate-100">${actLatest.toLocaleString()}</div>
                 </div>
                 <div class="flex items-center gap-1 text-sm font-medium ${parseFloat(actPct) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
                   <iconify-icon icon="mdi:trending-${parseFloat(actPct) >= 0 ? 'up' : 'down'}" class="w-4 h-4"></iconify-icon>
                   <span>${Math.abs(parseFloat(actPct))}%</span>
                 </div>
               </div>
-              <div class="text-3xl font-bold text-slate-100 mb-0.5">${actLatest.toLocaleString()}</div>
-              <div class="text-sm text-slate-400">${currentLanguage === 'zh' ? '活跃度' : 'Activity'}${timeKey ? ` (${timeKey})` : ''}</div>
+              <div class="text-sm text-slate-400 mt-1">${currentLanguage === 'zh' ? '活跃度' : 'Activity'}${timeKey ? ` (${timeKey})` : ''}</div>
             </div>
             <div class="bg-dark-800 rounded-xl px-5 pt-5 pb-4 border border-dark-600 shadow-lg">
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-blue-500/20 rounded-lg">
-                  <iconify-icon icon="mdi:account-group" class="w-5 h-5 text-blue-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-blue-500/20 rounded-lg">
+                    <iconify-icon icon="mdi:account-group" class="w-5 h-5 text-blue-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+                  </div>
+                  <div class="text-3xl font-bold text-slate-100">${devLatest.toLocaleString()}</div>
                 </div>
                 <div class="flex items-center gap-1 text-sm font-medium ${parseFloat(devPct) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
                   <iconify-icon icon="mdi:trending-${parseFloat(devPct) >= 0 ? 'up' : 'down'}" class="w-4 h-4"></iconify-icon>
                   <span>${Math.abs(parseFloat(devPct))}%</span>
                 </div>
               </div>
-              <div class="text-3xl font-bold text-slate-100 mb-0.5">${devLatest.toLocaleString()}</div>
-              <div class="text-sm text-slate-400">${currentLanguage === 'zh' ? '开发者数量' : 'Developers'}${timeKey ? ` (${timeKey})` : ''}</div>
+              <div class="text-sm text-slate-400 mt-1">${currentLanguage === 'zh' ? '开发者数量' : 'Developers'}${timeKey ? ` (${timeKey})` : ''}</div>
             </div>
           </div>
         </div>
