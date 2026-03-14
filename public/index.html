@@ -1883,17 +1883,75 @@
               </div>
             </div>
           ` : '');
-      const labelSectionHtml = (isRepo || isLabel) && (rawMetaLabels.length || rawMetaLabels.some(l => l.name || l.name_zh)) ? `
-            <div class="w-full">
-              <h4 class="text-sm font-mono font-semibold text-slate-300 mb-2">${currentLanguage === 'zh' ? '标签' : 'Labels'}</h4>
-              <div class="flex flex-wrap gap-1.5">
-                ${rawMetaLabels.length ? rawMetaLabels.map(l => {
-                  const text = currentLanguage === 'zh' ? (l.name_zh || l.name || '') : (l.name || l.name_zh || '');
-                  return text ? `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-dark-600 text-slate-300 border border-dark-500">${text}</span>` : '';
-                }).filter(Boolean).join('') : `<span class="text-[11px] font-mono text-slate-400">-</span>`}
-              </div>
+      const inlineLabelsHtml = (isRepo || isLabel) && (rawMetaLabels.length || rawMetaLabels.some(l => l.name || l.name_zh))
+        ? (rawMetaLabels.length ? rawMetaLabels.map(l => {
+            const text = currentLanguage === 'zh' ? (l.name_zh || l.name || '') : (l.name || l.name_zh || '');
+            return text ? `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-dark-600 text-slate-300 border border-dark-500">${text}</span>` : '';
+          }).filter(Boolean).join('') : '')
+        : '';
+      const getChangePct = (latest, prev) => {
+        if (!prev || prev === 0) return latest > 0 ? '100' : '0';
+        return (((latest - prev) / prev) * 100).toFixed(1);
+      };
+      const getLatest = (t) => { const v = t?.values || []; return v.length ? Number(v[v.length - 1]) : 0; };
+      const getPrev = (t) => { const v = t?.values || []; return v.length >= 2 ? Number(v[v.length - 2]) : 0; };
+      const infLatest = getLatest(influenceTrend), infPrev = getPrev(influenceTrend);
+      const actLatest = getLatest(activityTrend), actPrev = getPrev(activityTrend);
+      const devLatest = getLatest(devCountTrend), devPrev = getPrev(devCountTrend);
+      const infPct = getChangePct(infLatest, infPrev), actPct = getChangePct(actLatest, actPrev), devPct = getChangePct(devLatest, devPrev);
+      const timeKey = (influenceTrend?.months?.length ? influenceTrend.months[influenceTrend.months.length - 1] : '') || '';
+      const basicInfoHtml = (isRepo || isLabel) ? `
+        <div class="mb-2">
+          <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
+            <h4 class="text-sm font-mono font-semibold text-slate-300">${currentLanguage === 'zh' ? '基本信息' : 'Basic Info'}</h4>
+            <div class="flex rounded-lg bg-dark-700 border border-dark-600 p-0.5" role="group" aria-label="${currentLanguage === 'zh' ? '月度/年度切换' : 'Month/Year toggle'}">
+              <button type="button" id="detailPanelTrendMonth" class="detail-trend-toggle ${mode === 'month' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="month">${currentLanguage === 'zh' ? '月度' : 'Month'}</button>
+              <button type="button" id="detailPanelTrendYear" class="detail-trend-toggle ${mode === 'year' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="year">${currentLanguage === 'zh' ? '年度' : 'Year'}</button>
             </div>
-          ` : '';
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-dark-800 rounded-xl px-5 pt-5 pb-4 border border-dark-600 shadow-lg">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-purple-500/20 rounded-lg">
+                  <iconify-icon icon="mdi:lightning-bolt" class="w-5 h-5 text-purple-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+                </div>
+                <div class="flex items-center gap-1 text-sm font-medium ${parseFloat(infPct) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                  <iconify-icon icon="mdi:trending-${parseFloat(infPct) >= 0 ? 'up' : 'down'}" class="w-4 h-4"></iconify-icon>
+                  <span>${Math.abs(parseFloat(infPct))}%</span>
+                </div>
+              </div>
+              <div class="text-3xl font-bold text-slate-100 mb-0.5">${infLatest.toLocaleString()}</div>
+              <div class="text-sm text-slate-400">${currentLanguage === 'zh' ? 'OpenRank 影响力' : 'OpenRank Influence'}${timeKey ? ` (${timeKey})` : ''}</div>
+            </div>
+            <div class="bg-dark-800 rounded-xl px-5 pt-5 pb-4 border border-dark-600 shadow-lg">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-emerald-500/20 rounded-lg">
+                  <iconify-icon icon="mdi:chart-line" class="w-5 h-5 text-emerald-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+                </div>
+                <div class="flex items-center gap-1 text-sm font-medium ${parseFloat(actPct) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                  <iconify-icon icon="mdi:trending-${parseFloat(actPct) >= 0 ? 'up' : 'down'}" class="w-4 h-4"></iconify-icon>
+                  <span>${Math.abs(parseFloat(actPct))}%</span>
+                </div>
+              </div>
+              <div class="text-3xl font-bold text-slate-100 mb-0.5">${actLatest.toLocaleString()}</div>
+              <div class="text-sm text-slate-400">${currentLanguage === 'zh' ? '活跃度' : 'Activity'}${timeKey ? ` (${timeKey})` : ''}</div>
+            </div>
+            <div class="bg-dark-800 rounded-xl px-5 pt-5 pb-4 border border-dark-600 shadow-lg">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-9 h-9 flex items-center justify-center flex-shrink-0 bg-blue-500/20 rounded-lg">
+                  <iconify-icon icon="mdi:account-group" class="w-5 h-5 text-blue-400" style="width:1.25rem;height:1.25rem"></iconify-icon>
+                </div>
+                <div class="flex items-center gap-1 text-sm font-medium ${parseFloat(devPct) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                  <iconify-icon icon="mdi:trending-${parseFloat(devPct) >= 0 ? 'up' : 'down'}" class="w-4 h-4"></iconify-icon>
+                  <span>${Math.abs(parseFloat(devPct))}%</span>
+                </div>
+              </div>
+              <div class="text-3xl font-bold text-slate-100 mb-0.5">${devLatest.toLocaleString()}</div>
+              <div class="text-sm text-slate-400">${currentLanguage === 'zh' ? '开发者数量' : 'Developers'}${timeKey ? ` (${timeKey})` : ''}</div>
+            </div>
+          </div>
+        </div>
+      ` : '';
       return `
         <div class="flex flex-col gap-6">
           <div class="flex items-start gap-4 pr-12">
@@ -1904,25 +1962,18 @@
               <div class="flex items-center flex-wrap gap-2 mb-1">
                 <h3 class="text-xl font-mono font-bold text-slate-100">${displayName}</h3>
                 ${labelTypeBadgeHtml}
+                ${inlineLabelsHtml}
               </div>
               ${desc ? `<p class="text-slate-400 text-sm mb-2">${desc}</p>` : ''}
             </div>
           </div>
-          ${(isRepo || isLabel) ? labelSectionHtml : ''}
           ${(isRepo || (isLabel && repos.length)) ? repoSectionHtml : ''}
+          ${basicInfoHtml}
           <div class="flex flex-col gap-4">
-            <div class="flex items-center justify-between gap-4 flex-wrap">
-              <h4 class="text-sm font-mono font-semibold text-slate-300">${currentLanguage === 'zh' ? '历史数据趋势' : 'Historical Trend'}</h4>
-              ${(isRepo || isLabel) ? `
-              <div class="flex rounded-lg bg-dark-700 border border-dark-600 p-0.5" role="group" aria-label="月度/年度切换">
-                <button type="button" id="detailPanelTrendMonth" class="detail-trend-toggle ${mode === 'month' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="month">月度</button>
-                <button type="button" id="detailPanelTrendYear" class="detail-trend-toggle ${mode === 'year' ? 'active' : ''} px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors" data-trend-value="year">年度</button>
-              </div>
-              ` : ''}
-            </div>
+            <h4 class="text-sm font-mono font-semibold text-slate-300">${currentLanguage === 'zh' ? '历史数据趋势' : 'Historical Trend'}</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="bg-dark-800 rounded-lg p-4 border border-dark-600">
-              ${renderTrendChart(influenceTrend.values, currentLanguage === 'zh' ? '影响力历史趋势' : 'Influence Trend', null, influenceTrend.months)}
+              ${renderTrendChart(influenceTrend.values, currentLanguage === 'zh' ? 'OpenRank 影响力历史趋势' : 'OpenRank Influence Trend', null, influenceTrend.months)}
             </div>
             <div class="bg-dark-800 rounded-lg p-4 border border-dark-600">
               ${renderTrendChart(activityTrend.values, currentLanguage === 'zh' ? '活跃度历史趋势' : 'Activity Trend', null, activityTrend.months)}
