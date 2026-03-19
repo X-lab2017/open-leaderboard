@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://open-digger.cn/open_leaderboard/js/tailwindcss.3.4.17.js"></script>
   <script src="https://open-digger.cn/open_leaderboard/js/iconify-icon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -733,9 +734,15 @@
         }
       }
 
-      // 填充 groupType 选择器
+      // 填充 groupType 选择器（排除国家/地区选项）
+      const filteredGroupTypes = groupTypes.filter(g => {
+        if (!g || typeof g !== 'object') return false;
+        const name = (g.name ?? g.name_zh ?? '').toLowerCase();
+        const nameZh = g.name_zh ?? '';
+        return !(name.includes('country') || nameZh.includes('国家') || nameZh.includes('地区'));
+      });
       unitSelect.innerHTML = '';
-      groupTypes.forEach(groupType => {
+      filteredGroupTypes.forEach(groupType => {
         if (!groupType || typeof groupType !== 'object') return;
         const name = groupType.name ?? groupType.name_zh ?? '';
         if (!name) return;
@@ -744,14 +751,14 @@
         option.textContent = currentLanguage === 'zh' ? (groupType.name_zh ?? groupType.name ?? name) : (groupType.name ?? groupType.name_zh ?? name);
         unitSelect.appendChild(option);
       });
-      if (savedUnit && groupTypes.some(g => g && (g.name === savedUnit || g.name_zh === savedUnit))) {
+      if (savedUnit && filteredGroupTypes.some(g => g && (g.name === savedUnit || g.name_zh === savedUnit))) {
         unitSelect.value = savedUnit;
       } else {
-        const defaultGroupType = groupTypes.find(g => g && g.name === 'Project');
+        const defaultGroupType = filteredGroupTypes.find(g => g && g.name === 'Project');
         if (defaultGroupType) {
           unitSelect.value = 'Project';
-        } else if (groupTypes.length > 0) {
-          const first = groupTypes[0];
+        } else if (filteredGroupTypes.length > 0) {
+          const first = filteredGroupTypes[0];
           unitSelect.value = first?.name ?? first?.name_zh ?? '';
         }
       }
@@ -1776,6 +1783,158 @@
       });
     }
 
+    // 国家名称映射表（标准化为 ECharts 世界地图识别名称），渲染前统一应用
+    const COUNTRY_NAME_MAP = {
+      'United States of America': 'United States',
+      'Russian Federation': 'Russia',
+      'United Kingdom of Great Britain and Northern Ireland': 'United Kingdom',
+      'Czechia': 'Czech Rep.',
+      'Netherlands, Kingdom of the': 'Netherlands',
+      'Korea, Republic of': 'Korea',
+      'Türkiye': 'Turkey',
+      'Viet Nam': 'Vietnam',
+      'Iran, Islamic Republic of': 'Iran',
+      'Bolivia, Plurinational State of': 'Bolivia',
+      'Venezuela, Bolivarian Republic of': 'Venezuela',
+      'Dominican Republic': 'Dominican Rep.',
+      'Congo, Democratic Republic of the': 'Dem. Rep. Congo',
+      'Tanzania, United Republic of': 'Tanzania',
+      "Lao People's Democratic Republic": 'Lao PDR',
+      "Korea, Democratic People's Republic of": 'Dem. Rep. Korea',
+      'South Sudan': 'S. Sudan',
+      'Central African Republic': 'Central African Rep.',
+    };
+
+    // 预处理贡献数据：应用国家名称映射，生成 mapName、displayNameZh、displayNameEn
+    function preprocessContributions(contributions) {
+      if (!contributions || !Array.isArray(contributions)) return [];
+      return contributions.map(c => {
+        const mapName = COUNTRY_NAME_MAP[c.country] || c.country || '';
+        const zh = c.country_zh ?? c.countryZh;
+        const displayNameZh = (zh != null && String(zh).trim()) ? String(zh).trim() : mapName;
+        const displayNameEn = mapName;
+        const openrank = (typeof c.openrank === 'number' && !Number.isNaN(c.openrank)) ? c.openrank : 0;
+        return { mapName, displayNameZh, displayNameEn, openrank };
+      });
+    }
+
+    // 初始化贡献度分布世界地图
+    function initContributionMap(contributions) {
+      const container = document.getElementById('contributionMapContainer');
+      if (!container || typeof echarts === 'undefined') return;
+
+      const processed = preprocessContributions(contributions);
+      const hasData = processed.length > 0;
+      if (!hasData) {
+        container.innerHTML = `<p class="text-slate-500 text-sm py-4 text-center">${currentLanguage === 'zh' ? '暂无数据' : 'No Data'}</p>`;
+        return;
+      }
+
+      // 准备地图数据（对 OpenRank + 1 取对数，更好体现差异）
+      const mapData = processed.map(c => ({
+        name: c.mapName,
+        value: Math.log(c.openrank + 1),
+        openrank: c.openrank,
+        displayNameZh: c.displayNameZh,
+        displayNameEn: c.displayNameEn
+      }));
+
+      // 计算最大值用于颜色映射
+      const maxValue = Math.max(...mapData.map(d => d.value));
+
+      // 初始化 ECharts 实例
+      const chart = echarts.init(container);
+
+      // 获取世界地图 GeoJSON
+      fetch('https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json')
+        .then(res => res.json())
+        .then(worldJson => {
+          echarts.registerMap('world', worldJson);
+
+          const option = {
+            backgroundColor: 'transparent',
+            tooltip: {
+              trigger: 'item',
+              backgroundColor: 'rgba(30, 41, 59, 0.95)',
+              borderColor: '#475569',
+              borderWidth: 1,
+              textStyle: {
+                color: '#e2e8f0',
+                fontSize: 12
+              },
+              formatter: function(params) {
+                const openrank = (params.data?.openrank != null ? params.data.openrank : params.value) ?? 0;
+                const displayVal = Number(openrank);
+                const safeVal = (typeof displayVal === 'number' && !Number.isNaN(displayVal)) ? displayVal : 0;
+                const countryDisplay = currentLanguage === 'zh' ? (params.data?.displayNameZh || params.name) : (params.data?.displayNameEn || params.name);
+                return `<div style="font-weight:600">${countryDisplay}</div><div>OpenRank: ${safeVal.toLocaleString()}</div>`;
+              }
+            },
+            visualMap: {
+              min: 0,
+              max: maxValue,
+              left: 'left',
+              bottom: '10',
+              text: ['High', 'Low'],
+              formatter: () => '',  // 不显示具体数字，因 OpenRank 已取对数
+              textStyle: {
+                color: '#94a3b8'
+              },
+              calculable: true,
+              inRange: {
+                color: ['#064e3b', '#065f46', '#047857', '#059669', '#10b981']
+              }
+            },
+            series: [{
+              name: 'Contribution',
+              type: 'map',
+              map: 'world',
+              roam: true,
+              emphasis: {
+                label: {
+                  show: true,
+                  color: '#f1f5f9'
+                },
+                itemStyle: {
+                  areaColor: '#86efac'
+                }
+              },
+              itemStyle: {
+                areaColor: '#334155',
+                borderColor: '#475569',
+                borderWidth: 0.5
+              },
+              label: {
+                show: false
+              },
+              data: mapData
+            }]
+          };
+
+          chart.setOption(option);
+
+          // 显示并绑定复位按钮
+          const resetBtn = document.getElementById('contributionMapResetBtn');
+          if (resetBtn) {
+            resetBtn.style.display = 'block';
+            const resetHandler = () => {
+              chart.clear();
+              chart.setOption(option);
+            };
+            resetBtn.onclick = resetHandler;
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load world map:', err);
+          container.innerHTML = `<p class="text-slate-500 text-sm py-4 text-center">${currentLanguage === 'zh' ? '地图加载失败' : 'Map Load Failed'}</p>`;
+        });
+
+      // 响应窗口大小变化
+      window.addEventListener('resize', () => {
+        chart.resize();
+      });
+    }
+
     // 根据 platform 和 name 生成仓库链接
     function getRepoUrlByPlatform(platform, name) {
       if (!name) return '#';
@@ -1841,19 +2000,19 @@
 
     // 从仓库/标签数据根路径获取 meta.json，返回 labels（name、name_zh）与 repos（仅 label 类型）
     async function fetchItemMeta(itemType, item) {
-      if (!item) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+      if (!item) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
       let metaUrl = '';
       if (itemType === 'repo') {
         const p = (item.platform || 'github').toLowerCase();
         const name = item.name || (currentLanguage === 'zh' ? item.name_zh : item.name) || '';
-        if (!name) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+        if (!name) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
         metaUrl = `${TREND_DATA_BASE}${p}/${name}/meta.json`;
       } else if (itemType === 'label') {
         const labelId = (item.id || '').slice(1);
-        if (!labelId) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+        if (!labelId) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
         metaUrl = `${TREND_DATA_BASE}${labelId}/meta.json`;
       } else {
-        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
       }
       try {
         const res = await fetch(metaUrl);
@@ -1868,14 +2027,15 @@
         const labelType = (itemType === 'label' && meta) ? (meta.label_type ?? null) : null;
         const description = (itemType === 'label' && meta) ? (meta.description ?? null) : null;
         const descriptionZh = (itemType === 'label' && meta) ? (meta.description_zh ?? null) : null;
-        return { labels, repos, labelType, description, descriptionZh };
+        const contributions = (meta && Array.isArray(meta.contributions)) ? meta.contributions : [];
+        return { labels, repos, labelType, description, descriptionZh, contributions };
       } catch (e) {
-        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null };
+        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
       }
     }
 
-    // 渲染 label/repo 详情面板；trendData 为 repo 或 label 的趋势数据；trendMode 为 'month' | 'year'；metaLabels 为 meta.json 中的 labels；metaRepos 为 meta.json 中的 repos；metaLabelType/metaDesc/metaDescZh 为 label 的 meta 字段（仅 label 使用）
-    function renderDetailLabelRepo(item, trendData, trendMode, metaLabels, metaRepos, metaLabelType, metaDesc, metaDescZh) {
+    // 渲染 label/repo 详情面板；trendData 为 repo 或 label 的趋势数据；trendMode 为 'month' | 'year'；metaLabels 为 meta.json 中的 labels；metaRepos 为 meta.json 中的 repos；metaLabelType/metaDesc/metaDescZh 为 label 的 meta 字段（仅 label 使用）；contributions 为国家贡献度分布数据
+    function renderDetailLabelRepo(item, trendData, trendMode, metaLabels, metaRepos, metaLabelType, metaDesc, metaDescZh, contributions) {
       const mode = (trendMode || 'month');
       const itemType = (item.itemType || getItemType()).toLowerCase();
       const isRepo = itemType === 'repo';
@@ -2042,21 +2202,33 @@
             </div>
             </div>
           </div>
-          <div>
-            <h4 class="text-sm font-mono font-semibold text-slate-300 mb-2">${currentLanguage === 'zh' ? '贡献者排行' : 'Top Contributors'}</h4>
-            <div class="space-y-2">
-              ${contributors.length ? contributors.map((c, i) => `
-                <div class="flex items-center gap-3 py-2 px-3 bg-dark-700/40 rounded-lg border border-dark-600">
-                  <span class="text-slate-500 w-6">${i + 1}</span>
-                  <div class="w-8 h-8 flex-shrink-0 relative">
-                    ${renderAvatarHtml(c.avatar || '', c.name || '', 'w-8 h-8')}
-                  </div>
-                  <span class="flex-1 text-slate-200 font-medium">${c.name || ''}</span>
-                  <span class="font-mono text-accent">${(c.contributions ?? 0)}</span>
+          ${isLabel ? `<div>
+            <h4 class="text-sm font-mono font-semibold text-slate-300 mb-2">${currentLanguage === 'zh' ? '贡献度分布（近一年）' : 'Contribution Distribution (Recent Year)'}</h4>
+            <div class="flex gap-4">
+              <div class="flex-shrink-0" style="width: 40%;">
+                <div class="bg-dark-800 rounded-lg p-4 border border-dark-600" style="height: 320px; overflow-y: auto;">
+                  ${(function() {
+                    const processed = preprocessContributions(contributions);
+                    const top10 = processed.slice().sort((a, b) => b.openrank - a.openrank).slice(0, 10);
+                    if (top10.length === 0) return `<p class="text-slate-500 text-sm py-4 text-center">${currentLanguage === 'zh' ? '暂无数据' : 'No Data'}</p>`;
+                    const colName = currentLanguage === 'zh' ? '国家' : 'Country';
+                    const colContribution = 'OpenRank';
+                    return `<table class="w-full text-sm">
+                      <thead><tr class="border-b border-dark-600 text-slate-400"><th class="text-left py-2 pr-3 font-mono">#</th><th class="text-left py-2 pr-3 font-mono">${colName}</th><th class="text-right py-2 font-mono">${colContribution}</th></tr></thead>
+                      <tbody>${top10.map((c, i) => {
+                        const countryDisplay = currentLanguage === 'zh' ? c.displayNameZh : c.displayNameEn;
+                        return `<tr class="border-b border-dark-600/50"><td class="py-2 pr-3 text-slate-500 font-mono">${i + 1}</td><td class="py-2 pr-3 text-slate-200">${countryDisplay}</td><td class="py-2 text-right font-mono text-slate-300">${c.openrank.toLocaleString()}</td></tr>`;
+                      }).join('')}</tbody>
+                    </table>`;
+                  })()}
                 </div>
-              `).join('') : `<p class="text-slate-500 text-sm py-4">${t('noData')}</p>`}
+              </div>
+              <div class="relative flex-1 min-w-0" style="width: 60%;">
+                <div id="contributionMapContainer" class="bg-dark-800 rounded-lg p-4 border border-dark-600" style="height: 320px;"></div>
+                <button id="contributionMapResetBtn" type="button" class="absolute top-6 right-6 px-2 py-1 text-xs rounded bg-dark-700 border border-dark-600 text-slate-300 hover:bg-dark-600 hover:text-slate-100 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent" title="${currentLanguage === 'zh' ? '复位地图' : 'Reset Map'}" style="display: none;">${currentLanguage === 'zh' ? '复位' : 'Reset'}</button>
+              </div>
             </div>
-          </div>
+          </div>` : ''}
         </div>
       `;
     }
@@ -2100,15 +2272,16 @@
       `;
     }
 
-    let detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null };
+    let detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: [] };
 
     function setDetailPanelTrendMode(mode) {
       detailPanelTrendState.trendMode = mode;
       const body = document.getElementById('detailPanelBody');
       if (body && detailPanelTrendState.item && detailPanelTrendState.trendData) {
-        body.innerHTML = renderDetailLabelRepo(detailPanelTrendState.item, detailPanelTrendState.trendData, mode, detailPanelTrendState.metaLabels, detailPanelTrendState.metaRepos, detailPanelTrendState.metaLabelType, detailPanelTrendState.metaDesc, detailPanelTrendState.metaDescZh);
+        body.innerHTML = renderDetailLabelRepo(detailPanelTrendState.item, detailPanelTrendState.trendData, mode, detailPanelTrendState.metaLabels, detailPanelTrendState.metaRepos, detailPanelTrendState.metaLabelType, detailPanelTrendState.metaDesc, detailPanelTrendState.metaDescZh, detailPanelTrendState.contributions);
         initTrendChartTooltips(body);
         bindDetailPanelTrendToggle();
+        initContributionMap(detailPanelTrendState.contributions);
       }
     }
 
@@ -2127,7 +2300,7 @@
       const overlay = document.getElementById('detailPanelOverlay');
       const body = document.getElementById('detailPanelBody');
       if (!overlay || !body) return;
-      detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null };
+      detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: [] };
       if (itemType === 'developer') {
         body.innerHTML = renderDetailDeveloper(item);
         initTrendChartTooltips(body);
@@ -2139,7 +2312,7 @@
         const platform = item.platform || 'github';
         const name = item.name || (currentLanguage === 'zh' ? item.name_zh : item.name) || '';
         let repoTrendData = null;
-        let itemMeta = { labels: [], repos: [] };
+        let itemMeta = { labels: [], repos: [], contributions: [] };
         try {
           [repoTrendData, itemMeta] = await Promise.all([
             fetchRepoTrendData(platform, name).catch(() => ({})),
@@ -2148,9 +2321,10 @@
         } catch (e) {
           repoTrendData = repoTrendData || {};
         }
-        detailPanelTrendState = { item, trendData: repoTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null };
-        body.innerHTML = renderDetailLabelRepo(item, repoTrendData, 'month', itemMeta.labels, [], null, null, null);
+        detailPanelTrendState = { item, trendData: repoTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: itemMeta.contributions || [] };
+        body.innerHTML = renderDetailLabelRepo(item, repoTrendData, 'month', itemMeta.labels, [], null, null, null, itemMeta.contributions);
         initTrendChartTooltips(body);
+        initContributionMap(itemMeta.contributions);
         setDetailPanelTrendMode('month');
         bindDetailPanelTrendToggle();
       } else if (itemType === 'label') {
@@ -2160,7 +2334,7 @@
         document.body.style.overflow = 'hidden';
         const labelId = (item.id || '').slice(1);
         let labelTrendData = null;
-        let itemMeta = { labels: [], repos: [] };
+        let itemMeta = { labels: [], repos: [], contributions: [] };
         try {
           [labelTrendData, itemMeta] = await Promise.all([
             fetchLabelTrendData(labelId).catch(() => ({})),
@@ -2169,13 +2343,14 @@
         } catch (e) {
           labelTrendData = labelTrendData || {};
         }
-        detailPanelTrendState = { item, trendData: labelTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: itemMeta.repos, metaLabelType: itemMeta.labelType, metaDesc: itemMeta.description, metaDescZh: itemMeta.descriptionZh };
-        body.innerHTML = renderDetailLabelRepo(item, labelTrendData, 'month', itemMeta.labels, itemMeta.repos, itemMeta.labelType, itemMeta.description, itemMeta.descriptionZh);
+        detailPanelTrendState = { item, trendData: labelTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: itemMeta.repos, metaLabelType: itemMeta.labelType, metaDesc: itemMeta.description, metaDescZh: itemMeta.descriptionZh, contributions: itemMeta.contributions || [] };
+        body.innerHTML = renderDetailLabelRepo(item, labelTrendData, 'month', itemMeta.labels, itemMeta.repos, itemMeta.labelType, itemMeta.description, itemMeta.descriptionZh, itemMeta.contributions);
         initTrendChartTooltips(body);
+        initContributionMap(itemMeta.contributions);
         setDetailPanelTrendMode('month');
         bindDetailPanelTrendToggle();
       } else {
-        body.innerHTML = renderDetailLabelRepo(item, null, 'month', [], [], null, null, null);
+        body.innerHTML = renderDetailLabelRepo(item, null, 'month', [], [], null, null, null, []);
         initTrendChartTooltips(body);
       }
       overlay.classList.remove('hidden');
