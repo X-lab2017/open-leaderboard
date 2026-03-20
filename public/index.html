@@ -192,8 +192,8 @@
       color: #0F172A;
     }
     
-    /* 左侧筛选下拉菜单：统一样式 */
-    .filter-select {
+    /* 左侧筛选：触发器按钮样式（与输入框一致） */
+    .filter-select-trigger {
       -webkit-appearance: none;
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -202,13 +202,59 @@
       background-size: 1rem;
       padding-right: 2.25rem;
     }
-    .filter-select:hover {
+    .filter-select-trigger:hover {
       border-color: #64748b;
       background-color: rgba(51, 65, 85, 0.8);
     }
-    .filter-select option {
+    /* 筛选下拉菜单：与时间选择器一致 */
+    .filter-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 0.25rem;
       background: #1E293B;
-      color: #F8FAFC;
+      border: 1px solid #475569;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+      z-index: 50;
+      max-height: 200px;
+      overflow-y: auto;
+      overscroll-behavior: none; /* 禁止边界阻尼/回弹，避免背后内容露出 */
+      display: none;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 #1E293B;
+    }
+    .filter-dropdown-menu::-webkit-scrollbar {
+      width: 6px;
+    }
+    .filter-dropdown-menu::-webkit-scrollbar-track {
+      background: #1E293B;
+      border-radius: 0.5rem;
+    }
+    .filter-dropdown-menu::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 3px;
+    }
+    .filter-dropdown-menu::-webkit-scrollbar-thumb:hover {
+      background: #64748B;
+    }
+    .filter-dropdown-menu.show {
+      display: block;
+    }
+    .filter-dropdown-item {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      color: #e2e8f0;
+      transition: background-color 0.2s;
+      font-size: 0.875rem;
+    }
+    .filter-dropdown-item:hover {
+      background-color: #334155;
+    }
+    .filter-dropdown-item.active {
+      background-color: rgba(34, 197, 94, 0.2);
+      color: #22C55E;
     }
     
     /* 时间选择器下拉面板 */
@@ -235,6 +281,16 @@
       font-size: 0.75rem;
       border-radius: 0.375rem;
     }
+    .time-picker-month-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    button.time-picker-arrow:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
 
     /* 详情面板蒙版：蒙版固定不滚动，仅面板内容可滚动 */
     .detail-panel-overlay {
@@ -258,17 +314,33 @@
       max-width: 1000px;
       width: 100%;
       max-height: calc(100vh - 6rem);
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       position: relative;
       cursor: default;
     }
-    .detail-panel-content::-webkit-scrollbar {
+    .detail-panel-header {
+      flex-shrink: 0;
+      padding: 1.5rem 1.5rem 1rem;
+      padding-right: 3.5rem;
+      border-bottom: 1px solid #475569;
+      background: #1E293B;
+      position: relative;
+    }
+    .detail-panel-body-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 1rem 1.5rem 1.5rem;
+    }
+    .detail-panel-body-scroll::-webkit-scrollbar {
       width: 8px;
     }
-    .detail-panel-content::-webkit-scrollbar-track {
+    .detail-panel-body-scroll::-webkit-scrollbar-track {
       background: #1E293B;
     }
-    .detail-panel-content::-webkit-scrollbar-thumb {
+    .detail-panel-body-scroll::-webkit-scrollbar-thumb {
       background: #475569;
       border-radius: 4px;
     }
@@ -373,40 +445,37 @@
                 <iconify-icon icon="mdi:earth"></iconify-icon>
                 <span data-i18n="leaderboardScope">排行范围</span>
               </label>
-              <select 
-                id="scopeSelect"
-                class="filter-select w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer"
-                onchange="handleFilterChange()"
-              >
-                <option value="" data-i18n="loading">加载中...</option>
-              </select>
+              <div class="filter-dropdown relative" id="scopeDropdownWrap">
+                <select id="scopeSelect" class="hidden" aria-hidden="true" tabindex="-1"></select>
+                <button type="button" id="scopeSelectTrigger" class="filter-select-trigger w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 text-left focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer" onclick="toggleFilterDropdown('scope', event)" aria-haspopup="listbox" aria-expanded="false">
+                  <span id="scopeSelectLabel">加载中...</span>
+                </button>
+                <div id="scopeDropdownMenu" class="filter-dropdown-menu" role="listbox"></div>
+              </div>
             </div>
             <div>
               <label class="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
                 <iconify-icon icon="mdi:chart-bar"></iconify-icon>
                 <span data-i18n="rankingUnit">排行单元</span>
               </label>
-              <select 
-                id="unitSelect"
-                class="filter-select w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer"
-                onchange="handleFilterChange()"
-              >
-                <option value="" data-i18n="loading">加载中...</option>
-              </select>
+              <div class="filter-dropdown relative" id="unitDropdownWrap">
+                <select id="unitSelect" class="hidden" aria-hidden="true" tabindex="-1"></select>
+                <button type="button" id="unitSelectTrigger" class="filter-select-trigger w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 text-left focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer" onclick="toggleFilterDropdown('unit', event)" aria-haspopup="listbox" aria-expanded="false">
+                  <span id="unitSelectLabel">加载中...</span>
+                </button>
+                <div id="unitDropdownMenu" class="filter-dropdown-menu" role="listbox"></div>
+              </div>
             </div>
             <div>
               <label class="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
                 <iconify-icon icon="mdi:calendar"></iconify-icon>
                 <span data-i18n="timeRangeType">时间范围类型</span>
               </label>
-              <select 
-                id="timeTypeSelect"
-                class="filter-select w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 focus:ring-2 focus:ring-accent focus:border-accent/50 transition-colors duration-200 cursor-pointer"
-                onchange="handleTimeTypeChange()"
-              >
-                <option value="month" data-i18n-option="byMonth">按月</option>
-                <option value="year" data-i18n-option="byYear">按年</option>
-              </select>
+              <div id="timeTypeToggleGroup" class="flex rounded-lg bg-dark-700 border border-dark-600 p-0.5" role="group" aria-label="">
+                <button type="button" id="timeTypeMonth" class="detail-trend-toggle active px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors flex-1" data-time-value="month" data-i18n="byMonth">按月</button>
+                <button type="button" id="timeTypeYear" class="detail-trend-toggle px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors flex-1" data-time-value="year" data-i18n="byYear">按年</button>
+              </div>
+              <input type="hidden" id="timeTypeSelect" value="month">
             </div>
             <div id="timeRangeContainer">
               <!-- 由 initTimeInputs 动态生成左右箭头选择器 -->
@@ -451,17 +520,19 @@
   <!-- 详情面板蒙版 -->
   <div id="detailPanelOverlay" class="detail-panel-overlay hidden" aria-hidden="true" onclick="closeDetailPanelOnOverlay(event)">
     <div class="detail-panel-content" onclick="event.stopPropagation()">
-        <div class="p-6 relative">
-          <button 
-            id="detailPanelCloseBtn"
-            onclick="closeDetailPanel()"
-            class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-lg bg-dark-700 hover:bg-dark-600 border border-dark-600 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent z-10"
-            title="关闭"
-          >
-            <iconify-icon icon="mdi:close" class="text-xl"></iconify-icon>
-          </button>
-          <div id="detailPanelBody"><!-- 动态填充 --></div>
-        </div>
+      <div class="detail-panel-header">
+        <button 
+          id="detailPanelCloseBtn"
+          onclick="closeDetailPanel()"
+          class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-lg bg-dark-700 hover:bg-dark-600 border border-dark-600 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent z-10"
+          title="关闭"
+        >
+          <iconify-icon icon="mdi:close" class="text-xl"></iconify-icon>
+        </button>
+        <div id="detailPanelHeaderContent"><!-- Logo + 名字等，固定不滚动 --></div>
+      </div>
+      <div class="detail-panel-body-scroll">
+        <div id="detailPanelBody"><!-- 数据部分，可滚动 --></div>
       </div>
     </div>
   </div>
@@ -501,6 +572,9 @@
         country: '发起国家',
         byMonth: '按月',
         byYear: '按年',
+        timeRangeTypeToggle: '按月/按年切换',
+        timePrev: '上一期',
+        timeNext: '下一期',
         leaderboard: '排行榜',
         dataPoweredBy: '数据支持',
         supportedBy: '官方支持',
@@ -535,8 +609,11 @@
         project: 'Project',
         entity: 'Entity',
         country: 'Country',
-        byMonth: 'By Month',
-        byYear: 'By Year',
+        byMonth: 'Month',
+        byYear: 'Year',
+        timeRangeTypeToggle: 'Month/Year toggle',
+        timePrev: 'Previous',
+        timeNext: 'Next',
         leaderboard: 'Leaderboard',
         dataPoweredBy: 'Data Powered By',
         supportedBy: 'Supported By',
@@ -581,10 +658,11 @@
         }
       });
 
-      // 更新语言切换按钮文本
+      // 更新语言切换按钮文本（显示目标语言，便于理解「点击切换到 xx」）
       const languageText = document.getElementById('languageText');
       if (languageText) {
-        languageText.textContent = t.languageText;
+        const targetLang = currentLanguage === 'zh' ? 'en' : 'zh';
+        languageText.textContent = translations[targetLang].languageText;
       }
 
       // 更新 select 选项
@@ -594,6 +672,18 @@
           option.textContent = t[key];
         }
       });
+
+      // 更新时间范围类型切换组的 aria-label
+      const timeTypeGroup = document.getElementById('timeTypeToggleGroup');
+      if (timeTypeGroup && t.timeRangeTypeToggle) {
+        timeTypeGroup.setAttribute('aria-label', t.timeRangeTypeToggle);
+      }
+
+      // 更新时间选择器左右箭头的 aria-label
+      const timePrevBtn = document.getElementById('timePickerPrevBtn');
+      const timeNextBtn = document.getElementById('timePickerNextBtn');
+      if (timePrevBtn && t.timePrev) timePrevBtn.setAttribute('aria-label', t.timePrev);
+      if (timeNextBtn && t.timeNext) timeNextBtn.setAttribute('aria-label', t.timeNext);
 
       // 更新 input placeholder
       document.querySelectorAll('input[data-i18n-placeholder]').forEach(input => {
@@ -711,28 +801,34 @@
       const scopes = Array.isArray(metaData.scopes) ? metaData.scopes : [];
       const groupTypes = Array.isArray(metaData.groupTypes) ? metaData.groupTypes : [];
 
-      // 填充 scope 选择器
+      // 填充 scope 选择器（隐藏 select + 自定义下拉）
       scopeSelect.innerHTML = '';
+      const scopeMenu = document.getElementById('scopeDropdownMenu');
+      if (scopeMenu) scopeMenu.innerHTML = '';
       scopes.forEach(scope => {
         if (!scope || typeof scope !== 'object') return;
         const name = scope.name ?? scope.name_zh ?? '';
         if (!name) return;
+        const displayText = currentLanguage === 'zh' ? (scope.name_zh ?? scope.name ?? name) : (scope.name ?? scope.name_zh ?? name);
         const option = document.createElement('option');
         option.value = name;
-        option.textContent = currentLanguage === 'zh' ? (scope.name_zh ?? scope.name ?? name) : (scope.name ?? scope.name_zh ?? name);
+        option.textContent = displayText;
         scopeSelect.appendChild(option);
-      });
-      if (savedScope && scopes.some(s => s && (s.name === savedScope || s.name_zh === savedScope))) {
-        scopeSelect.value = savedScope;
-      } else {
-        const defaultScope = scopes.find(s => s && s.name === 'Global');
-        if (defaultScope) {
-          scopeSelect.value = 'Global';
-        } else if (scopes.length > 0) {
-          const first = scopes[0];
-          scopeSelect.value = first?.name ?? first?.name_zh ?? '';
+        if (scopeMenu) {
+          const item = document.createElement('div');
+          item.className = 'filter-dropdown-item';
+          item.setAttribute('data-value', name);
+          item.textContent = displayText;
+          item.setAttribute('role', 'option');
+          item.onclick = (e) => { e.stopPropagation(); selectFilterOption('scope', name); };
+          scopeMenu.appendChild(item);
         }
-      }
+      });
+      let finalScope = savedScope && scopes.some(s => s && (s.name === savedScope || s.name_zh === savedScope)) ? savedScope
+        : (scopes.find(s => s && s.name === 'Global') ? 'Global' : (scopes[0]?.name ?? scopes[0]?.name_zh ?? ''));
+      scopeSelect.value = finalScope;
+      updateFilterDropdownLabel('scope', finalScope);
+      if (scopeMenu) scopeMenu.querySelectorAll('.filter-dropdown-item').forEach(el => el.classList.toggle('active', el.getAttribute('data-value') === finalScope));
 
       // 填充 groupType 选择器（排除国家/地区选项）
       const filteredGroupTypes = groupTypes.filter(g => {
@@ -742,26 +838,32 @@
         return !(name.includes('country') || nameZh.includes('国家') || nameZh.includes('地区'));
       });
       unitSelect.innerHTML = '';
+      const unitMenu = document.getElementById('unitDropdownMenu');
+      if (unitMenu) unitMenu.innerHTML = '';
       filteredGroupTypes.forEach(groupType => {
         if (!groupType || typeof groupType !== 'object') return;
         const name = groupType.name ?? groupType.name_zh ?? '';
         if (!name) return;
+        const displayText = currentLanguage === 'zh' ? (groupType.name_zh ?? groupType.name ?? name) : (groupType.name ?? groupType.name_zh ?? name);
         const option = document.createElement('option');
         option.value = name;
-        option.textContent = currentLanguage === 'zh' ? (groupType.name_zh ?? groupType.name ?? name) : (groupType.name ?? groupType.name_zh ?? name);
+        option.textContent = displayText;
         unitSelect.appendChild(option);
-      });
-      if (savedUnit && filteredGroupTypes.some(g => g && (g.name === savedUnit || g.name_zh === savedUnit))) {
-        unitSelect.value = savedUnit;
-      } else {
-        const defaultGroupType = filteredGroupTypes.find(g => g && g.name === 'Project');
-        if (defaultGroupType) {
-          unitSelect.value = 'Project';
-        } else if (filteredGroupTypes.length > 0) {
-          const first = filteredGroupTypes[0];
-          unitSelect.value = first?.name ?? first?.name_zh ?? '';
+        if (unitMenu) {
+          const item = document.createElement('div');
+          item.className = 'filter-dropdown-item';
+          item.setAttribute('data-value', name);
+          item.textContent = displayText;
+          item.setAttribute('role', 'option');
+          item.onclick = (e) => { e.stopPropagation(); selectFilterOption('unit', name); };
+          unitMenu.appendChild(item);
         }
-      }
+      });
+      let finalUnit = savedUnit && filteredGroupTypes.some(g => g && (g.name === savedUnit || g.name_zh === savedUnit)) ? savedUnit
+        : (filteredGroupTypes.find(g => g && g.name === 'Project') ? 'Project' : (filteredGroupTypes[0]?.name ?? filteredGroupTypes[0]?.name_zh ?? ''));
+      unitSelect.value = finalUnit;
+      updateFilterDropdownLabel('unit', finalUnit);
+      if (unitMenu) unitMenu.querySelectorAll('.filter-dropdown-item').forEach(el => el.classList.toggle('active', el.getAttribute('data-value') === finalUnit));
 
       if (timeTypeSelect) {
         if (preserveValues && savedTimeType) timeTypeSelect.value = savedTimeType;
@@ -776,16 +878,13 @@
     const MONTH_NAMES_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const MONTH_NAMES_ZH = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 
-    // 格式化时间显示（用于左右箭头选择器）
+    // 格式化时间显示（用于左右箭头选择器，月度用 xxxx.xx 以便完整展示）
     function formatTimeDisplay(value, timeType) {
       if (timeType === 'year') {
         return currentLanguage === 'zh' ? `${value}年` : value;
       }
       const [y, m] = value.split('-');
-      const monthIdx = parseInt(m, 10) - 1;
-      return currentLanguage === 'zh' 
-        ? `${y}年${MONTH_NAMES_ZH[monthIdx]}`
-        : `${MONTH_NAMES_EN[monthIdx]} ${y}`;
+      return `${y}.${m}`;
     }
 
     function getTimeBounds() {
@@ -800,12 +899,11 @@
 
     function toggleTimePicker() {
       const dropdown = document.getElementById('timePickerDropdown');
-      const chevron = document.getElementById('timePickerChevron');
       if (!dropdown) return;
       dropdown.classList.toggle('show');
-      if (chevron) chevron.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : '';
       if (dropdown.classList.contains('show')) {
         updatePickerYearDisplay();
+        updateTimePickerArrowsState();
         setTimeout(() => document.addEventListener('click', closeTimePickerOnClickOutside), 0);
       } else {
         document.removeEventListener('click', closeTimePickerOnClickOutside);
@@ -816,10 +914,62 @@
       const wrap = document.getElementById('timePickerWrap');
       if (wrap && !wrap.contains(e.target)) {
         const dropdown = document.getElementById('timePickerDropdown');
-        const chevron = document.getElementById('timePickerChevron');
         if (dropdown) dropdown.classList.remove('show');
-        if (chevron) chevron.style.transform = '';
         document.removeEventListener('click', closeTimePickerOnClickOutside);
+      }
+    }
+
+    // 时间框左右箭头快速切换（月模式按月步进，年模式按年步进）
+    function stepTimePicker(delta) {
+      const timeInput = document.getElementById('timeInput');
+      const timeType = document.getElementById('timeTypeSelect').value;
+      const bounds = getTimeBounds();
+      if (!timeInput) return;
+      if (timeType === 'year') {
+        const y = parseInt(timeInput.value || bounds.maxYear, 10);
+        if ((delta < 0 && y <= bounds.minYear) || (delta > 0 && y >= bounds.maxYear)) return;
+        const ny = Math.max(bounds.minYear, Math.min(bounds.maxYear, y + delta));
+        timeInput.value = String(ny);
+      } else {
+        const val = timeInput.value || bounds.maxMonth;
+        if ((delta < 0 && val <= '2015-01') || (delta > 0 && val >= bounds.maxMonth)) return;
+        const [y, m] = val.split('-').map(Number);
+        const date = new Date(y, m - 1, 1);
+        date.setMonth(date.getMonth() + delta);
+        let nval = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        if (nval < '2015-01') nval = '2015-01';
+        if (nval > bounds.maxMonth) nval = bounds.maxMonth;
+        timeInput.value = nval;
+      }
+      updateTimeDisplay();
+      updatePickerYearDisplay();
+      updateTimePickerArrowsState();
+      handleFilterChange();
+    }
+
+    // 更新快速切换箭头及下拉框内箭头的禁用状态
+    function updateTimePickerArrowsState() {
+      const timeInput = document.getElementById('timeInput');
+      const timeType = document.getElementById('timeTypeSelect').value;
+      const bounds = getTimeBounds();
+      if (!timeInput) return;
+      const prevBtn = document.getElementById('timePickerPrevBtn');
+      const nextBtn = document.getElementById('timePickerNextBtn');
+      const prevYear = document.getElementById('timePickerPrevYear');
+      const nextYear = document.getElementById('timePickerNextYear');
+      if (timeType === 'year') {
+        const y = parseInt(timeInput.value || bounds.maxYear, 10);
+        if (prevBtn) prevBtn.disabled = y <= bounds.minYear;
+        if (nextBtn) nextBtn.disabled = y >= bounds.maxYear;
+        if (prevYear) prevYear.disabled = y <= bounds.minYear;
+        if (nextYear) nextYear.disabled = y >= bounds.maxYear;
+      } else {
+        const val = timeInput.value || bounds.maxMonth;
+        if (prevBtn) prevBtn.disabled = val <= '2015-01';
+        if (nextBtn) nextBtn.disabled = val >= bounds.maxMonth;
+        const y = parseInt(val.split('-')[0], 10);
+        if (prevYear) prevYear.disabled = y <= bounds.minYear;
+        if (nextYear) nextYear.disabled = y >= bounds.maxYear;
       }
     }
 
@@ -836,24 +986,25 @@
       const timeInput = document.getElementById('timeInput');
       const timeType = document.getElementById('timeTypeSelect').value;
       const bounds = getTimeBounds();
+      if (!timeInput) return;
       if (timeType === 'year') {
-        let y = parseInt(timeInput.value || bounds.maxYear, 10);
-        y = Math.max(bounds.minYear, Math.min(bounds.maxYear, y + delta));
-        timeInput.value = String(y);
-        updateTimeDisplay();
-        updatePickerYearDisplay();
-        handleFilterChange();
+        const y = parseInt(timeInput.value || bounds.maxYear, 10);
+        if ((delta < 0 && y <= bounds.minYear) || (delta > 0 && y >= bounds.maxYear)) return;
+        const ny = Math.max(bounds.minYear, Math.min(bounds.maxYear, y + delta));
+        timeInput.value = String(ny);
       } else {
         const [y, m] = (timeInput.value || bounds.maxMonth).split('-').map(Number);
+        if ((delta < 0 && y <= bounds.minYear) || (delta > 0 && y >= bounds.maxYear)) return;
         let ny = Math.max(bounds.minYear, Math.min(bounds.maxYear, y + delta));
         let val = `${ny}-${String(m).padStart(2, '0')}`;
         if (val > bounds.maxMonth) val = bounds.maxMonth;
         if (val < '2015-01') val = '2015-01';
         timeInput.value = val;
-        updateTimeDisplay();
-        updatePickerYearDisplay();
-        handleFilterChange();
       }
+      updateTimeDisplay();
+      updatePickerYearDisplay();
+      updateTimePickerArrowsState();
+      handleFilterChange();
     }
 
     function updatePickerYearDisplay() {
@@ -869,10 +1020,16 @@
     function refreshMonthButtonsState() {
       const timeInput = document.getElementById('timeInput');
       const timeType = document.getElementById('timeTypeSelect').value;
+      const bounds = getTimeBounds();
       if (timeType !== 'month' || !timeInput) return;
+      const [year] = (timeInput.value || bounds.maxMonth).split('-');
       const currentMonth = parseInt((timeInput.value || '').split('-')[1], 10) || 0;
       document.querySelectorAll('.time-picker-month-btn').forEach((btn, i) => {
-        const isActive = (i + 1) === currentMonth;
+        const month = i + 1;
+        const val = `${year}-${String(month).padStart(2, '0')}`;
+        const isInRange = val >= '2015-01' && val <= bounds.maxMonth;
+        const isActive = month === currentMonth;
+        btn.disabled = !isInRange;
         btn.className = 'time-picker-month-btn ' + (isActive ? 'bg-accent/20 text-accent border-accent/50' : 'bg-dark-600 hover:bg-dark-500 hover:text-accent text-slate-300 border border-dark-500') + ' rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent transition-colors duration-200';
       });
     }
@@ -882,11 +1039,11 @@
       const year = timeInput.value.split('-')[0];
       const m = String(month).padStart(2, '0');
       const bounds = getTimeBounds();
-      let val = `${year}-${m}`;
-      if (val < '2015-01') val = '2015-01';
-      if (val > bounds.maxMonth) val = bounds.maxMonth;
+      const val = `${year}-${m}`;
+      if (val < '2015-01' || val > bounds.maxMonth) return; // 超出范围不选择
       timeInput.value = val;
       updateTimeDisplay();
+      updateTimePickerArrowsState();
       document.getElementById('timePickerDropdown')?.classList.remove('show');
       document.removeEventListener('click', closeTimePickerOnClickOutside);
       handleFilterChange();
@@ -909,14 +1066,30 @@
       wrap.id = 'timePickerWrap';
       wrap.className = 'relative';
 
-      const trigger = document.createElement('button');
-      trigger.type = 'button';
-      trigger.className = 'w-full flex items-center justify-between gap-2 bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:border-slate-500 hover:bg-dark-600/50 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent/50';
-      trigger.onclick = (e) => { e.stopPropagation(); toggleTimePicker(); };
-      trigger.innerHTML = `
-        <span id="timeDisplay" class="truncate"></span>
-        <iconify-icon icon="mdi:chevron-down" class="flex-shrink-0 text-slate-400 transition-transform duration-200" id="timePickerChevron" aria-hidden="true"></iconify-icon>
-      `;
+      const triggerWrap = document.createElement('div');
+      triggerWrap.className = 'flex items-center bg-dark-700 border border-dark-600 rounded-lg overflow-hidden';
+      const prevBtn = document.createElement('button');
+      prevBtn.type = 'button';
+      prevBtn.className = 'time-picker-arrow flex items-center justify-center w-9 h-10 flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset';
+      prevBtn.id = 'timePickerPrevBtn';
+      prevBtn.setAttribute('aria-label', t('timePrev'));
+      prevBtn.innerHTML = '<iconify-icon icon="mdi:chevron-left" class="text-lg" aria-hidden="true"></iconify-icon>';
+      prevBtn.onclick = (e) => { e.stopPropagation(); stepTimePicker(-1); };
+      const centerBtn = document.createElement('button');
+      centerBtn.type = 'button';
+      centerBtn.className = 'flex-1 flex items-center justify-center min-w-0 px-3 py-2.5 text-sm text-slate-200 hover:bg-dark-600/50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset';
+      centerBtn.onclick = (e) => { e.stopPropagation(); toggleTimePicker(); };
+      centerBtn.innerHTML = '<span id="timeDisplay" class="truncate"></span>';
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'time-picker-arrow flex items-center justify-center w-9 h-10 flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset';
+      nextBtn.id = 'timePickerNextBtn';
+      nextBtn.setAttribute('aria-label', t('timeNext'));
+      nextBtn.innerHTML = '<iconify-icon icon="mdi:chevron-right" class="text-lg" aria-hidden="true"></iconify-icon>';
+      nextBtn.onclick = (e) => { e.stopPropagation(); stepTimePicker(1); };
+      triggerWrap.appendChild(prevBtn);
+      triggerWrap.appendChild(centerBtn);
+      triggerWrap.appendChild(nextBtn);
 
       const hiddenInput = document.createElement('input');
       hiddenInput.type = 'hidden';
@@ -952,7 +1125,8 @@
       yearRow.className = 'flex items-center justify-between gap-2 mb-3';
       const prevYear = document.createElement('button');
       prevYear.type = 'button';
-      prevYear.className = 'flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent';
+      prevYear.id = 'timePickerPrevYear';
+      prevYear.className = 'time-picker-arrow flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent';
       prevYear.setAttribute('aria-label', currentLanguage === 'zh' ? '上一年' : 'Previous year');
       prevYear.innerHTML = '<iconify-icon icon="mdi:chevron-left" class="text-lg" aria-hidden="true"></iconify-icon>';
       prevYear.onclick = (e) => { e.stopPropagation(); stepYearInPicker(-1); };
@@ -961,7 +1135,8 @@
       yearDisplay.className = 'text-sm font-medium text-slate-200 flex-1 text-center';
       const nextYear = document.createElement('button');
       nextYear.type = 'button';
-      nextYear.className = 'flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent';
+      nextYear.id = 'timePickerNextYear';
+      nextYear.className = 'time-picker-arrow flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent';
       nextYear.setAttribute('aria-label', currentLanguage === 'zh' ? '下一年' : 'Next year');
       nextYear.innerHTML = '<iconify-icon icon="mdi:chevron-right" class="text-lg" aria-hidden="true"></iconify-icon>';
       nextYear.onclick = (e) => { e.stopPropagation(); stepYearInPicker(1); };
@@ -988,7 +1163,7 @@
         dropdown.appendChild(monthGrid);
       }
 
-      wrap.appendChild(trigger);
+      wrap.appendChild(triggerWrap);
       wrap.appendChild(dropdown);
       wrap.appendChild(hiddenInput);
       timeContainer.appendChild(label);
@@ -996,6 +1171,7 @@
 
       updateTimeDisplay();
       updatePickerYearDisplay();
+      updateTimePickerArrowsState();
 
       updateTranslations();
     }
@@ -1014,6 +1190,24 @@
     function handleTimeTypeChange() {
       initTimeInputs();
       handleFilterChange();
+    }
+
+    // 绑定时间范围类型切换按钮（与详情面板相同的左右切换形式）
+    function bindTimeTypeToggle() {
+      const monthBtn = document.getElementById('timeTypeMonth');
+      const yearBtn = document.getElementById('timeTypeYear');
+      const hiddenInput = document.getElementById('timeTypeSelect');
+      if (!monthBtn || !yearBtn || !hiddenInput) return;
+
+      const setActive = (value) => {
+        hiddenInput.value = value;
+        monthBtn.classList.toggle('active', value === 'month');
+        yearBtn.classList.toggle('active', value === 'year');
+        handleTimeTypeChange();
+      };
+
+      monthBtn.onclick = () => setActive('month');
+      yearBtn.onclick = () => setActive('year');
     }
 
     // 处理筛选器变化
@@ -1075,6 +1269,84 @@
         const id = (item.id || '').toLowerCase();
         return name.includes(keywordLower) || nameZh.includes(keywordLower) || id.includes(keywordLower);
       });
+    }
+
+    // 筛选下拉菜单：切换、选择、关闭
+    function toggleFilterDropdown(type, event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById(type === 'scope' ? 'scopeDropdownMenu' : 'unitDropdownMenu');
+      const trigger = document.getElementById(type === 'scope' ? 'scopeSelectTrigger' : 'unitSelectTrigger');
+      const wrap = document.getElementById(type === 'scope' ? 'scopeDropdownWrap' : 'unitDropdownWrap');
+      const otherMenu = document.getElementById(type === 'scope' ? 'unitDropdownMenu' : 'scopeDropdownMenu');
+      if (!menu || !wrap) return;
+      const isOpen = menu.classList.contains('show');
+      otherMenu?.classList.remove('show');
+      if (isOpen) {
+        menu.classList.remove('show');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('click', closeFilterDropdownOnClickOutside);
+        updateBodyScrollLock();
+      } else {
+        menu.classList.add('show');
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+        setTimeout(() => document.addEventListener('click', closeFilterDropdownOnClickOutside), 0);
+        updateBodyScrollLock();
+      }
+    }
+    function closeFilterDropdownOnClickOutside(e) {
+      const scopeWrap = document.getElementById('scopeDropdownWrap');
+      const unitWrap = document.getElementById('unitDropdownWrap');
+      if ((scopeWrap && scopeWrap.contains(e.target)) || (unitWrap && unitWrap.contains(e.target))) return;
+      document.getElementById('scopeDropdownMenu')?.classList.remove('show');
+      document.getElementById('unitDropdownMenu')?.classList.remove('show');
+      document.getElementById('scopeSelectTrigger')?.setAttribute('aria-expanded', 'false');
+      document.getElementById('unitSelectTrigger')?.setAttribute('aria-expanded', 'false');
+      document.removeEventListener('click', closeFilterDropdownOnClickOutside);
+      updateBodyScrollLock();
+    }
+    function selectFilterOption(type, value) {
+      const select = document.getElementById(type === 'scope' ? 'scopeSelect' : 'unitSelect');
+      const menu = document.getElementById(type === 'scope' ? 'scopeDropdownMenu' : 'unitDropdownMenu');
+      const trigger = document.getElementById(type === 'scope' ? 'scopeSelectTrigger' : 'unitSelectTrigger');
+      if (!select) return;
+      select.value = value;
+      updateFilterDropdownLabel(type, value);
+      menu?.querySelectorAll('.filter-dropdown-item').forEach(el => el.classList.toggle('active', el.getAttribute('data-value') === value));
+      menu?.classList.remove('show');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      document.removeEventListener('click', closeFilterDropdownOnClickOutside);
+      updateBodyScrollLock();
+      handleFilterChange();
+    }
+    function updateFilterDropdownLabel(type, value) {
+      const label = document.getElementById(type === 'scope' ? 'scopeSelectLabel' : 'unitSelectLabel');
+      const menu = document.getElementById(type === 'scope' ? 'scopeDropdownMenu' : 'unitDropdownMenu');
+      if (!label || !menu) return;
+      const activeItem = Array.from(menu.querySelectorAll('.filter-dropdown-item')).find(el => el.getAttribute('data-value') === value);
+      label.textContent = activeItem ? activeItem.textContent : (value || t('loading'));
+    }
+    function updateBodyScrollLock() {
+      const scopeOpen = document.getElementById('scopeDropdownMenu')?.classList.contains('show');
+      const unitOpen = document.getElementById('unitDropdownMenu')?.classList.contains('show');
+      const anyOpen = scopeOpen || unitOpen;
+      if (anyOpen) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.overscrollBehavior = 'none';
+      } else {
+        document.body.style.overflow = '';
+        document.body.style.overscrollBehavior = '';
+      }
+    }
+    // 阻止下拉框滚动传递到页面（到达顶部/底部时不再滚动背后页面）
+    function preventFilterDropdownScrollChaining(e) {
+      const menu = e.currentTarget;
+      if (!menu || !menu.classList.contains('show')) return;
+      const { scrollTop, clientHeight, scrollHeight } = menu;
+      const atTop = scrollTop <= 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1; // 1px 容差
+      if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
+        e.preventDefault();
+      }
     }
 
     // 切换筛选面板折叠/展开
@@ -2168,21 +2440,23 @@
           </div>
         </div>
       ` : '';
-      return `
-        <div class="flex flex-col gap-6">
-          <div class="flex items-start gap-4 pr-12">
-            <div class="flex-shrink-0 w-16 h-16 relative">
-              ${renderAvatarHtml(item.avatar || item.logo || '', displayName, 'w-16 h-16')}
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center flex-wrap gap-2 mb-1">
-                <h3 class="text-xl font-mono font-bold text-slate-100">${displayName}</h3>
-                ${labelTypeBadgeHtml}
-                ${inlineLabelsHtml}
-              </div>
-              ${desc ? `<p class="text-slate-400 text-sm mb-2">${desc}</p>` : ''}
-            </div>
+      const headerHtml = `
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0 w-16 h-16 relative">
+            ${renderAvatarHtml(item.avatar || item.logo || '', displayName, 'w-16 h-16')}
           </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center flex-wrap gap-2 mb-1">
+              <h3 class="text-xl font-mono font-bold text-slate-100">${displayName}</h3>
+              ${labelTypeBadgeHtml}
+              ${inlineLabelsHtml}
+            </div>
+            ${desc ? `<p class="text-slate-400 text-sm mb-2">${desc}</p>` : ''}
+          </div>
+        </div>
+      `;
+      const bodyHtml = `
+        <div class="flex flex-col gap-6">
           ${(isRepo || (isLabel && repos.length)) ? repoSectionHtml : ''}
           ${basicInfoHtml}
           <div class="flex flex-col gap-4">
@@ -2231,6 +2505,7 @@
           </div>` : ''}
         </div>
       `;
+      return { header: headerHtml, body: bodyHtml };
     }
 
     // 渲染 developer 详情面板
@@ -2238,21 +2513,23 @@
       const displayName = currentLanguage === 'zh' ? (item.name_zh || item.name || '') : (item.name || '');
       const profileUrl = item.url || item.html_url || `https://github.com/${item.id || item.name || ''}`;
       const projects = item.projects || [];
-      return `
-        <div class="flex flex-col gap-6">
-          <div class="flex items-center gap-4 pr-12">
-            <div class="flex-shrink-0 w-20 h-20 relative">
-              ${renderAvatarHtml(item.avatar || '', displayName, 'w-20 h-20')}
-            </div>
-            <div class="flex-1">
-              <h3 class="text-xl font-mono font-bold text-slate-100 mb-2">${displayName}</h3>
-              <a href="${profileUrl}" target="_blank" rel="noopener"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-dark-900 font-semibold text-sm transition-colors cursor-pointer">
-                <iconify-icon icon="mdi:account-box-outline"></iconify-icon>
-                ${currentLanguage === 'zh' ? '开发者画像' : 'Developer Profile'}
-              </a>
-            </div>
+      const headerHtml = `
+        <div class="flex items-center gap-4">
+          <div class="flex-shrink-0 w-20 h-20 relative">
+            ${renderAvatarHtml(item.avatar || '', displayName, 'w-20 h-20')}
           </div>
+          <div class="flex-1">
+            <h3 class="text-xl font-mono font-bold text-slate-100 mb-2">${displayName}</h3>
+            <a href="${profileUrl}" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-dark-900 font-semibold text-sm transition-colors cursor-pointer">
+              <iconify-icon icon="mdi:account-box-outline"></iconify-icon>
+              ${currentLanguage === 'zh' ? '开发者画像' : 'Developer Profile'}
+            </a>
+          </div>
+        </div>
+      `;
+      const bodyHtml = `
+        <div class="flex flex-col gap-6">
           <div class="bg-dark-800 rounded-lg p-4 border border-dark-600">
             ${renderTrendChart([], currentLanguage === 'zh' ? '活跃度历史趋势' : 'Activity Trend', null, [])}
           </div>
@@ -2270,6 +2547,25 @@
           </div>
         </div>
       `;
+      return { header: headerHtml, body: bodyHtml };
+    }
+
+    // 渲染详情面板头部（加载时用，仅显示 Logo + 名字）
+    function renderDetailHeaderPlaceholder(item, itemType) {
+      const type = (itemType || (item.itemType || getItemType())).toLowerCase();
+      const displayName = currentLanguage === 'zh' ? (item.name_zh || item.name || '') : (item.name || '');
+      const avatar = item.avatar || (type === 'repo' ? item.logo : '') || '';
+      const sizeClass = type === 'developer' ? 'w-20 h-20' : 'w-16 h-16';
+      return `
+        <div class="flex items-center gap-4">
+          <div class="flex-shrink-0 ${type === 'developer' ? 'w-20 h-20' : 'w-16 h-16'} relative">
+            ${renderAvatarHtml(avatar, displayName, sizeClass)}
+          </div>
+          <div class="flex-1">
+            <h3 class="text-xl font-mono font-bold text-slate-100">${displayName || (currentLanguage === 'zh' ? '加载中...' : 'Loading...')}</h3>
+          </div>
+        </div>
+      `;
     }
 
     let detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: [] };
@@ -2278,7 +2574,8 @@
       detailPanelTrendState.trendMode = mode;
       const body = document.getElementById('detailPanelBody');
       if (body && detailPanelTrendState.item && detailPanelTrendState.trendData) {
-        body.innerHTML = renderDetailLabelRepo(detailPanelTrendState.item, detailPanelTrendState.trendData, mode, detailPanelTrendState.metaLabels, detailPanelTrendState.metaRepos, detailPanelTrendState.metaLabelType, detailPanelTrendState.metaDesc, detailPanelTrendState.metaDescZh, detailPanelTrendState.contributions);
+        const result = renderDetailLabelRepo(detailPanelTrendState.item, detailPanelTrendState.trendData, mode, detailPanelTrendState.metaLabels, detailPanelTrendState.metaRepos, detailPanelTrendState.metaLabelType, detailPanelTrendState.metaDesc, detailPanelTrendState.metaDescZh, detailPanelTrendState.contributions);
+        body.innerHTML = result.body;
         initTrendChartTooltips(body);
         bindDetailPanelTrendToggle();
         initContributionMap(detailPanelTrendState.contributions);
@@ -2292,6 +2589,13 @@
       if (yearBtn) yearBtn.onclick = () => setDetailPanelTrendMode('year');
     }
 
+    function setDetailPanelContent(headerHtml, bodyHtml) {
+      const headerEl = document.getElementById('detailPanelHeaderContent');
+      const bodyEl = document.getElementById('detailPanelBody');
+      if (headerEl) headerEl.innerHTML = headerHtml || '';
+      if (bodyEl) bodyEl.innerHTML = bodyHtml || '';
+    }
+
     async function openDetailPanel(el) {
       if (!el || !el.dataset.item) return;
       let item;
@@ -2299,13 +2603,15 @@
       const itemType = (item.itemType || getItemType()).toLowerCase();
       const overlay = document.getElementById('detailPanelOverlay');
       const body = document.getElementById('detailPanelBody');
-      if (!overlay || !body) return;
+      const header = document.getElementById('detailPanelHeaderContent');
+      if (!overlay || !body || !header) return;
       detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: [] };
       if (itemType === 'developer') {
-        body.innerHTML = renderDetailDeveloper(item);
+        const dev = renderDetailDeveloper(item);
+        setDetailPanelContent(dev.header, dev.body);
         initTrendChartTooltips(body);
       } else if (itemType === 'repo') {
-        body.innerHTML = showDetailLoading(t('loadingRepository'));
+        setDetailPanelContent(renderDetailHeaderPlaceholder(item, 'repo'), showDetailLoading(t('loadingRepository')));
         overlay.classList.remove('hidden');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
@@ -2322,13 +2628,14 @@
           repoTrendData = repoTrendData || {};
         }
         detailPanelTrendState = { item, trendData: repoTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: itemMeta.contributions || [] };
-        body.innerHTML = renderDetailLabelRepo(item, repoTrendData, 'month', itemMeta.labels, [], null, null, null, itemMeta.contributions);
+        const repo = renderDetailLabelRepo(item, repoTrendData, 'month', itemMeta.labels, [], null, null, null, itemMeta.contributions);
+        setDetailPanelContent(repo.header, repo.body);
         initTrendChartTooltips(body);
         initContributionMap(itemMeta.contributions);
         setDetailPanelTrendMode('month');
         bindDetailPanelTrendToggle();
       } else if (itemType === 'label') {
-        body.innerHTML = showDetailLoading(t('loadingLabel'));
+        setDetailPanelContent(renderDetailHeaderPlaceholder(item, 'label'), showDetailLoading(t('loadingLabel')));
         overlay.classList.remove('hidden');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
@@ -2344,13 +2651,15 @@
           labelTrendData = labelTrendData || {};
         }
         detailPanelTrendState = { item, trendData: labelTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: itemMeta.repos, metaLabelType: itemMeta.labelType, metaDesc: itemMeta.description, metaDescZh: itemMeta.descriptionZh, contributions: itemMeta.contributions || [] };
-        body.innerHTML = renderDetailLabelRepo(item, labelTrendData, 'month', itemMeta.labels, itemMeta.repos, itemMeta.labelType, itemMeta.description, itemMeta.descriptionZh, itemMeta.contributions);
+        const label = renderDetailLabelRepo(item, labelTrendData, 'month', itemMeta.labels, itemMeta.repos, itemMeta.labelType, itemMeta.description, itemMeta.descriptionZh, itemMeta.contributions);
+        setDetailPanelContent(label.header, label.body);
         initTrendChartTooltips(body);
         initContributionMap(itemMeta.contributions);
         setDetailPanelTrendMode('month');
         bindDetailPanelTrendToggle();
       } else {
-        body.innerHTML = renderDetailLabelRepo(item, null, 'month', [], [], null, null, null, []);
+        const other = renderDetailLabelRepo(item, null, 'month', [], [], null, null, null, []);
+        setDetailPanelContent(other.header, other.body);
         initTrendChartTooltips(body);
       }
       overlay.classList.remove('hidden');
@@ -2525,10 +2834,16 @@
       // 设置初始语言
       document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
       updateTranslations();
+      bindTimeTypeToggle();
       initTimeInputs();
       
       // 初始化标题背景动效
       initTitleBackground();
+      
+      // 筛选下拉框：阻止滚动传递到页面
+      [document.getElementById('scopeDropdownMenu'), document.getElementById('unitDropdownMenu')].forEach(menu => {
+        if (menu) menu.addEventListener('wheel', preventFilterDropdownScrollChaining, { passive: false });
+      });
       
       // 加载元数据
       await loadMetaData();
