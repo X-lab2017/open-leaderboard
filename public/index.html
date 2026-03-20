@@ -2077,7 +2077,7 @@
       'Central African Republic': 'Central African Rep.',
     };
 
-    // 预处理贡献数据：应用国家名称映射，生成 mapName、displayNameZh、displayNameEn
+    // 预处理贡献数据：应用国家名称映射，生成 mapName、displayNameZh、displayNameEn、developers
     function preprocessContributions(contributions) {
       if (!contributions || !Array.isArray(contributions)) return [];
       return contributions.map(c => {
@@ -2086,7 +2086,8 @@
         const displayNameZh = (zh != null && String(zh).trim()) ? String(zh).trim() : mapName;
         const displayNameEn = mapName;
         const openrank = (typeof c.openrank === 'number' && !Number.isNaN(c.openrank)) ? c.openrank : 0;
-        return { mapName, displayNameZh, displayNameEn, openrank };
+        const developers = (typeof c.developers === 'number' && !Number.isNaN(c.developers)) ? c.developers : 0;
+        return { mapName, displayNameZh, displayNameEn, openrank, developers };
       });
     }
 
@@ -2107,6 +2108,7 @@
         name: c.mapName,
         value: Math.log(c.openrank + 1),
         openrank: c.openrank,
+        developers: c.developers ?? 0,
         displayNameZh: c.displayNameZh,
         displayNameEn: c.displayNameEn
       }));
@@ -2138,8 +2140,10 @@
                 const openrank = (params.data?.openrank != null ? params.data.openrank : params.value) ?? 0;
                 const displayVal = Number(openrank);
                 const safeVal = (typeof displayVal === 'number' && !Number.isNaN(displayVal)) ? displayVal : 0;
+                const developers = (params.data?.developers != null && typeof params.data.developers === 'number') ? params.data.developers : 0;
                 const countryDisplay = currentLanguage === 'zh' ? (params.data?.displayNameZh || params.name) : (params.data?.displayNameEn || params.name);
-                return `<div style="font-weight:600">${countryDisplay}</div><div>OpenRank: ${safeVal.toLocaleString()}</div>`;
+                const devLabel = currentLanguage === 'zh' ? '开发者' : 'Developers';
+                return `<div style="font-weight:600">${countryDisplay}</div><div>OpenRank: ${safeVal.toLocaleString()}</div><div>${devLabel}: ${developers.toLocaleString()}</div>`;
               }
             },
             visualMap: {
@@ -2486,12 +2490,13 @@
                     const top10 = processed.slice().sort((a, b) => b.openrank - a.openrank).slice(0, 10);
                     if (top10.length === 0) return `<p class="text-slate-500 text-sm py-4 text-center">${currentLanguage === 'zh' ? '暂无数据' : 'No Data'}</p>`;
                     const colName = currentLanguage === 'zh' ? '国家' : 'Country';
+                    const colDevelopers = currentLanguage === 'zh' ? '开发者' : 'Developers';
                     const colContribution = 'OpenRank';
                     return `<table class="w-full text-sm">
-                      <thead><tr class="border-b border-dark-600 text-slate-400"><th class="text-left py-2 pr-3 font-mono">#</th><th class="text-left py-2 pr-3 font-mono">${colName}</th><th class="text-right py-2 font-mono">${colContribution}</th></tr></thead>
+                      <thead><tr class="border-b border-dark-600 text-slate-400"><th class="text-left py-2 pr-3 font-mono">#</th><th class="text-left py-2 pr-3 font-mono">${colName}</th><th class="text-right py-2 pr-3 font-mono">${colDevelopers}</th><th class="text-right py-2 font-mono">${colContribution}</th></tr></thead>
                       <tbody>${top10.map((c, i) => {
                         const countryDisplay = currentLanguage === 'zh' ? c.displayNameZh : c.displayNameEn;
-                        return `<tr class="border-b border-dark-600/50"><td class="py-2 pr-3 text-slate-500 font-mono">${i + 1}</td><td class="py-2 pr-3 text-slate-200">${countryDisplay}</td><td class="py-2 text-right font-mono text-slate-300">${c.openrank.toLocaleString()}</td></tr>`;
+                        return `<tr class="border-b border-dark-600/50"><td class="py-2 pr-3 text-slate-500 font-mono">${i + 1}</td><td class="py-2 pr-3 text-slate-200">${countryDisplay}</td><td class="py-2 pr-3 text-right font-mono text-slate-300">${(c.developers ?? 0).toLocaleString()}</td><td class="py-2 text-right font-mono text-slate-300">${c.openrank.toLocaleString()}</td></tr>`;
                       }).join('')}</tbody>
                     </table>`;
                   })()}
