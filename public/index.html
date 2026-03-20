@@ -137,8 +137,9 @@
     .page-dropdown-menu {
       position: absolute;
       top: 100%;
+      left: 0;
       right: 0;
-      margin-top: 0.5rem;
+      margin-top: 0.25rem;
       background: #1E293B;
       border: 1px solid #475569;
       border-radius: 0.5rem;
@@ -506,6 +507,13 @@
                 </button>
               </div>
             </div>
+            <div id="paginationSection" class="hidden">
+              <label class="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
+                <iconify-icon icon="mdi:page-next"></iconify-icon>
+                <span data-i18n="pagination">翻页</span>
+              </label>
+              <div id="paginationContainer"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -583,6 +591,8 @@
         previousPage: '上一页',
         nextPage: '下一页',
         page: '页',
+        pagination: '翻页',
+        selectPage: '选择页码',
         totalItems: '共',
         items: '条',
         headerRank: '#',
@@ -622,6 +632,8 @@
         previousPage: 'Previous',
         nextPage: 'Next',
         page: 'Page',
+        pagination: 'Page',
+        selectPage: 'Select page',
         totalItems: 'Total',
         items: 'items',
         headerRank: '#',
@@ -1430,6 +1442,8 @@
     // 加载排行榜数据
     async function loadLeaderboardData() {
       const contentArea = document.getElementById('leaderboardContent');
+      const paginationSection = document.getElementById('paginationSection');
+      if (paginationSection) paginationSection.classList.add('hidden');
       
       // 显示加载状态
       contentArea.innerHTML = renderContentMessage('loading', t('loading'));
@@ -1574,68 +1588,75 @@
         ? `${title}${unitName} OpenRank 排行榜`
         : `${title} ${unitName} OpenRank Leaderboard`;
       
-      // 构建分页控件HTML（仅在有多页时显示）
-      let paginationHtml = '';
-      if (totalPages > 1) {
-        // 生成页码选项
-        let pageOptions = '';
-        for (let i = 1; i <= totalPages; i++) {
-          pageOptions += `<div class="page-dropdown-item ${i === currentPage ? 'active' : ''}" onclick="changePage(${i});">${i}</div>`;
-        }
-        
-        paginationHtml = `
-          <div class="flex items-center gap-2 flex-shrink-0">
-            <button 
-              id="prevPageBtn"
-              onclick="changePage(${currentPage - 1})"
-              class="px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-200 hover:bg-dark-600 hover:border-accent/50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
-              ${currentPage === 1 ? 'disabled' : ''}
-            >
-              <iconify-icon icon="mdi:chevron-left" class="text-base" aria-hidden="true"></iconify-icon>
-            </button>
-            <div class="page-dropdown">
+      // 构建分页控件HTML（仅在有多页时显示），样式与时间选择器一致
+      const paginationSection = document.getElementById('paginationSection');
+      const paginationContainer = document.getElementById('paginationContainer');
+      if (paginationSection && paginationContainer) {
+        if (totalPages > 1) {
+          let pageOptions = '';
+          for (let i = 1; i <= totalPages; i++) {
+            pageOptions += `<div class="page-dropdown-item ${i === currentPage ? 'active' : ''}" role="option" onclick="changePage(${i}); closePageDropdown();">${i}</div>`;
+          }
+          paginationContainer.innerHTML = `
+            <div class="flex items-center bg-dark-700 border border-dark-600 rounded-lg overflow-hidden">
               <button 
-                id="pageDropdownBtn"
-                onclick="togglePageDropdown(event)"
-                class="px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-200 hover:bg-dark-600 hover:border-accent/50 transition-colors duration-200 flex items-center gap-1 min-w-[80px] justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+                id="prevPageBtn"
+                type="button"
+                onclick="changePage(${currentPage - 1})"
+                class="time-picker-arrow flex items-center justify-center w-9 h-10 flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+                ${currentPage === 1 ? 'disabled' : ''}
               >
-                <span>${currentPage} / ${totalPages}</span>
-                <iconify-icon icon="mdi:chevron-down" class="text-sm" aria-hidden="true"></iconify-icon>
+                <iconify-icon icon="mdi:chevron-left" class="text-lg" aria-hidden="true"></iconify-icon>
               </button>
-              <div id="pageDropdownMenu" class="page-dropdown-menu">
-                ${pageOptions}
+              <div class="page-dropdown relative flex-1 min-w-0">
+                <button 
+                  id="pageDropdownBtn"
+                  type="button"
+                  onclick="togglePageDropdown(event)"
+                  class="flex-1 flex items-center justify-center min-w-0 px-3 py-2.5 text-sm text-slate-200 hover:bg-dark-600/50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset w-full"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-label="${t('selectPage')}"
+                >
+                  <span class="truncate">${currentPage} / ${totalPages}</span>
+                </button>
+                <div id="pageDropdownMenu" class="page-dropdown-menu" role="listbox">
+                  ${pageOptions}
+                </div>
               </div>
+              <button 
+                id="nextPageBtn"
+                type="button"
+                onclick="changePage(${currentPage + 1})"
+                class="time-picker-arrow flex items-center justify-center w-9 h-10 flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+                ${currentPage === totalPages ? 'disabled' : ''}
+              >
+                <iconify-icon icon="mdi:chevron-right" class="text-lg" aria-hidden="true"></iconify-icon>
+              </button>
             </div>
-            <button 
-              id="nextPageBtn"
-              onclick="changePage(${currentPage + 1})"
-              class="px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-200 hover:bg-dark-600 hover:border-accent/50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
-              ${currentPage === totalPages ? 'disabled' : ''}
-            >
-              <iconify-icon icon="mdi:chevron-right" class="text-base" aria-hidden="true"></iconify-icon>
-            </button>
-          </div>
-        `;
+          `;
+          paginationSection.classList.remove('hidden');
+        } else {
+          paginationContainer.innerHTML = '';
+          paginationSection.classList.add('hidden');
+        }
       }
       
       let html = `
         <div id="leaderboardTitle" class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-4 shadow-lg">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="flex-1 min-w-0">
-              <h2 class="text-xl sm:text-2xl font-mono font-bold mb-2 flex items-center gap-2 text-slate-100">
-                <img src="https://open-digger.cn/open_leaderboard/images/earth-animation.gif" alt="" class="w-8 h-8 object-contain flex-shrink-0" aria-hidden="true">
-                <span class="truncate">${leaderboardTitle}</span>
-              </h2>
-              <p class="text-slate-400 text-sm flex items-center gap-1">
-                <iconify-icon icon="mdi:calendar-range" class="text-base" aria-hidden="true"></iconify-icon>
-                ${timeRange}
-              </p>
-            </div>
-            ${paginationHtml}
+          <div class="flex flex-col items-center justify-center text-center">
+            <h2 class="text-xl sm:text-2xl font-mono font-bold mb-2 flex items-center justify-center gap-2 text-slate-100">
+              <img src="https://open-digger.cn/open_leaderboard/images/earth-animation.gif" alt="" class="w-8 h-8 object-contain flex-shrink-0" aria-hidden="true">
+              <span class="truncate">${leaderboardTitle}</span>
+            </h2>
+            <p class="text-slate-400 text-sm flex items-center justify-center gap-1">
+              <iconify-icon icon="mdi:calendar-range" class="text-base" aria-hidden="true"></iconify-icon>
+              ${timeRange}
+            </p>
           </div>
         </div>
 
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 shadow-lg">
+        <div id="leaderboardTable" class="bg-dark-800 rounded-xl border border-dark-600 p-6 shadow-lg">
           <div class="flex items-center gap-3 px-3 mb-0.5 border-b border-dark-600 pb-3" style="padding-top: 0.125rem;">
             <div class="flex-shrink-0 flex items-center gap-2 w-24">
               <div class="flex-shrink-0 w-12 text-center">
@@ -1654,7 +1675,7 @@
               <span class="text-sm font-mono font-semibold text-slate-400 leading-tight whitespace-nowrap">${t('headerCommunityParticipants')}</span>
             </div>
           </div>
-          <div class="space-y-1.5">
+          <div id="leaderboardDataRows" class="space-y-1.5">
       `;
 
       if (!data || !Array.isArray(data) || data.length === 0) {
@@ -1679,6 +1700,11 @@
           const displayName = currentLanguage === 'zh' 
             ? (item.name_zh || item.name || '')
             : (item.name || '');
+          
+          // 获取描述：英文使用 description，中文使用 description_zh
+          const displayDesc = currentLanguage === 'zh'
+            ? (item.description_zh || item.description || '')
+            : (item.description || item.description_zh || '');
           
           // 获取分数
           const score = item.openrank || 0;
@@ -1721,6 +1747,7 @@
               
               <div class="flex-1 min-w-0">
                 <div class="font-semibold text-sm mb-0.5 truncate text-slate-200">${displayName}</div>
+                ${displayDesc ? `<div class="text-xs text-slate-500 truncate">${displayDesc}</div>` : ''}
               </div>
               <div class="flex-shrink-0 text-right w-32">
                 <div class="text-lg font-mono font-bold text-slate-300">${score.toFixed(1)}</div>
@@ -1791,14 +1818,13 @@
       if (page >= 1 && page <= totalPages) {
         currentPage = page;
         renderLeaderboard(currentLeaderboardData);
-        // 不关闭下拉菜单，让 renderLeaderboard 恢复之前的状态
-        // 滚动到排行榜标题位置
+        // 滚动到数据行区域顶部，仅露出数据部分，不露出标题和表头
         setTimeout(() => {
-          const leaderboardTitle = document.getElementById('leaderboardTitle');
-          if (leaderboardTitle) {
+          const leaderboardDataRows = document.getElementById('leaderboardDataRows');
+          if (leaderboardDataRows) {
             const headerHeight = 80; // 浮动导航：top-4 + h-14
-            const titlePosition = leaderboardTitle.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            window.scrollTo({ top: titlePosition, behavior: 'smooth' });
+            const dataTop = leaderboardDataRows.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+            window.scrollTo({ top: dataTop, behavior: 'smooth' });
           }
         }, 0);
       }
@@ -1820,32 +1846,47 @@
       }
     }
 
-    // 打开页码下拉菜单
+    // 打开页码下拉菜单（使用 fixed 定位避免被筛选器 overflow 裁剪）
     function openPageDropdown() {
       const dropdownMenu = document.getElementById('pageDropdownMenu');
-      if (dropdownMenu) {
+      const dropdownBtn = document.getElementById('pageDropdownBtn');
+      if (dropdownMenu && dropdownBtn) {
+        const rect = dropdownBtn.getBoundingClientRect();
+        dropdownMenu.style.position = 'fixed';
+        dropdownMenu.style.top = (rect.bottom + 4) + 'px';
+        dropdownMenu.style.left = rect.left + 'px';
+        dropdownMenu.style.width = Math.max(rect.width, 80) + 'px';
+        dropdownMenu.style.right = 'auto';
         dropdownMenu.classList.add('show');
-        // 点击外部区域关闭下拉菜单
-        setTimeout(() => {
+        dropdownBtn.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(() => {
           document.addEventListener('click', closePageDropdownOnClickOutside);
-        }, 0);
+        });
       }
     }
 
     // 关闭页码下拉菜单
     function closePageDropdown() {
       const dropdownMenu = document.getElementById('pageDropdownMenu');
+      const dropdownBtn = document.getElementById('pageDropdownBtn');
       if (dropdownMenu) {
         dropdownMenu.classList.remove('show');
+        dropdownMenu.style.position = '';
+        dropdownMenu.style.top = '';
+        dropdownMenu.style.left = '';
+        dropdownMenu.style.width = '';
+        if (dropdownBtn) dropdownBtn.setAttribute('aria-expanded', 'false');
         document.removeEventListener('click', closePageDropdownOnClickOutside);
       }
     }
 
     // 点击外部区域关闭下拉菜单
     function closePageDropdownOnClickOutside(event) {
-      const dropdown = document.querySelector('.page-dropdown');
+      const dropdownBtn = document.getElementById('pageDropdownBtn');
       const dropdownMenu = document.getElementById('pageDropdownMenu');
-      if (dropdown && dropdownMenu && !dropdown.contains(event.target)) {
+      const clickedInside = (dropdownBtn && dropdownBtn.contains(event.target)) ||
+        (dropdownMenu && dropdownMenu.contains(event.target));
+      if (!clickedInside) {
         closePageDropdown();
       }
     }
@@ -2055,6 +2096,96 @@
       });
     }
 
+    // 国家名称 -> ISO 3166-1 alpha-2 代码（用于显示国旗，flagcdn.com 图片跨平台一致）
+    const COUNTRY_TO_ISO = {
+      'United States': 'US', 'United States of America': 'US', 'USA': 'US', 'America': 'US',
+      'China': 'CN', 'Chinese': 'CN',
+      'Russia': 'RU', 'Russian Federation': 'RU',
+      'United Kingdom': 'GB', 'UK': 'GB', 'United Kingdom of Great Britain and Northern Ireland': 'GB', 'Britain': 'GB', 'England': 'GB',
+      'Germany': 'DE', 'Deutschland': 'DE',
+      'France': 'FR',
+      'India': 'IN',
+      'Japan': 'JP',
+      'Korea': 'KR', 'South Korea': 'KR', 'Korea, Republic of': 'KR', 'Republic of Korea': 'KR',
+      'Dem. Rep. Korea': 'KP', 'North Korea': 'KP', "Korea, Democratic People's Republic of": 'KP',
+      'Brazil': 'BR',
+      'Canada': 'CA',
+      'Australia': 'AU',
+      'Netherlands': 'NL', 'Netherlands, Kingdom of the': 'NL', 'Holland': 'NL',
+      'Italy': 'IT',
+      'Spain': 'ES',
+      'Ukraine': 'UA',
+      'Poland': 'PL',
+      'Indonesia': 'ID',
+      'Mexico': 'MX',
+      'Turkey': 'TR', 'Türkiye': 'TR',
+      'Vietnam': 'VN', 'Viet Nam': 'VN',
+      'Pakistan': 'PK',
+      'Bangladesh': 'BD',
+      'Philippines': 'PH',
+      'Egypt': 'EG',
+      'Iran': 'IR', 'Iran, Islamic Republic of': 'IR',
+      'Thailand': 'TH',
+      'South Africa': 'ZA',
+      'Nigeria': 'NG',
+      'Malaysia': 'MY',
+      'Singapore': 'SG',
+      'Belgium': 'BE',
+      'Sweden': 'SE',
+      'Switzerland': 'CH',
+      'Austria': 'AT',
+      'Israel': 'IL',
+      'Argentina': 'AR',
+      'Romania': 'RO',
+      'Czech Rep.': 'CZ', 'Czech Republic': 'CZ', 'Czechia': 'CZ',
+      'Portugal': 'PT',
+      'Hungary': 'HU',
+      'Greece': 'GR',
+      'Colombia': 'CO',
+      'Chile': 'CL',
+      'Kenya': 'KE',
+      'Ireland': 'IE',
+      'New Zealand': 'NZ',
+      'Denmark': 'DK',
+      'Norway': 'NO',
+      'Finland': 'FI',
+      'Belarus': 'BY',
+      'Kazakhstan': 'KZ',
+      'Bulgaria': 'BG',
+      'Croatia': 'HR',
+      'Serbia': 'RS',
+      'Slovakia': 'SK',
+      'Lithuania': 'LT',
+      'Estonia': 'EE',
+      'Latvia': 'LV',
+      'Slovenia': 'SI',
+      'Bolivia': 'BO', 'Bolivia, Plurinational State of': 'BO',
+      'Venezuela': 'VE', 'Venezuela, Bolivarian Republic of': 'VE',
+      'Dominican Rep.': 'DO', 'Dominican Republic': 'DO',
+      'Dem. Rep. Congo': 'CD', 'Congo, Democratic Republic of the': 'CD', 'DR Congo': 'CD',
+      'Tanzania': 'TZ', 'Tanzania, United Republic of': 'TZ',
+      'Lao PDR': 'LA', "Lao People's Democratic Republic": 'LA', 'Laos': 'LA',
+      'S. Sudan': 'SS', 'South Sudan': 'SS',
+      'Central African Rep.': 'CF', 'Central African Republic': 'CF',
+      'Hong Kong': 'HK', 'Hong Kong SAR': 'HK',
+      'Taiwan': 'TW',
+      'Saudi Arabia': 'SA',
+      'United Arab Emirates': 'AE', 'UAE': 'AE',
+      'Algeria': 'DZ', 'Armenia': 'AM', 'Azerbaijan': 'AZ', 'Georgia': 'GE', 'Iraq': 'IQ',
+      'Jordan': 'JO', 'Lebanon': 'LB', 'Morocco': 'MA', 'Palestine': 'PS', 'Qatar': 'QA',
+      'Tunisia': 'TN', 'Yemen': 'YE',
+      'Afghanistan': 'AF', 'Nepal': 'NP', 'Sri Lanka': 'LK', 'Uzbekistan': 'UZ',
+      'Ecuador': 'EC', 'Peru': 'PE', 'Costa Rica': 'CR', 'Cuba': 'CU', 'Guatemala': 'GT',
+      'Panama': 'PA', 'Puerto Rico': 'PR', 'Uruguay': 'UY',
+      'Ethiopia': 'ET', 'Ghana': 'GH', 'Uganda': 'UG', 'Zimbabwe': 'ZW',
+      'Cambodia': 'KH', 'Myanmar': 'MM', 'Mongolia': 'MN',
+    };
+    function getCountryFlagCode(name) {
+      if (!name || typeof name !== 'string') return null;
+      const trimmed = name.trim();
+      return COUNTRY_TO_ISO[trimmed] || COUNTRY_TO_ISO[trimmed.replace(/\s+/g, ' ')] || null;
+    }
+
     // 国家名称映射表（标准化为 ECharts 世界地图识别名称），渲染前统一应用
     const COUNTRY_NAME_MAP = {
       'United States of America': 'United States',
@@ -2077,7 +2208,7 @@
       'Central African Republic': 'Central African Rep.',
     };
 
-    // 预处理贡献数据：应用国家名称映射，生成 mapName、displayNameZh、displayNameEn、developers
+    // 预处理贡献数据：应用国家名称映射，生成 mapName、displayNameZh、displayNameEn、developers、countryCode
     function preprocessContributions(contributions) {
       if (!contributions || !Array.isArray(contributions)) return [];
       return contributions.map(c => {
@@ -2087,7 +2218,8 @@
         const displayNameEn = mapName;
         const openrank = (typeof c.openrank === 'number' && !Number.isNaN(c.openrank)) ? c.openrank : 0;
         const developers = (typeof c.developers === 'number' && !Number.isNaN(c.developers)) ? c.developers : 0;
-        return { mapName, displayNameZh, displayNameEn, openrank, developers };
+        const countryCode = getCountryFlagCode(mapName) || getCountryFlagCode(c.country);
+        return { mapName, displayNameZh, displayNameEn, openrank, developers, countryCode };
       });
     }
 
@@ -2109,6 +2241,7 @@
         value: Math.log(c.openrank + 1),
         openrank: c.openrank,
         developers: c.developers ?? 0,
+        countryCode: c.countryCode,
         displayNameZh: c.displayNameZh,
         displayNameEn: c.displayNameEn
       }));
@@ -2143,7 +2276,9 @@
                 const developers = (params.data?.developers != null && typeof params.data.developers === 'number') ? params.data.developers : 0;
                 const countryDisplay = currentLanguage === 'zh' ? (params.data?.displayNameZh || params.name) : (params.data?.displayNameEn || params.name);
                 const devLabel = currentLanguage === 'zh' ? '开发者' : 'Developers';
-                return `<div style="font-weight:600">${countryDisplay}</div><div>OpenRank: ${safeVal.toLocaleString()}</div><div>${devLabel}: ${developers.toLocaleString()}</div>`;
+                const flagCode = params.data?.countryCode;
+                const flagImg = flagCode ? `<img src="https://flagcdn.com/24x18/${flagCode.toLowerCase()}.png" alt="" style="vertical-align:middle;margin-right:4px;width:24px;height:18px;">` : '';
+                return `<div style="font-weight:600">${flagImg}${countryDisplay}</div><div>OpenRank: ${safeVal.toLocaleString()}</div><div>${devLabel}: ${developers.toLocaleString()}</div>`;
               }
             },
             visualMap: {
@@ -2492,11 +2627,12 @@
                     const colName = currentLanguage === 'zh' ? '国家' : 'Country';
                     const colDevelopers = currentLanguage === 'zh' ? '开发者' : 'Developers';
                     const colContribution = 'OpenRank';
-                    return `<table class="w-full text-sm">
+                    return `<table class="w-full text-xs">
                       <thead><tr class="border-b border-dark-600 text-slate-400"><th class="text-left py-2 pr-3 font-mono">#</th><th class="text-left py-2 pr-3 font-mono">${colName}</th><th class="text-right py-2 pr-3 font-mono">${colDevelopers}</th><th class="text-right py-2 font-mono">${colContribution}</th></tr></thead>
                       <tbody>${top10.map((c, i) => {
                         const countryDisplay = currentLanguage === 'zh' ? c.displayNameZh : c.displayNameEn;
-                        return `<tr class="border-b border-dark-600/50"><td class="py-2 pr-3 text-slate-500 font-mono">${i + 1}</td><td class="py-2 pr-3 text-slate-200">${countryDisplay}</td><td class="py-2 pr-3 text-right font-mono text-slate-300">${(c.developers ?? 0).toLocaleString()}</td><td class="py-2 text-right font-mono text-slate-300">${c.openrank.toLocaleString()}</td></tr>`;
+                        const flagHtml = c.countryCode ? `<img src="https://flagcdn.com/24x18/${c.countryCode.toLowerCase()}.png" alt="" class="inline-block align-middle mr-2" style="width:24px;height:18px;">` : '';
+                        return `<tr class="border-b border-dark-600/50"><td class="py-2 pr-3 text-slate-500 font-mono">${i + 1}</td><td class="py-2 pr-3 text-slate-200">${flagHtml}${countryDisplay}</td><td class="py-2 pr-3 text-right font-mono text-slate-300">${(c.developers ?? 0).toLocaleString()}</td><td class="py-2 text-right font-mono text-slate-300">${c.openrank.toLocaleString()}</td></tr>`;
                       }).join('')}</tbody>
                     </table>`;
                   })()}
