@@ -405,7 +405,7 @@
             class="flex items-center justify-center w-10 h-10 rounded-lg bg-dark-700 text-slate-200 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-900"
             title="GitHub Repository"
           >
-            <iconify-icon icon="mdi:github" class="text-xl"></iconify-icon>
+            <img src="https://oss.open-digger.cn/logos/github.png" alt="" class="w-5 h-5 object-contain" width="20" height="20" decoding="async" />
           </a>
         </div>
       </div>
@@ -2346,21 +2346,53 @@
       });
     }
 
+    // 将数据里的 platform 字段规范为 open-digger / 链接用的短名（github、gitlab、atomgit、gitee）
+    function normalizeRepoPlatform(platform) {
+      if (platform == null || String(platform).trim() === '') return 'github';
+      const raw = String(platform).trim();
+      const lower = raw.toLowerCase().replace(/\/$/, '');
+      if (lower.startsWith('http://') || lower.startsWith('https://')) {
+        try {
+          const u = new URL(lower);
+          const h = u.hostname.replace(/^www\./, '');
+          if (h === 'gitlab.com' || h.endsWith('.gitlab.com')) return 'gitlab';
+          if (h === 'atomgit.com' || h.endsWith('.atomgit.com')) return 'atomgit';
+          if (h === 'gitee.com') return 'gitee';
+          if (h === 'github.com') return 'github';
+        } catch (e) { /* ignore */ }
+      }
+      const slug = lower.replace(/\.com\/?$/, '').replace(/[^a-z0-9]+/g, '');
+      if (slug === 'gitlab') return 'gitlab';
+      if (slug === 'atomgit') return 'atomgit';
+      if (slug === 'gitee') return 'gitee';
+      if (slug === 'github') return 'github';
+      if (lower.includes('gitlab')) return 'gitlab';
+      if (lower.includes('atomgit')) return 'atomgit';
+      if (lower.includes('gitee')) return 'gitee';
+      const head = lower.replace(/\.com$/, '').split('/')[0];
+      return head || 'github';
+    }
+
     // 根据 platform 和 name 生成仓库链接
     function getRepoUrlByPlatform(platform, name) {
       if (!name) return '#';
-      const p = (platform || 'GitHub').toLowerCase();
+      const p = normalizeRepoPlatform(platform);
       if (p === 'gitlab') return `https://gitlab.com/${name}`;
+      if (p === 'atomgit') return `https://atomgit.com/${name}`;
       if (p === 'gitee') return `https://gitee.com/${name}`;
       return `https://github.com/${name}`;
     }
 
-    // 根据 platform 返回对应平台 icon（用于 Iconify）
-    function getRepoPlatformIcon(platform) {
-      const p = (platform || 'GitHub').toLowerCase();
-      if (p === 'gitlab') return 'mdi:gitlab';
-      if (p === 'gitee') return 'simple-icons:gitee';
-      return 'mdi:github';
+    const OPEN_DIGGER_PLATFORM_LOGO_BASE = 'https://oss.open-digger.cn/logos/';
+
+    // 详情内仓库链接前的平台图标（Open Digger OSS 统一 Logo）
+    function getRepoPlatformIconHtml(platform, size) {
+      const p = normalizeRepoPlatform(platform);
+      const isSm = size === 'sm';
+      const imgCls = isSm ? 'w-3.5 h-3.5' : 'w-3 h-3';
+      const wh = isSm ? 14 : 12;
+      const src = `${OPEN_DIGGER_PLATFORM_LOGO_BASE}${p}.png`;
+      return `<img src="${src}" alt="" class="${imgCls} flex-shrink-0 object-contain inline-block align-middle" width="${wh}" height="${wh}" decoding="async" />`;
     }
 
     const TREND_DATA_BASE = 'https://oss.open-digger.cn/';
@@ -2387,7 +2419,7 @@
     // 获取 repo 详情趋势数据（影响力、活跃度、参与者、Issue/PR）
     async function fetchRepoTrendData(platform, name) {
       if (!name) return null;
-      const p = (platform || 'github').toLowerCase();
+      const p = normalizeRepoPlatform(platform || 'github');
       const base = `${TREND_DATA_BASE}${p}/${name}/`;
       return fetchTrendDataByUrls({
         influence: base + 'openrank.json',
@@ -2414,7 +2446,7 @@
       if (!item) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
       let metaUrl = '';
       if (itemType === 'repo') {
-        const p = (item.platform || 'github').toLowerCase();
+        const p = normalizeRepoPlatform(item.platform || 'github');
         const name = item.name || (currentLanguage === 'zh' ? item.name_zh : item.name) || '';
         if (!name) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
         metaUrl = `${TREND_DATA_BASE}${p}/${name}/meta.json`;
@@ -2482,12 +2514,11 @@
       const issuePrTrend = useReal && getTrend('issuePr') ? getTrend('issuePr') : EMPTY_TREND;
       const contributors = item.contributors || [];
       const getRepoHref = (r) => { const p = r.platform || r.Platform; return p ? getRepoUrlByPlatform(p, r.name || r) : (r.url || '#'); };
-      const getRepoIcon = (r) => getRepoPlatformIcon(r.platform || r.Platform || 'github');
       const repoSectionHtml = isRepo
         ? `<div class="w-full">
             <h4 class="text-sm font-mono font-semibold text-slate-300 mb-2">${currentLanguage === 'zh' ? '仓库' : 'Repository'}</h4>
             <a href="${getRepoUrlByPlatform(item.platform, repoName)}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-slate-300 hover:border-accent/50 text-xs font-mono">
-              <iconify-icon icon="${getRepoPlatformIcon(item.platform)}" class="text-sm flex-shrink-0" aria-hidden="true"></iconify-icon>
+              ${getRepoPlatformIconHtml(item.platform, 'sm')}
               <span class="truncate">${repoName}</span>
             </a>
           </div>`
@@ -2498,8 +2529,8 @@
                 ${repos.map(r => {
                   const name = r.name || r;
                   const href = getRepoHref(r);
-                  const icon = getRepoIcon(r);
-                  return `<a href="${href}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-dark-700 border border-dark-600 text-slate-300 hover:border-accent/50 text-[11px] font-mono leading-tight"><iconify-icon icon="${icon}" class="text-xs flex-shrink-0" aria-hidden="true"></iconify-icon><span class="truncate max-w-[8rem]">${name}</span></a>`;
+                  const iconHtml = getRepoPlatformIconHtml(r.platform || r.Platform || 'github', 'xs');
+                  return `<a href="${href}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-dark-700 border border-dark-600 text-slate-300 hover:border-accent/50 text-[11px] font-mono leading-tight">${iconHtml}<span class="truncate max-w-[8rem]">${name}</span></a>`;
                 }).join('')}
               </div>
             </div>
@@ -2756,7 +2787,7 @@
         overlay.classList.remove('hidden');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        const platform = item.platform || 'github';
+        const platform = normalizeRepoPlatform(item.platform || 'github');
         const name = item.name || (currentLanguage === 'zh' ? item.name_zh : item.name) || '';
         let repoTrendData = null;
         let itemMeta = { labels: [], repos: [], contributions: [] };
@@ -3015,7 +3046,7 @@
             class="flex items-center justify-center w-9 h-9 rounded-lg bg-dark-700 text-slate-200 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
             title="GitHub"
           >
-            <iconify-icon icon="mdi:github" class="text-xl" aria-hidden="true"></iconify-icon>
+            <img src="https://oss.open-digger.cn/logos/github.png" alt="" class="w-5 h-5 object-contain" width="20" height="20" decoding="async" aria-hidden="true" />
           </a>
         </div>
       </div>
