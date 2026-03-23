@@ -324,7 +324,7 @@
     .detail-panel-header {
       flex-shrink: 0;
       padding: 1.5rem 1.5rem 1rem;
-      padding-right: 3.5rem;
+      padding-right: 6rem;
       border-bottom: 1px solid #475569;
       background: #1E293B;
       position: relative;
@@ -529,14 +529,28 @@
   <div id="detailPanelOverlay" class="detail-panel-overlay hidden" aria-hidden="true" onclick="closeDetailPanelOnOverlay(event)">
     <div class="detail-panel-content" onclick="event.stopPropagation()">
       <div class="detail-panel-header">
-        <button 
-          id="detailPanelCloseBtn"
-          onclick="closeDetailPanel()"
-          class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-lg bg-dark-700 hover:bg-dark-600 border border-dark-600 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent z-10"
-          title="关闭"
-        >
-          <iconify-icon icon="mdi:close" class="text-xl"></iconify-icon>
-        </button>
+        <div class="absolute top-4 right-4 z-10 flex flex-row-reverse items-center gap-2">
+          <button
+            type="button"
+            id="detailPanelCloseBtn"
+            onclick="closeDetailPanel()"
+            class="w-9 h-9 flex items-center justify-center rounded-lg bg-dark-700 hover:bg-dark-600 border border-dark-600 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent"
+            data-i18n-title="closePanel"
+            title="关闭"
+          >
+            <iconify-icon icon="mdi:close" class="text-xl"></iconify-icon>
+          </button>
+          <button
+            type="button"
+            id="detailPanelBackBtn"
+            onclick="detailPanelNavigateBack()"
+            class="hidden w-9 h-9 flex items-center justify-center rounded-lg bg-dark-700 hover:bg-dark-600 border border-dark-600 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent"
+            data-i18n-title="detailBack"
+            title="返回"
+          >
+            <iconify-icon icon="mdi:arrow-left" class="text-xl"></iconify-icon>
+          </button>
+        </div>
         <div id="detailPanelHeaderContent"><!-- Logo + 名字等，固定不滚动 --></div>
       </div>
       <div class="detail-panel-body-scroll">
@@ -604,7 +618,9 @@
         clearSearch: '清空搜索',
         noData: '暂无数据',
         loadingRepository: '加载仓库数据中...',
-        loadingLabel: '加载标签数据中...'
+        loadingLabel: '加载标签数据中...',
+        closePanel: '关闭',
+        detailBack: '返回上一标签'
       },
       en: {
         languageText: 'English',
@@ -645,7 +661,9 @@
         clearSearch: 'Clear search',
         noData: 'No data',
         loadingRepository: 'Loading repository data...',
-        loadingLabel: 'Loading label data...'
+        loadingLabel: 'Loading label data...',
+        closePanel: 'Close',
+        detailBack: 'Back'
       }
     };
 
@@ -842,9 +860,10 @@
       updateFilterDropdownLabel('scope', finalScope);
       if (scopeMenu) scopeMenu.querySelectorAll('.filter-dropdown-item').forEach(el => el.classList.toggle('active', el.getAttribute('data-value') === finalScope));
 
-      // 填充 groupType 选择器（排除国家/地区选项）
+      // 填充 groupType 选择器（排除国家/地区选项；Division-0 单独保留以便排行与详情）
       const filteredGroupTypes = groupTypes.filter(g => {
         if (!g || typeof g !== 'object') return false;
+        if (isDivisionZeroTypeName(g.name)) return true;
         const name = (g.name ?? g.name_zh ?? '').toLowerCase();
         const nameZh = g.name_zh ?? '';
         return !(name.includes('country') || nameZh.includes('国家') || nameZh.includes('地区'));
@@ -1503,13 +1522,15 @@
       const initial = getInitial(displayName);
       const avatarColor = getAvatarColor(displayName);
       const idAttr = uniqueId ? `id="${uniqueId}"` : '';
+      const isFlagCdn = typeof avatar === 'string' && avatar.includes('flagcdn.com');
+      const imgFitClass = isFlagCdn ? 'object-contain bg-dark-800' : 'object-cover';
       if (avatar) {
         return `
           <img ${idAttr}
             src="${avatar}"
             alt="${displayName}"
-            class="${sizeClass} rounded border-2 border-dark-600 object-cover"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            class="${sizeClass} rounded border-2 border-dark-600 ${imgFitClass}"
+            onerror="this.style.display='none';var n=this.nextElementSibling;if(n)n.classList.remove('hidden');"
           >
           <div class="${sizeClass} rounded border-2 border-dark-600 flex items-center justify-center text-white font-bold text-sm hidden" style="background-color: ${avatarColor};">
             ${initial}
@@ -1561,6 +1582,8 @@
       const unitName = currentLanguage === 'zh'
         ? (currentGroupType?.name_zh || currentGroupType?.name || groupTypeName)
         : (currentGroupType?.name || groupTypeName);
+
+      const isDivisionLeaderboardUnit = isDivisionZeroTypeName(groupTypeName) || isDivisionZeroTypeName(currentGroupType?.name);
 
       let timeRange = '';
       if (timeType === 'year') {
@@ -1725,8 +1748,9 @@
           const openrankDeltaHtml = formatDeltaHtml(openrankDelta, false);
           const participantsDeltaHtml = formatDeltaHtml(participantsDelta, true);
           
-          // 获取头像
-          const avatar = item.avatar || '';
+          // 获取头像（Division-0 维度使用国旗）
+          const flagUrl = isDivisionLeaderboardUnit ? divisionLabelFlagAvatarUrl(item) : '';
+          const avatar = flagUrl || item.avatar || '';
           const uniqueId = `avatar-${startIndex + index}-${Date.now()}`;
           const itemDataAttr = (() => { try { return ' data-item="' + JSON.stringify(item).replace(/&/g, '&amp;').replace(/"/g, '&quot;') + '"'; } catch(e) { return ''; } })();
           
@@ -1913,7 +1937,21 @@
       'Foundation': { en: 'Foundation', zh: '基金会' },
       'Agency-0': { en: 'Agency', zh: '政府机构' },
       'Tech-0': { en: 'Tech', zh: '技术领域' },
+      'Division-0': { en: 'Country', zh: '国家' },
     };
+
+    // meta.json 中 labels[].type 为这些值时，详情页标签可点击并跳转到对应标签详情
+    const CLICKABLE_DETAIL_META_LABEL_TYPES = new Set(['Company', 'Project', 'Foundation', 'University-0', 'Institution-0', 'Agency-0', 'Tech-0', 'Division-0']);
+
+    function isDivisionZeroTypeName(v) {
+      return typeof v === 'string' && v.trim().toLowerCase() === 'division-0';
+    }
+
+    function isClickableDetailMetaLabelType(t) {
+      if (!t || typeof t !== 'string') return false;
+      if (isDivisionZeroTypeName(t)) return true;
+      return CLICKABLE_DETAIL_META_LABEL_TYPES.has(t);
+    }
 
     function getNumericValueFromJsonEntry(v) {
       if (typeof v === 'number') return v;
@@ -2208,6 +2246,22 @@
       'Central African Republic': 'Central African Rep.',
     };
 
+    /** Division-0（国家/地区）标签：用英文 name（及 COUNTRY_NAME_MAP 归一化）解析 ISO 代码，供国旗头像 */
+    function getDivisionLabelFlagCodeFromItem(item) {
+      if (!item || typeof item !== 'object') return null;
+      const raw = (item.name || '').trim();
+      if (!raw) return null;
+      const normalized = COUNTRY_NAME_MAP[raw] || raw;
+      return getCountryFlagCode(normalized) || getCountryFlagCode(raw);
+    }
+
+    function divisionLabelFlagAvatarUrl(item) {
+      const code = getDivisionLabelFlagCodeFromItem(item);
+      if (!code) return '';
+      const iso = String(code).trim().toLowerCase();
+      return iso ? `https://flagcdn.com/w80/${iso}.png` : '';
+    }
+
     // 预处理贡献数据：应用国家名称映射，生成 mapName、displayNameZh、displayNameEn、developers、countryCode
     function preprocessContributions(contributions) {
       if (!contributions || !Array.isArray(contributions)) return [];
@@ -2385,6 +2439,14 @@
 
     const OPEN_DIGGER_PLATFORM_LOGO_BASE = 'https://oss.open-digger.cn/logos/';
 
+    /** 根据 label 的 id（如 :companies/huawei）推断 OSS 上的 Logo URL，与排行榜 avatar 规则一致 */
+    function inferLabelAvatarUrl(labelIdFull) {
+      if (!labelIdFull || typeof labelIdFull !== 'string') return '';
+      const path = labelIdFull.startsWith(':') ? labelIdFull.slice(1) : labelIdFull;
+      if (!path) return '';
+      return `${OPEN_DIGGER_PLATFORM_LOGO_BASE}${path}.png`;
+    }
+
     // 详情内仓库链接前的平台图标（Open Digger OSS 统一 Logo）
     function getRepoPlatformIconHtml(platform, size) {
       const p = normalizeRepoPlatform(platform);
@@ -2443,27 +2505,34 @@
 
     // 从仓库/标签数据根路径获取 meta.json，返回 labels（name、name_zh）与 repos（仅 label 类型）
     async function fetchItemMeta(itemType, item) {
-      if (!item) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
+      const empty = { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [], metaAvatar: null, metaName: null, metaNameZh: null };
+      if (!item) return { ...empty };
       let metaUrl = '';
       if (itemType === 'repo') {
         const p = normalizeRepoPlatform(item.platform || 'github');
         const name = item.name || (currentLanguage === 'zh' ? item.name_zh : item.name) || '';
-        if (!name) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
+        if (!name) return { ...empty };
         metaUrl = `${TREND_DATA_BASE}${p}/${name}/meta.json`;
       } else if (itemType === 'label') {
         const labelId = (item.id || '').slice(1);
-        if (!labelId) return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
+        if (!labelId) return { ...empty };
         metaUrl = `${TREND_DATA_BASE}${labelId}/meta.json`;
       } else {
-        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
+        return { ...empty };
       }
       try {
         const res = await fetch(metaUrl);
         const meta = res.ok ? await res.json() : null;
         const rawLabels = (meta && Array.isArray(meta.labels)) ? meta.labels : [];
         const labels = rawLabels.map(l => {
-          if (!l || typeof l !== 'object') return { name: '', name_zh: '' };
-          return { name: l.name ?? '', name_zh: l.name_zh ?? '' };
+          if (!l || typeof l !== 'object') return { name: '', name_zh: '', id: null, type: null, avatar: null };
+          return {
+            name: l.name ?? '',
+            name_zh: l.name_zh ?? '',
+            id: l.id ?? null,
+            type: (l.type ?? l.label_type ?? null),
+            avatar: l.avatar ?? null,
+          };
         });
         const rawRepos = (itemType === 'label' && meta && Array.isArray(meta.repos)) ? meta.repos : [];
         const repos = rawRepos.filter(r => r != null);
@@ -2471,13 +2540,39 @@
         const description = (itemType === 'label' && meta) ? (meta.description ?? null) : null;
         const descriptionZh = (itemType === 'label' && meta) ? (meta.description_zh ?? null) : null;
         const contributions = (meta && Array.isArray(meta.contributions)) ? meta.contributions : [];
-        return { labels, repos, labelType, description, descriptionZh, contributions };
+        const metaAvatar = (itemType === 'label' && meta) ? (meta.avatar ?? meta.logo ?? null) : null;
+        const metaName = (itemType === 'label' && meta) ? (meta.name ?? null) : null;
+        const metaNameZh = (itemType === 'label' && meta) ? (meta.name_zh ?? null) : null;
+        return { labels, repos, labelType, description, descriptionZh, contributions, metaAvatar, metaName, metaNameZh };
       } catch (e) {
-        return { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [] };
+        return { ...empty };
       }
     }
 
-    // 渲染 label/repo 详情面板；trendData 为 repo 或 label 的趋势数据；trendMode 为 'month' | 'year'；metaLabels 为 meta.json 中的 labels；metaRepos 为 meta.json 中的 repos；metaLabelType/metaDesc/metaDescZh 为 label 的 meta 字段（仅 label 使用）；contributions 为国家贡献度分布数据
+    /** 用 meta.json 根字段与 OSS Logo 规则补全从详情内跳转得到的精简 item */
+    function enrichLabelItemWithMeta(item, itemMeta) {
+      const base = item && typeof item === 'object' ? item : {};
+      const inferred = inferLabelAvatarUrl(base.id);
+      return {
+        ...base,
+        itemType: 'label',
+        avatar: base.avatar || base.logo || itemMeta.metaAvatar || inferred || '',
+        name: base.name || itemMeta.metaName || '',
+        name_zh: base.name_zh || itemMeta.metaNameZh || '',
+        description: base.description || itemMeta.description || '',
+        description_zh: base.description_zh || itemMeta.descriptionZh || '',
+      };
+    }
+
+    /** label 详情头部描述：仅使用 meta 的 description / description_zh；字段不存在或仅为空白时，用语种对应的 name 作为描述文案。 */
+    function getLabelDetailDescriptionFromMeta(langZh, metaDesc, metaDescZh, item) {
+      const raw = langZh ? metaDescZh : metaDesc;
+      if (raw != null && String(raw).trim() !== '') return String(raw).trim();
+      const nameFallback = !langZh ? (item.name_zh || item.name || '') : (item.name || item.name_zh || '');
+      return String(nameFallback || '').trim();
+    }
+
+    // 渲染 label/repo 详情面板；trendData 为 repo 或 label 的趋势数据；trendMode 为 'month' | 'year'；metaLabels 为 meta.json 中的 labels；metaRepos 为 meta.json 中的 repos；metaLabelType/metaDesc/metaDescZh 为 label 的 meta 根级字段（仅 label 使用）；contributions 为国家贡献度分布数据
     function renderDetailLabelRepo(item, trendData, trendMode, metaLabels, metaRepos, metaLabelType, metaDesc, metaDescZh, contributions) {
       const mode = (trendMode || 'month');
       const itemType = (item.itemType || getItemType()).toLowerCase();
@@ -2485,16 +2580,21 @@
       const isLabel = itemType === 'label';
       const displayName = currentLanguage === 'zh' ? (item.name_zh || item.name || '') : (item.name || '');
       const repoName = item.name || displayName || '';
-      // label 类型优先使用 meta 的 description/description_zh；为空则不显示描述
+      const langZh = currentLanguage === 'zh';
+      metaLabelType = item.label_type || metaLabelType;
       const desc = isLabel
-        ? (currentLanguage === 'zh' ? (metaDescZh || item.desc_zh || item.description || item.desc || '') : (metaDesc || item.description || item.desc || item.desc_zh || ''))
-        : (currentLanguage === 'zh' ? (item.desc_zh || item.description || item.desc || '') : (item.description || item.desc || item.desc_zh || ''));
-      const labelTypeDesc = (metaLabelType && LABEL_TYPE_MAP[metaLabelType])
-        ? (currentLanguage === 'zh' ? LABEL_TYPE_MAP[metaLabelType].zh : LABEL_TYPE_MAP[metaLabelType].en)
+        ? getLabelDetailDescriptionFromMeta(langZh, metaDesc, metaDescZh, item)
+        : (!langZh ? (item.desc_zh || item.description_zh || item.description || item.desc || '')
+        : (item.description || item.desc || item.description_zh || item.desc_zh || ''));
+      const metaLabelTypeMapKey = metaLabelType && isDivisionZeroTypeName(metaLabelType) ? 'Division-0' : metaLabelType;
+      const labelTypeDesc = (metaLabelTypeMapKey && LABEL_TYPE_MAP[metaLabelTypeMapKey])
+        ? (currentLanguage === 'zh' ? LABEL_TYPE_MAP[metaLabelTypeMapKey].zh : LABEL_TYPE_MAP[metaLabelTypeMapKey].en)
         : (metaLabelType || '');
       const badgeText = isRepo
         ? (currentLanguage === 'zh' ? LABEL_TYPE_MAP['repo'].zh : LABEL_TYPE_MAP['repo'].en)
         : (isLabel && labelTypeDesc ? labelTypeDesc : '');
+      const isDivisionLabel = isLabel && isDivisionZeroTypeName(metaLabelType);
+      const detailHeaderAvatar = (isDivisionLabel ? divisionLabelFlagAvatarUrl(item) : '') || item.avatar || item.logo || '';
       const labelTypeBadgeHtml = badgeText
         ? `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-accent/20 text-accent border border-accent/40">${badgeText}</span>`
         : '';
@@ -2538,7 +2638,27 @@
       const inlineLabelsHtml = (isRepo || isLabel) && (rawMetaLabels.length || rawMetaLabels.some(l => l.name || l.name_zh))
         ? (rawMetaLabels.length ? rawMetaLabels.map(l => {
             const text = currentLanguage === 'zh' ? (l.name_zh || l.name || '') : (l.name || l.name_zh || '');
-            return text ? `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-dark-600 text-slate-300 border border-dark-500">${text}</span>` : '';
+            if (!text) return '';
+            const metaType = l.type || null;
+            const clickable = l.id && metaType && isClickableDetailMetaLabelType(metaType);
+            if (clickable) {
+              const navItem = {
+                id: l.id,
+                name: l.name || '',
+                name_zh: l.name_zh || '',
+                itemType: 'label',
+                avatar: l.avatar || '',
+                label_type: metaType || undefined,
+              };
+              let dataAttr = '';
+              try {
+                dataAttr = JSON.stringify(navItem).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+              } catch (e) {
+                return `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-dark-600 text-slate-300 border border-dark-500">${text}</span>`;
+              }
+              return `<button type="button" class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-dark-600 text-slate-300 border border-dark-500 hover:border-accent/50 hover:text-accent transition-colors cursor-pointer align-baseline" data-item="${dataAttr}" onclick="detailMetaLabelNavigate(this)" title="${currentLanguage === 'zh' ? '查看详情' : 'View details'}">${text}</button>`;
+            }
+            return `<span class="inline-block px-2 py-0.5 rounded text-[11px] font-mono leading-tight bg-dark-600 text-slate-300 border border-dark-500">${text}</span>`;
           }).filter(Boolean).join('') : '')
         : '';
       const getChangePct = (latest, prev) => {
@@ -2613,7 +2733,7 @@
       const headerHtml = `
         <div class="flex items-start gap-4">
           <div class="flex-shrink-0 w-16 h-16 relative">
-            ${renderAvatarHtml(item.avatar || item.logo || '', displayName, 'w-16 h-16')}
+            ${renderAvatarHtml(detailHeaderAvatar, displayName, 'w-16 h-16')}
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center flex-wrap gap-2 mb-1">
@@ -2726,7 +2846,14 @@
     function renderDetailHeaderPlaceholder(item, itemType) {
       const type = (itemType || (item.itemType || getItemType())).toLowerCase();
       const displayName = currentLanguage === 'zh' ? (item.name_zh || item.name || '') : (item.name || '');
-      const avatar = item.avatar || (type === 'repo' ? item.logo : '') || '';
+      let avatar = item.avatar || (type === 'repo' ? item.logo : '') || '';
+      const unitSelect = document.getElementById('unitSelect');
+      const unitIsDivision = unitSelect && isDivisionZeroTypeName(unitSelect.value);
+      const itemDivision = isDivisionZeroTypeName(item.label_type) || isDivisionZeroTypeName(item.labelType);
+      if (type === 'label' && (unitIsDivision || itemDivision)) {
+        const flagUrl = divisionLabelFlagAvatarUrl(item);
+        if (flagUrl) avatar = flagUrl;
+      }
       const sizeClass = type === 'developer' ? 'w-20 h-20' : 'w-16 h-16';
       return `
         <div class="flex items-center gap-4">
@@ -2741,6 +2868,122 @@
     }
 
     let detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: [] };
+    /** 详情内通过 meta 标签跳转时的历史栈；关闭面板时清空 */
+    let detailNavigationStack = [];
+
+    function updateDetailPanelNavChrome() {
+      const backBtn = document.getElementById('detailPanelBackBtn');
+      if (!backBtn) return;
+      if (detailNavigationStack.length > 0) backBtn.classList.remove('hidden');
+      else backBtn.classList.add('hidden');
+    }
+
+    function scrollDetailPanelBodyToTop() {
+      const scrollEl = document.querySelector('.detail-panel-body-scroll');
+      if (scrollEl) scrollEl.scrollTop = 0;
+    }
+
+    async function loadDetailLabelContent(item) {
+      const overlay = document.getElementById('detailPanelOverlay');
+      const body = document.getElementById('detailPanelBody');
+      if (!overlay || !body) return;
+      setDetailPanelContent(renderDetailHeaderPlaceholder(enrichLabelItemWithMeta(item, {}), 'label'), showDetailLoading(t('loadingLabel')));
+      const labelId = (item.id || '').slice(1);
+      let labelTrendData = null;
+      let itemMeta = { labels: [], repos: [], labelType: null, description: null, descriptionZh: null, contributions: [], metaAvatar: null, metaName: null, metaNameZh: null };
+      try {
+        [labelTrendData, itemMeta] = await Promise.all([
+          fetchLabelTrendData(labelId).catch(() => ({})),
+          fetchItemMeta('label', item),
+        ]);
+      } catch (e) {
+        labelTrendData = labelTrendData || {};
+      }
+      const enrichedItem = enrichLabelItemWithMeta(item, itemMeta);
+      detailPanelTrendState = {
+        item: enrichedItem,
+        trendData: labelTrendData,
+        trendMode: 'month',
+        metaLabels: itemMeta.labels,
+        metaRepos: itemMeta.repos,
+        metaLabelType: itemMeta.labelType,
+        metaDesc: itemMeta.description,
+        metaDescZh: itemMeta.descriptionZh,
+        contributions: itemMeta.contributions || [],
+      };
+      const label = renderDetailLabelRepo(enrichedItem, labelTrendData, 'month', itemMeta.labels, itemMeta.repos, itemMeta.labelType, itemMeta.description, itemMeta.descriptionZh, itemMeta.contributions);
+      setDetailPanelContent(label.header, label.body);
+      initTrendChartTooltips(body);
+      initContributionMap(itemMeta.contributions || []);
+      setDetailPanelTrendMode('month');
+      bindDetailPanelTrendToggle();
+      scrollDetailPanelBodyToTop();
+      updateDetailPanelNavChrome();
+    }
+
+    async function detailMetaLabelNavigate(btn) {
+      if (!btn || !btn.dataset || !btn.dataset.item) return;
+      let item;
+      try {
+        item = JSON.parse(btn.dataset.item);
+      } catch (e) {
+        return;
+      }
+      item.itemType = 'label';
+      detailNavigationStack.push({
+        item: detailPanelTrendState.item,
+        trendData: detailPanelTrendState.trendData,
+        trendMode: detailPanelTrendState.trendMode,
+        metaLabels: detailPanelTrendState.metaLabels,
+        metaRepos: detailPanelTrendState.metaRepos,
+        metaLabelType: detailPanelTrendState.metaLabelType,
+        metaDesc: detailPanelTrendState.metaDesc,
+        metaDescZh: detailPanelTrendState.metaDescZh,
+        contributions: detailPanelTrendState.contributions,
+      });
+      updateDetailPanelNavChrome();
+      await loadDetailLabelContent(item);
+    }
+
+    function detailPanelNavigateBack() {
+      if (!detailNavigationStack.length) return;
+      const snap = detailNavigationStack.pop();
+      const body = document.getElementById('detailPanelBody');
+      if (!body || !snap || !snap.item) {
+        updateDetailPanelNavChrome();
+        return;
+      }
+      detailPanelTrendState = {
+        item: snap.item,
+        trendData: snap.trendData,
+        trendMode: snap.trendMode,
+        metaLabels: snap.metaLabels,
+        metaRepos: snap.metaRepos,
+        metaLabelType: snap.metaLabelType,
+        metaDesc: snap.metaDesc,
+        metaDescZh: snap.metaDescZh,
+        contributions: snap.contributions || [],
+      };
+      const mode = snap.trendMode || 'month';
+      detailPanelTrendState.trendMode = mode;
+      const result = renderDetailLabelRepo(
+        snap.item,
+        snap.trendData,
+        mode,
+        snap.metaLabels,
+        snap.metaRepos,
+        snap.metaLabelType,
+        snap.metaDesc,
+        snap.metaDescZh,
+        snap.contributions || [],
+      );
+      setDetailPanelContent(result.header, result.body);
+      initTrendChartTooltips(body);
+      initContributionMap(snap.contributions || []);
+      bindDetailPanelTrendToggle();
+      scrollDetailPanelBodyToTop();
+      updateDetailPanelNavChrome();
+    }
 
     function setDetailPanelTrendMode(mode) {
       detailPanelTrendState.trendMode = mode;
@@ -2777,6 +3020,8 @@
       const body = document.getElementById('detailPanelBody');
       const header = document.getElementById('detailPanelHeaderContent');
       if (!overlay || !body || !header) return;
+      detailNavigationStack = [];
+      updateDetailPanelNavChrome();
       detailPanelTrendState = { item: null, trendData: null, trendMode: 'month', metaLabels: [], metaRepos: [], metaLabelType: null, metaDesc: null, metaDescZh: null, contributions: [] };
       if (itemType === 'developer') {
         const dev = renderDetailDeveloper(item);
@@ -2807,28 +3052,10 @@
         setDetailPanelTrendMode('month');
         bindDetailPanelTrendToggle();
       } else if (itemType === 'label') {
-        setDetailPanelContent(renderDetailHeaderPlaceholder(item, 'label'), showDetailLoading(t('loadingLabel')));
         overlay.classList.remove('hidden');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        const labelId = (item.id || '').slice(1);
-        let labelTrendData = null;
-        let itemMeta = { labels: [], repos: [], contributions: [] };
-        try {
-          [labelTrendData, itemMeta] = await Promise.all([
-            fetchLabelTrendData(labelId).catch(() => ({})),
-            fetchItemMeta('label', item),
-          ]);
-        } catch (e) {
-          labelTrendData = labelTrendData || {};
-        }
-        detailPanelTrendState = { item, trendData: labelTrendData, trendMode: 'month', metaLabels: itemMeta.labels, metaRepos: itemMeta.repos, metaLabelType: itemMeta.labelType, metaDesc: itemMeta.description, metaDescZh: itemMeta.descriptionZh, contributions: itemMeta.contributions || [] };
-        const label = renderDetailLabelRepo(item, labelTrendData, 'month', itemMeta.labels, itemMeta.repos, itemMeta.labelType, itemMeta.description, itemMeta.descriptionZh, itemMeta.contributions);
-        setDetailPanelContent(label.header, label.body);
-        initTrendChartTooltips(body);
-        initContributionMap(itemMeta.contributions);
-        setDetailPanelTrendMode('month');
-        bindDetailPanelTrendToggle();
+        await loadDetailLabelContent(item);
       } else {
         const other = renderDetailLabelRepo(item, null, 'month', [], [], null, null, null, []);
         setDetailPanelContent(other.header, other.body);
@@ -2842,6 +3069,8 @@
     function closeDetailPanel() {
       const overlay = document.getElementById('detailPanelOverlay');
       if (!overlay) return;
+      detailNavigationStack = [];
+      updateDetailPanelNavChrome();
       overlay.classList.add('hidden');
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
@@ -2852,6 +3081,13 @@
         closeDetailPanel();
       }
     }
+
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Escape') return;
+      const overlay = document.getElementById('detailPanelOverlay');
+      if (!overlay || overlay.classList.contains('hidden')) return;
+      closeDetailPanel();
+    });
 
     // 初始化标题背景动效
     function initTitleBackground() {
