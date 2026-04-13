@@ -1,0 +1,5 @@
+{
+  "updatedAt": "2025-03-01T00:00:00.000Z",
+  "scopes": [{ "name": "Global", "name_zh": "全域" }],
+  "groupTypes": [{ "name": "Project", "name_zh": "项目" }]
+}
