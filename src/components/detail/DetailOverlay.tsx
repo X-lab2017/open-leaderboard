@@ -1,20 +1,27 @@
 import { Icon } from '@iconify/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type {
   ContributionRow,
   LeaderboardItem,
   LeaderboardMeta,
   MetaLabelEntry,
   RepoTrendMap,
+  UserOssMeta,
 } from '../../types/api';
 import { fetchCommunityOpenRankDetails } from '../../api/communityOpenRankDetails';
-import { fetchItemMeta, fetchLabelTrendData, fetchRepoTrendData } from '../../api/openDiggerTrend';
+import {
+  fetchItemMeta,
+  fetchLabelTrendData,
+  fetchRepoTrendData,
+  fetchUserMeta,
+  fetchUserTrendData,
+} from '../../api/openDiggerTrend';
 import { enrichLabelItemWithMeta, getLabelDetailDescriptionFromMeta } from '../../domain/detailHelpers';
 import { divisionLabelFlagAvatarUrl, preprocessContributions } from '../../domain/geography';
 import { getItemTypeFromUnit } from '../../domain/leaderboard';
 import { EMPTY_TREND } from '../../domain/trends';
 import { isClickableDetailMetaLabelType, isDivisionZeroTypeName, LABEL_TYPE_MAP } from '../../domain/labelTypes';
-import { getRepoUrlByPlatform, normalizeRepoPlatform } from '../../domain/repoPlatform';
+import { getDeveloperProfileUrlByPlatform, getRepoUrlByPlatform, normalizeRepoPlatform } from '../../domain/repoPlatform';
 import { computeInitialTimeValue } from '../../domain/timeRange';
 import { LeaderboardAvatar } from '../leaderboard/LeaderboardAvatar';
 import { TrendChart } from './TrendChart';
@@ -36,6 +43,11 @@ type DetailViewState = {
   contributions: ContributionRow[];
   communityOpenRankDetails: CommunityOpenRankDetailsFile | null;
 };
+
+type UserPanelState =
+  | { phase: 'loading' }
+  | { phase: 'missing' }
+  | { phase: 'ready'; ossMeta: UserOssMeta; trendData: RepoTrendMap };
 
 type Props = {
   open: boolean;
@@ -62,13 +74,26 @@ function getPrev(t: { values?: number[] } | null): number {
   return v.length >= 2 ? Number(v[v.length - 2]) : 0;
 }
 
+/** 有上一期数据时才返回环比绝对变化，否则不展示绝对值行 */
+function getStatDelta(t: { values?: number[] } | null, latest: number, prev: number): number | null {
+  const len = t?.values?.length ?? 0;
+  if (len < 2) return null;
+  return latest - prev;
+}
+
 export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, timeValue }: Props) {
   const { lang, t } = useI18n();
   const bodyScrollRef = useRef<HTMLDivElement>(null);
+  /** 与 navStack 同步：每次面板内「下钻」前记录当前滚动位置，返回时恢复 */
+  const scrollStackRef = useRef<number[]>([]);
+  const pendingScrollRestoreRef = useRef<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<DetailViewState | null>(null);
   const [navStack, setNavStack] = useState<DetailViewState[]>([]);
   const [sectionTimeValue, setSectionTimeValue] = useState('');
+  const [userDrilldown, setUserDrilldown] = useState<LeaderboardItem | null>(null);
+  const [userPanel, setUserPanel] = useState<UserPanelState | null>(null);
+  const [userTrendMode, setUserTrendMode] = useState<'month' | 'year'>(timeType);
 
   const scrollBodyTop = () => {
     const el = bodyScrollRef.current;
@@ -78,8 +103,11 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
   useEffect(() => {
     if (!open) {
       setNavStack([]);
+      scrollStackRef.current = [];
       setView(null);
       setLoading(false);
+      setUserDrilldown(null);
+      setUserPanel(null);
     }
   }, [open]);
 
@@ -93,14 +121,18 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
     if (!open || !item) return;
     let cancelled = false;
     setNavStack([]);
+    scrollStackRef.current = [];
+    setUserDrilldown(null);
+    setUserPanel(null);
     const itemType = (item.itemType || getItemTypeFromUnit(unitName)).toLowerCase();
 
-    if (itemType === 'developer') {
+    if (itemType === 'developer' || itemType === 'user') {
       setLoading(false);
+      setUserTrendMode(timeType);
       setView({
-        item: { ...item, itemType: 'developer' },
+        item: { ...item, itemType: itemType === 'user' ? 'user' : 'developer' },
         trendData: null,
-        trendMode: 'month',
+        trendMode: timeType,
         metaLabels: [],
         metaRepos: [],
         metaLabelType: null,
@@ -196,8 +228,50 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
     return;
   }, [open, item, unitName, lang, timeType]);
 
+  useEffect(() => {
+    if (!open || !item) return;
+    const rootType = (item.itemType || getItemTypeFromUnit(unitName)).toLowerCase();
+    const surface =
+      userDrilldown ?? (rootType === 'developer' || rootType === 'user' ? item : null);
+    if (!surface) {
+      setUserPanel(null);
+      return;
+    }
+    const login = (surface.login ?? surface.name ?? '').split('/')[0]?.trim() || '';
+    if (!login) {
+      setUserPanel({ phase: 'missing' });
+      return;
+    }
+    let cancelled = false;
+    setUserPanel({ phase: 'loading' });
+    void (async () => {
+      const platform = surface.platform || 'github';
+      const ossMeta = await fetchUserMeta(platform, login);
+      if (cancelled) return;
+      if (!ossMeta) {
+        setUserPanel({ phase: 'missing' });
+        return;
+      }
+      let trendData: RepoTrendMap = {};
+      try {
+        trendData = (await fetchUserTrendData(platform, login)) ?? {};
+      } catch {
+        trendData = {};
+      }
+      if (cancelled) return;
+      setUserPanel({ phase: 'ready', ossMeta, trendData });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, userDrilldown, item, unitName]);
+
   const loadLabelWithPush = useCallback(
     (rawItem: LeaderboardItem, snapshot: DetailViewState) => {
+      const y = bodyScrollRef.current?.scrollTop ?? 0;
+      scrollStackRef.current = [...scrollStackRef.current, y];
+      setUserDrilldown(null);
+      setUserPanel(null);
       setNavStack((s) => [...s, snapshot]);
       setLoading(true);
       setView(null);
@@ -230,6 +304,19 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
     [timeType],
   );
 
+  const openUserFromCommunity = useCallback(
+    (row: LeaderboardItem) => {
+      if (!view) return;
+      const y = bodyScrollRef.current?.scrollTop ?? 0;
+      scrollStackRef.current = [...scrollStackRef.current, y];
+      setNavStack((s) => [...s, view]);
+      setUserTrendMode(view.trendMode);
+      setUserDrilldown(row);
+      scrollBodyTop();
+    },
+    [view],
+  );
+
   useEffect(() => {
     if (!open) {
       document.body.style.overflow = '';
@@ -250,17 +337,41 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
+  useLayoutEffect(() => {
+    const y = pendingScrollRestoreRef.current;
+    if (y === null) return;
+    pendingScrollRestoreRef.current = null;
+    const el = bodyScrollRef.current;
+    if (el) el.scrollTop = y;
+  }, [view, userDrilldown]);
+
   const navigateToMetaLabel = (navItem: LeaderboardItem) => {
     if (!view) return;
     loadLabelWithPush({ ...navItem, itemType: 'label' }, view);
   };
 
   const goBack = () => {
+    const popScroll = (): number => {
+      const stack = scrollStackRef.current;
+      if (!stack.length) return 0;
+      const y = stack[stack.length - 1]!;
+      scrollStackRef.current = stack.slice(0, -1);
+      return y;
+    };
+    if (userDrilldown) {
+      pendingScrollRestoreRef.current = popScroll();
+      setUserDrilldown(null);
+      setUserPanel(null);
+      const snap = navStack[navStack.length - 1];
+      setNavStack((s) => s.slice(0, -1));
+      if (snap) setView(snap);
+      return;
+    }
     if (!navStack.length) return;
+    pendingScrollRestoreRef.current = popScroll();
     const snap = navStack[navStack.length - 1];
     setNavStack((s) => s.slice(0, -1));
     setView(snap);
-    scrollBodyTop();
   };
 
   const setTrendMode = (mode: 'month' | 'year') => {
@@ -274,7 +385,17 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
 
   if (!open || !item) return null;
 
-  const itemType = view ? (view.item.itemType || getItemTypeFromUnit(unitName)).toLowerCase() : '';
+  const rootType = (item.itemType || getItemTypeFromUnit(unitName)).toLowerCase();
+  const inUserDashboard =
+    userDrilldown != null || rootType === 'developer' || rootType === 'user';
+  const surfaceItem: LeaderboardItem | null =
+    userDrilldown ?? (rootType === 'developer' || rootType === 'user' ? item : null);
+
+  const itemType = inUserDashboard
+    ? 'user'
+    : view
+      ? (view.item.itemType || getItemTypeFromUnit(unitName)).toLowerCase()
+      : '';
   const unitIsDivision = isDivisionZeroTypeName(unitName);
 
   const placeholderHeader = (it: LeaderboardItem, type: string) => {
@@ -285,7 +406,7 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
       const flagUrl = divisionLabelFlagAvatarUrl(it);
       if (flagUrl) avatar = flagUrl;
     }
-    const sizeClass = type === 'developer' ? 'w-20 h-20' : 'w-16 h-16';
+    const sizeClass = type === 'developer' || type === 'user' ? 'w-20 h-20' : 'w-16 h-16';
     return (
       <div className="flex items-center gap-4">
         <div className={`flex-shrink-0 ${sizeClass} relative`}>
@@ -300,68 +421,179 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
     );
   };
 
-  const developerHeader = (it: LeaderboardItem) => {
-    const displayName = lang === 'zh' ? (it.name_zh || it.name || '') : (it.name || '');
-    const profileUrl = it.url || it.html_url || `https://github.com/${it.id || it.name || ''}`;
+  const userDashboardHeader = (it: LeaderboardItem) => {
+    const login = (it.login ?? it.name ?? '').split('/')[0]?.trim() || '';
+    const fallbackTitle = lang === 'zh' ? (it.name_zh || it.name || login) : (it.name || login);
+    const metaName =
+      userPanel?.phase === 'ready' && userPanel.ossMeta.info?.name?.trim()
+        ? userPanel.ossMeta.info.name.trim()
+        : '';
+    const readyTitle = metaName || fallbackTitle;
+    const profileUrl =
+      it.url || it.html_url || (login ? getDeveloperProfileUrlByPlatform(it.platform, login) : '#');
     return (
       <div className="flex items-center gap-4">
         <div className="flex-shrink-0 w-20 h-20 relative">
-          <LeaderboardAvatar avatar={it.avatar || ''} displayName={displayName} sizeClass="w-20 h-20" />
+          <LeaderboardAvatar avatar={it.avatar || ''} displayName={readyTitle} sizeClass="w-20 h-20" />
         </div>
-        <div className="flex-1">
-          <h3 className="text-xl font-mono font-bold text-slate-100 mb-2">{displayName}</h3>
-          <a
-            href={profileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-dark-900 font-semibold text-sm transition-colors cursor-pointer"
-          >
-            <Icon icon="mdi:account-box-outline" />
-            {t('detailDeveloperProfile')}
-          </a>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-xl font-mono font-bold text-slate-100 mb-2 min-w-0 flex flex-wrap items-baseline gap-x-1.5 gap-y-0">
+            <span className="min-w-0 break-words">{metaName || readyTitle}</span>
+            {metaName && login ? (
+              <span className="font-normal text-slate-500 text-base shrink-0">(@{login})</span>
+            ) : null}
+          </h3>
+          {profileUrl !== '#' ? (
+            <a
+              href={profileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-dark-900 font-semibold text-sm transition-colors cursor-pointer"
+            >
+              <RepoPlatformIcon platform={it.platform} size="md" />
+              {t('detailDeveloperProfile')}
+            </a>
+          ) : null}
         </div>
       </div>
     );
   };
 
-  const developerBody = (it: LeaderboardItem) => {
-    const projects = it.projects || [];
+  const renderUserDashboardBody = () => {
+    if (!userPanel || userPanel.phase === 'loading') {
+      return (
+        <div className="flex flex-col items-center justify-center gap-4 py-16 text-slate-400">
+          <Icon icon="mdi:loading" className="text-4xl animate-spin" aria-hidden />
+          <p className="font-mono">{t('loadingUser')}</p>
+        </div>
+      );
+    }
+    if (userPanel.phase === 'missing') {
+      return (
+        <div className="flex flex-col items-center justify-center gap-4 py-16 text-slate-500">
+          <Icon icon="mdi:database-off-outline" className="text-4xl" aria-hidden />
+          <p className="font-mono text-center px-4">{t('detailUserDataMissing')}</p>
+        </div>
+      );
+    }
+    const { ossMeta, trendData } = userPanel;
+    const mode = userTrendMode;
+    const dataKey = mode === 'year' ? 'yearly' : 'monthly';
+    const getTrend = (key: keyof NonNullable<RepoTrendMap>) =>
+      trendData && trendData[key] && trendData[key]![dataKey]?.values?.length
+        ? trendData[key]![dataKey]
+        : null;
+    const hasReal = Boolean(getTrend('influence') || getTrend('activity'));
+    const influenceTrend = hasReal && getTrend('influence') ? getTrend('influence')! : EMPTY_TREND;
+    const activityTrend = hasReal && getTrend('activity') ? getTrend('activity')! : EMPTY_TREND;
+    const infLatest = getLatest(influenceTrend);
+    const infPrev = getPrev(influenceTrend);
+    const actLatest = getLatest(activityTrend);
+    const actPrev = getPrev(activityTrend);
+    const infPct = getChangePct(infLatest, infPrev);
+    const actPct = getChangePct(actLatest, actPrev);
+    const timeKey =
+      (influenceTrend?.months?.length ? influenceTrend.months[influenceTrend.months.length - 1] : '') || '';
+    const info = ossMeta.info;
+
     return (
       <div className="flex flex-col gap-6">
-        <div className="bg-dark-800 rounded-lg p-4 border border-dark-600">
-          <TrendChart
-            values={[]}
-            label={t('detailDeveloperActivityChartLabel')}
-            monthLabels={[]}
-            noDataText={t('noData')}
-          />
+        {info ? (
+          <div className="rounded-lg border border-dark-600 bg-dark-800/40 p-4 space-y-2 text-sm">
+            {info.location ? (
+              <div className="flex gap-2 items-start">
+                <span className="text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
+                  {t('detailUserFieldLocation')}
+                </span>
+                <span className="text-slate-300 min-w-0 leading-normal">{info.location}</span>
+              </div>
+            ) : null}
+            {info.company ? (
+              <div className="flex gap-2 items-start">
+                <span className="text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
+                  {t('detailUserFieldCompany')}
+                </span>
+                <span className="text-slate-300 min-w-0 leading-normal">{info.company}</span>
+              </div>
+            ) : null}
+            {info.bio ? (
+              <div className="flex gap-2 items-start">
+                <span className="text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
+                  {t('detailUserFieldBio')}
+                </span>
+                <span className="text-slate-300 min-w-0 leading-relaxed">{info.bio}</span>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="mb-2">
+          <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
+            <h4 className="text-sm font-mono font-semibold text-slate-300">{t('detailBasicStatsHeading')}</h4>
+            <div
+              className="flex rounded-lg bg-dark-700 border border-dark-600 p-0.5"
+              role="group"
+              aria-label={t('detailTrendModeAria')}
+            >
+              <button
+                type="button"
+                className={`detail-trend-toggle px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors ${mode === 'month' ? 'active' : ''}`}
+                onClick={() => setUserTrendMode('month')}
+              >
+                {t('detailTrendModeMonth')}
+              </button>
+              <button
+                type="button"
+                className={`detail-trend-toggle px-3 py-1.5 text-xs font-mono rounded-md text-slate-400 transition-colors ${mode === 'year' ? 'active' : ''}`}
+                onClick={() => setUserTrendMode('year')}
+              >
+                {t('detailTrendModeYear')}
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <StatCard
+              icon="mdi:lightning-bolt"
+              iconBg="bg-purple-500/20"
+              iconColor="text-purple-400"
+              value={infLatest}
+              pct={infPct}
+              delta={getStatDelta(influenceTrend, infLatest, infPrev)}
+              subtitle={`${t('detailStatOpenRankInfluence')}${timeKey ? ` (${timeKey})` : ''}`}
+            />
+            <StatCard
+              icon="mdi:chart-line"
+              iconBg="bg-emerald-500/20"
+              iconColor="text-emerald-400"
+              value={actLatest}
+              pct={actPct}
+              delta={getStatDelta(activityTrend, actLatest, actPrev)}
+              subtitle={`${t('detailStatActivity')}${timeKey ? ` (${timeKey})` : ''}`}
+            />
+          </div>
         </div>
-        <div>
-          <h4 className="text-sm font-mono font-semibold text-slate-300 mb-2">
-            {t('detailHistoricalProjectsHeading')}
-          </h4>
-          <div className="space-y-2">
-            {projects.length ? (
-              projects.map((p, i) => {
-                const row = typeof p === 'object' && p ? p : { name: String(p) };
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 py-2 px-3 bg-dark-700/40 rounded-lg border border-dark-600"
-                  >
-                    <span className="text-slate-500 w-8">{i + 1}</span>
-                    <span className="flex-1 text-slate-200 font-medium">
-                      {typeof row.name === 'string' ? row.name : String(p)}
-                    </span>
-                    <span className="text-slate-400 text-sm">
-                      {t('detailRankPrefix')} #{row.rank != null ? row.rank : i + 1}
-                    </span>
-                  </div>
-                );
-              })
-            ) : (
-              <p className="text-slate-500 text-sm py-4">{t('noData')}</p>
-            )}
+
+        <DetailSectionDivider />
+
+        <div className="flex flex-col gap-4">
+          <h4 className="text-sm font-mono font-semibold text-slate-300">{t('detailHistoricalTrendHeading')}</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-dark-800 rounded-lg p-4 border border-dark-600">
+              <TrendChart
+                values={influenceTrend.values}
+                label={t('detailChartInfluenceTrend')}
+                monthLabels={influenceTrend.months}
+                noDataText={t('noData')}
+              />
+            </div>
+            <div className="bg-dark-800 rounded-lg p-4 border border-dark-600">
+              <TrendChart
+                values={activityTrend.values}
+                label={t('detailChartActivityTrend')}
+                monthLabels={activityTrend.months}
+                noDataText={t('noData')}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -502,6 +734,7 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
                 iconColor="text-purple-400"
                 value={infLatest}
                 pct={infPct}
+                delta={getStatDelta(influenceTrend, infLatest, infPrev)}
                 subtitle={`${t('detailStatOpenRankInfluence')}${timeKey ? ` (${timeKey})` : ''}`}
               />
               <StatCard
@@ -510,6 +743,7 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
                 iconColor="text-emerald-400"
                 value={actLatest}
                 pct={actPct}
+                delta={getStatDelta(activityTrend, actLatest, actPrev)}
                 subtitle={`${t('detailStatActivity')}${timeKey ? ` (${timeKey})` : ''}`}
               />
               <StatCard
@@ -518,6 +752,7 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
                 iconColor="text-blue-400"
                 value={devLatest}
                 pct={devPct}
+                delta={getStatDelta(devCountTrend, devLatest, devPrev)}
                 subtitle={`${t('detailStatDeveloperCount')}${timeKey ? ` (${timeKey})` : ''}`}
               />
             </div>
@@ -575,6 +810,7 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
             timeType={v.trendMode}
             sectionTimeValue={sectionTimeValue || timeValue}
             onSectionTimeChange={setSectionTimeValue}
+            onOpenUserDashboard={openUserFromCommunity}
             lang={lang}
             t={t}
           />
@@ -602,12 +838,12 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
   };
 
   const headerContent = () => {
-    const openingType = (item.itemType || getItemTypeFromUnit(unitName)).toLowerCase();
+    const openingType = rootType;
+    if (inUserDashboard && surfaceItem) {
+      return userDashboardHeader(surfaceItem);
+    }
     if (loading || !view) {
       return placeholderHeader(item, openingType);
-    }
-    if (itemType === 'developer') {
-      return developerHeader(view.item);
     }
     const it = view.item;
     const isRepo = itemType === 'repo';
@@ -696,20 +932,24 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
     );
   };
 
-  const openingTypeForLoading = (item.itemType || getItemTypeFromUnit(unitName)).toLowerCase();
+  const openingTypeForLoading = rootType;
   const bodyContent = () => {
+    if (inUserDashboard && surfaceItem) {
+      return renderUserDashboardBody();
+    }
     if (loading || !view) {
       return (
         <div className="flex flex-col items-center justify-center gap-4 py-16 text-slate-400">
           <Icon icon="mdi:loading" className="text-4xl animate-spin" aria-hidden />
           <p className="font-mono">
-            {openingTypeForLoading === 'repo' ? t('loadingRepository') : t('loadingLabel')}
+            {openingTypeForLoading === 'repo'
+              ? t('loadingRepository')
+              : openingTypeForLoading === 'developer' || openingTypeForLoading === 'user'
+                ? t('loadingUser')
+                : t('loadingLabel')}
           </p>
         </div>
       );
-    }
-    if (itemType === 'developer') {
-      return developerBody(view.item);
     }
     return renderLabelRepoBody(view);
   };
@@ -742,7 +982,7 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
               title={t('detailBack')}
               aria-label={t('detailBack')}
               onClick={goBack}
-              className={`w-9 h-9 flex items-center justify-center rounded-lg bg-dark-700 hover:bg-dark-600 border border-dark-600 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent ${navStack.length ? '' : 'hidden'}`}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg bg-dark-700 hover:bg-dark-600 border border-dark-600 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent ${navStack.length || userDrilldown ? '' : 'hidden'}`}
             >
               <Icon icon="mdi:arrow-left" className="text-xl" />
             </button>
@@ -767,12 +1007,17 @@ function DetailSectionDivider() {
   );
 }
 
+const statDeltaFormatter = new Intl.NumberFormat(undefined, {
+  maximumFractionDigits: 1,
+});
+
 function StatCard({
   icon,
   iconBg,
   iconColor,
   value,
   pct,
+  delta,
   subtitle,
 }: {
   icon: string;
@@ -780,6 +1025,7 @@ function StatCard({
   iconColor: string;
   value: number;
   pct: string;
+  delta: number | null;
   subtitle: string;
 }) {
   const up = parseFloat(pct) >= 0;
@@ -792,9 +1038,16 @@ function StatCard({
           </div>
           <div className="text-3xl font-bold text-slate-100">{value.toLocaleString()}</div>
         </div>
-        <div className={`flex items-center gap-1 text-sm font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`}>
-          <Icon icon={up ? 'mdi:trending-up' : 'mdi:trending-down'} className="w-4 h-4" />
-          <span>{Math.abs(parseFloat(pct))}%</span>
+        <div className={`flex items-center gap-1.5 text-sm font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`}>
+          <Icon
+            icon={up ? 'mdi:trending-up' : 'mdi:trending-down'}
+            className="w-4 h-4 flex-shrink-0 self-center"
+            aria-hidden
+          />
+          <div className="flex flex-col items-end leading-tight font-mono tabular-nums">
+            {delta != null ? <span>{statDeltaFormatter.format(Math.abs(delta))}</span> : null}
+            <span>{Math.abs(parseFloat(pct))}%</span>
+          </div>
         </div>
       </div>
       <div className="text-sm text-slate-400 mt-1">{subtitle}</div>

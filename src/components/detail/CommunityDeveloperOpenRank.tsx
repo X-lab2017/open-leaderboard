@@ -1,5 +1,6 @@
+import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useState } from 'react';
-import type { Lang, LeaderboardMeta } from '../../types/api';
+import type { Lang, LeaderboardItem, LeaderboardMeta } from '../../types/api';
 import {
   buildCommunityOpenRankDisplayRows,
   getCommunityOpenRankDataBounds,
@@ -20,6 +21,7 @@ type Props = {
   timeType: 'month' | 'year';
   sectionTimeValue: string;
   onSectionTimeChange: (v: string) => void;
+  onOpenUserDashboard: (item: LeaderboardItem) => void;
   lang: Lang;
   t: (k: string) => string;
 };
@@ -30,6 +32,7 @@ export function CommunityDeveloperOpenRank({
   timeType,
   sectionTimeValue,
   onSectionTimeChange,
+  onOpenUserDashboard,
   lang,
   t,
 }: Props) {
@@ -135,6 +138,12 @@ export function CommunityDeveloperOpenRank({
               >
                 {t('headerName')}
               </div>
+              <div
+                className="w-24 sm:w-28 flex-shrink-0 text-center text-[10px] sm:text-xs font-mono font-semibold text-slate-500 leading-tight px-0.5"
+                role="columnheader"
+              >
+                {t('detailCommunityColUserDashboard')}
+              </div>
               <div className="flex-shrink-0 flex items-center justify-end gap-3" role="presentation">
                 <div
                   className="w-28 text-right shrink-0 text-[10px] sm:text-xs font-mono font-semibold text-slate-500"
@@ -192,6 +201,26 @@ export function CommunityDeveloperOpenRank({
                         {r.login}
                       </a>
                     )}
+                  </div>
+                  <div className="w-24 sm:w-28 flex-shrink-0 flex justify-center items-center">
+                    <button
+                      type="button"
+                      title={t('detailCommunityColUserDashboard')}
+                      aria-label={t('detailCommunityColUserDashboard')}
+                      onClick={() =>
+                        onOpenUserDashboard({
+                          itemType: 'user',
+                          platform: r.platform,
+                          id: r.id,
+                          login: r.login,
+                          name: r.login,
+                          avatar: r.avatarUrl,
+                        })
+                      }
+                      className="p-1.5 rounded-lg border border-dark-600 bg-dark-700/80 text-accent hover:bg-dark-600 hover:border-accent/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
+                      <Icon icon="mdi:view-dashboard-outline" className="text-lg" aria-hidden />
+                    </button>
                   </div>
                   <div className="flex-shrink-0 flex items-center justify-end gap-3">
                     <div className="w-28 text-right shrink-0">

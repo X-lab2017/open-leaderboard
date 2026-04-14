@@ -18,6 +18,8 @@ export interface LeaderboardMeta {
 
 export interface LeaderboardItem {
   id?: string;
+  /** OSS user path segment; falls back to name for developer rows. */
+  login?: string;
   name?: string;
   name_zh?: string;
   description?: string;
@@ -42,6 +44,17 @@ export interface LeaderboardItem {
   repos?: unknown[];
   repositories?: unknown[];
   contributors?: unknown[];
+}
+
+/** Parsed fields from https://oss.open-digger.cn/{platform}/{login}/meta.json for type user. */
+export interface UserOssMeta {
+  id?: string;
+  info: {
+    name?: string;
+    bio?: string;
+    company?: string;
+    location?: string;
+  } | null;
 }
 
 export interface LeaderboardDataFile {

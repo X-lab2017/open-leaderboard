@@ -1,5 +1,5 @@
 import { TREND_DATA_BASE } from './constants';
-import type { ItemMetaResult, LeaderboardItem, RepoTrendMap, TrendJson } from '../types/api';
+import type { ItemMetaResult, LeaderboardItem, RepoTrendMap, TrendJson, UserOssMeta } from '../types/api';
 import {
   EMPTY_TREND_PAIR,
   getTrendDataFromJson,
@@ -46,6 +46,57 @@ export async function fetchLabelTrendData(labelId: string): Promise<RepoTrendMap
     participants: base + 'participants.json',
     issuePr: base + 'issues_and_change_request_active.json',
   });
+}
+
+/** User directory on OSS: only influence + activity JSONs. */
+export async function fetchUserTrendData(platform: unknown, login: string): Promise<RepoTrendMap | null> {
+  const handle = (login || '').split('/')[0]?.trim() || '';
+  if (!handle) return null;
+  const p = normalizeRepoPlatform(platform || 'github');
+  const base = `${TREND_DATA_BASE}${p}/${handle}/`;
+  return fetchTrendDataByUrls({
+    influence: base + 'openrank.json',
+    activity: base + 'activity.json',
+  });
+}
+
+function parseUserInfo(raw: unknown): UserOssMeta['info'] {
+  if (!raw || typeof raw !== 'object') return null;
+  const o = raw as Record<string, unknown>;
+  const str = (k: string) => {
+    const v = o[k];
+    return typeof v === 'string' ? v : v != null ? String(v) : '';
+  };
+  const name = str('name').trim();
+  const bio = str('bio').trim();
+  const company = str('company').trim();
+  const location = str('location').trim();
+  if (!name && !bio && !company && !location) return null;
+  return { name: name || undefined, bio: bio || undefined, company: company || undefined, location: location || undefined };
+}
+
+/** Returns null if meta.json is missing or invalid. */
+export async function fetchUserMeta(platform: unknown, login: string): Promise<UserOssMeta | null> {
+  const handle = (login || '').split('/')[0]?.trim() || '';
+  if (!handle) return null;
+  const p = normalizeRepoPlatform(platform || 'github');
+  const url = `${TREND_DATA_BASE}${p}/${handle}/meta.json`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const meta = (await res.json()) as Record<string, unknown>;
+    const idRaw = meta.id;
+    const id =
+      typeof idRaw === 'number'
+        ? String(idRaw)
+        : typeof idRaw === 'string'
+          ? idRaw
+          : undefined;
+    const info = parseUserInfo(meta.info);
+    return { id, info };
+  } catch {
+    return null;
+  }
 }
 
 const emptyMeta = (): ItemMetaResult => ({
