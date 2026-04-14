@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { fetchLeaderboardData, fetchLeaderboardMeta } from './api/openLeaderboard';
 import { probeItemMetaExists } from './api/openDiggerTrend';
 import { buildDataUrl, ITEMS_PER_PAGE } from './domain/leaderboard';

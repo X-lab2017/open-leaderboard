@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useI18n } from '../../i18n/I18nProvider';
 

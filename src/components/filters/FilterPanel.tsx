@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { LeaderboardMeta } from '../../types/api';
 import { filterGroupTypesForUnitDropdown } from '../../domain/meta';

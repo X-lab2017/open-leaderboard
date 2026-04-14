@@ -15,7 +15,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     documentTitle: 'OpenLeaderboard - 开源项目排行榜',
     metaUpdateTime: '数据更新于 {{year}} 年 {{month}} 月',
     timeYearDisplay: '{{y}}年',
-    leaderboardTitleTemplate: '{{scope}}{{unit}} OpenRank 排行榜',
+    leaderboardTitleTemplate: '{{scopeUnit}} OpenRank 排行榜',
     heroTitleLead: '一得之见，',
     heroTitleAccent: '开源世界',
     ariaPickerPreviousYear: '上一年',

@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { OPEN_DIGGER_PLATFORM_LOGO_BASE } from '../../api/constants';
 import { normalizeRepoPlatform } from '../../domain/repoPlatform';
 

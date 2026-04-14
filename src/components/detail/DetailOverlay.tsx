@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type {
   ContributionRow,

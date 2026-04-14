@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { useEffect, useMemo, useState } from 'react';
 import type { Lang, LeaderboardItem, LeaderboardMeta } from '../../types/api';
 import {

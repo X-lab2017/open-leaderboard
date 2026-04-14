@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Lang, LeaderboardMeta } from '../../types/api';
 import { MONTH_SHORT_NAMES } from '../../i18n/translations';

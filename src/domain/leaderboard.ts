@@ -4,6 +4,24 @@ import { isDivisionZeroTypeName } from './labelTypes';
 
 export const ITEMS_PER_PAGE = 10;
 
+/** True if the trimmed string's last code unit is an ASCII letter (for zh/CJK + Latin spacing). */
+function endsWithAsciiLetter(s: string): boolean {
+  const t = s.trim();
+  if (!t) return false;
+  const last = t[t.length - 1];
+  return (last >= 'A' && last <= 'Z') || (last >= 'a' && last <= 'z');
+}
+
+/** Join scope + unit labels for Chinese leaderboard title when meta names end with Latin letters. */
+export function joinZhLeaderboardScopeUnit(scopeLabel: string, unitLabel: string): string {
+  const a = scopeLabel.trim();
+  const b = unitLabel.trim();
+  if (!a) return b;
+  if (!b) return a;
+  const needSpace = endsWithAsciiLetter(a) || endsWithAsciiLetter(b);
+  return needSpace ? `${a} ${b}` : `${a}${b}`;
+}
+
 export function buildDataUrl(params: {
   scopeName: string;
   groupTypeName: string;

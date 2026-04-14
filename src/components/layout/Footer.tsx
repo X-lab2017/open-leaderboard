@@ -1,4 +1,5 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
+import { OPEN_DIGGER_PLATFORM_LOGO_BASE } from '../../api/constants';
 import { useI18n } from '../../i18n/I18nProvider';
 
 export function Footer() {
@@ -23,17 +24,49 @@ export function Footer() {
               />
             </a>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap justify-center">
             <span className="text-slate-400 text-sm">{t('supportedBy')}</span>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-9 h-9 rounded-lg bg-dark-700 text-slate-200 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
-              title="GitHub"
-            >
-              <Icon icon="mdi:github" className="text-xl" aria-hidden />
-            </a>
+            <div className="flex items-center gap-2">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-9 h-9 rounded-lg bg-dark-700 text-slate-200 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+                title="GitHub"
+              >
+                <Icon icon="mdi:github" className="w-7 h-7" aria-hidden />
+              </a>
+              <a
+                href="https://atomgit.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-9 h-9 rounded-lg bg-dark-700 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+                title="AtomGit"
+                aria-label="AtomGit"
+              >
+                <img
+                  src={`${OPEN_DIGGER_PLATFORM_LOGO_BASE}atomgit.png`}
+                  alt=""
+                  className="h-7 object-contain"
+                  decoding="async"
+                />
+              </a>
+              <a
+                href="https://gitee.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-9 h-9 rounded-lg bg-dark-700 hover:bg-dark-600 hover:border-accent/50 border border-dark-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-dark-800"
+                title="Gitee"
+                aria-label="Gitee"
+              >
+                <img
+                  src={`${OPEN_DIGGER_PLATFORM_LOGO_BASE}gitee.png`}
+                  alt=""
+                  className="h-7 object-contain"
+                  decoding="async"
+                />
+              </a>
+            </div>
           </div>
         </div>
         <div className="text-center">

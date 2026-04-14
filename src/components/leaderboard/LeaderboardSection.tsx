@@ -1,7 +1,7 @@
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react/offline';
 import { forwardRef } from 'react';
 import type { LeaderboardItem, LeaderboardMeta, MetaGroupType } from '../../types/api';
-import { getFilteredLeaderboardData, ITEMS_PER_PAGE } from '../../domain/leaderboard';
+import { getFilteredLeaderboardData, ITEMS_PER_PAGE, joinZhLeaderboardScopeUnit } from '../../domain/leaderboard';
 import { formatTimeDisplay } from '../../domain/timeRange';
 import { leaderboardAvatarForItem } from '../../domain/geography';
 import { LeaderboardAvatar } from './LeaderboardAvatar';
@@ -50,9 +50,10 @@ export const LeaderboardSection = forwardRef<HTMLDivElement, Props>(function Lea
 
   const timeRange = timeType === 'year' ? formatTimeDisplay(timeValue, 'year', lang) : timeValue;
 
-  const leaderboardTitle = t('leaderboardTitleTemplate')
-    .replace('{{scope}}', title)
-    .replace('{{unit}}', unitDisplay);
+  const leaderboardTitle =
+    lang === 'zh'
+      ? t('leaderboardTitleTemplate').replace('{{scopeUnit}}', joinZhLeaderboardScopeUnit(title, unitDisplay))
+      : t('leaderboardTitleTemplate').replace('{{scope}}', title).replace('{{unit}}', unitDisplay);
 
   const filtered = getFilteredLeaderboardData(data, searchKeyword);
   const totalItems = filtered.length;
