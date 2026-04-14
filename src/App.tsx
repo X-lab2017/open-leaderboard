@@ -241,6 +241,9 @@ export default function App() {
         onClose={() => setDetailItem(null)}
         item={detailItem}
         unitName={unitValue}
+        meta={meta}
+        timeType={timeType}
+        timeValue={timeValue}
       />
     </>
   );

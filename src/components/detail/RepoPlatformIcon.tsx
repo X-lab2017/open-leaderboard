@@ -2,11 +2,10 @@ import { Icon } from '@iconify/react';
 import { OPEN_DIGGER_PLATFORM_LOGO_BASE } from '../../api/constants';
 import { normalizeRepoPlatform } from '../../domain/repoPlatform';
 
-export function RepoPlatformIcon({ platform, size }: { platform: unknown; size: 'sm' | 'xs' }) {
+export function RepoPlatformIcon({ platform, size }: { platform: unknown; size: 'sm' | 'xs' | 'md' }) {
   const p = normalizeRepoPlatform(platform);
-  const isSm = size === 'sm';
-  const imgCls = isSm ? 'w-3.5 h-3.5' : 'w-3 h-3';
-  const wh = isSm ? 14 : 12;
+  const imgCls = size === 'md' ? 'w-4 h-4' : size === 'sm' ? 'w-3.5 h-3.5' : 'w-3 h-3';
+  const wh = size === 'md' ? 16 : size === 'sm' ? 14 : 12;
   if (p === 'github') {
     return (
       <Icon

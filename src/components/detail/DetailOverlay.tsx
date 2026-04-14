@@ -1,6 +1,13 @@
 import { Icon } from '@iconify/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ContributionRow, LeaderboardItem, MetaLabelEntry, RepoTrendMap } from '../../types/api';
+import type {
+  ContributionRow,
+  LeaderboardItem,
+  LeaderboardMeta,
+  MetaLabelEntry,
+  RepoTrendMap,
+} from '../../types/api';
+import { fetchCommunityOpenRankDetails } from '../../api/communityOpenRankDetails';
 import { fetchItemMeta, fetchLabelTrendData, fetchRepoTrendData } from '../../api/openDiggerTrend';
 import { enrichLabelItemWithMeta, getLabelDetailDescriptionFromMeta } from '../../domain/detailHelpers';
 import { divisionLabelFlagAvatarUrl, preprocessContributions } from '../../domain/geography';
@@ -8,11 +15,14 @@ import { getItemTypeFromUnit } from '../../domain/leaderboard';
 import { EMPTY_TREND } from '../../domain/trends';
 import { isClickableDetailMetaLabelType, isDivisionZeroTypeName, LABEL_TYPE_MAP } from '../../domain/labelTypes';
 import { getRepoUrlByPlatform, normalizeRepoPlatform } from '../../domain/repoPlatform';
+import { computeInitialTimeValue } from '../../domain/timeRange';
 import { LeaderboardAvatar } from '../leaderboard/LeaderboardAvatar';
 import { TrendChart } from './TrendChart';
 import { ContributionMap } from './ContributionMap';
 import { RepoPlatformIcon } from './RepoPlatformIcon';
+import { CommunityDeveloperOpenRank } from './CommunityDeveloperOpenRank';
 import { useI18n } from '../../i18n/I18nProvider';
+import type { CommunityOpenRankDetailsFile } from '../../domain/communityOpenRankDetails';
 
 type DetailViewState = {
   item: LeaderboardItem;
@@ -24,6 +34,7 @@ type DetailViewState = {
   metaDesc: string | null;
   metaDescZh: string | null;
   contributions: ContributionRow[];
+  communityOpenRankDetails: CommunityOpenRankDetailsFile | null;
 };
 
 type Props = {
@@ -31,6 +42,9 @@ type Props = {
   onClose: () => void;
   item: LeaderboardItem | null;
   unitName: string;
+  meta: LeaderboardMeta | null;
+  timeType: 'month' | 'year';
+  timeValue: string;
 };
 
 function getChangePct(latest: number, prev: number): string {
@@ -48,12 +62,13 @@ function getPrev(t: { values?: number[] } | null): number {
   return v.length >= 2 ? Number(v[v.length - 2]) : 0;
 }
 
-export function DetailOverlay({ open, onClose, item, unitName }: Props) {
+export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, timeValue }: Props) {
   const { lang, t } = useI18n();
   const bodyScrollRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<DetailViewState | null>(null);
   const [navStack, setNavStack] = useState<DetailViewState[]>([]);
+  const [sectionTimeValue, setSectionTimeValue] = useState('');
 
   const scrollBodyTop = () => {
     const el = bodyScrollRef.current;
@@ -67,6 +82,12 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
       setLoading(false);
     }
   }, [open]);
+
+  useEffect(() => {
+    if (!open || !item || !timeValue) return;
+    const tpe = (item.itemType || getItemTypeFromUnit(unitName)).toLowerCase();
+    if (tpe === 'label') setSectionTimeValue(timeValue);
+  }, [open, item, unitName, timeValue]);
 
   useEffect(() => {
     if (!open || !item) return;
@@ -86,6 +107,7 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
         metaDesc: null,
         metaDescZh: null,
         contributions: [],
+        communityOpenRankDetails: null,
       });
       return;
     }
@@ -107,13 +129,14 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
         setView({
           item,
           trendData: repoTrendData,
-          trendMode: 'month',
+          trendMode: timeType,
           metaLabels: itemMeta.labels,
           metaRepos: [],
           metaLabelType: null,
           metaDesc: null,
           metaDescZh: null,
           contributions: itemMeta.contributions || [],
+          communityOpenRankDetails: null,
         });
         setLoading(false);
         scrollBodyTop();
@@ -128,25 +151,26 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
       setView(null);
       void (async () => {
         const labelId = (item.id || '').slice(1);
-        let labelTrendData: RepoTrendMap | null = null;
-        const itemMeta = await fetchItemMeta('label', item);
-        try {
-          labelTrendData = await fetchLabelTrendData(labelId);
-        } catch {
-          labelTrendData = {};
-        }
+        const [itemMeta, labelTrendData, communityOpenRankDetails] = await Promise.all([
+          fetchItemMeta('label', item),
+          fetchLabelTrendData(labelId)
+            .then((m) => m ?? {})
+            .catch((): RepoTrendMap => ({})),
+          fetchCommunityOpenRankDetails(labelId),
+        ]);
         if (cancelled) return;
         const enrichedItem = enrichLabelItemWithMeta(item, itemMeta);
         setView({
           item: enrichedItem,
           trendData: labelTrendData,
-          trendMode: 'month',
+          trendMode: timeType,
           metaLabels: itemMeta.labels,
           metaRepos: itemMeta.repos,
           metaLabelType: itemMeta.labelType,
           metaDesc: itemMeta.description,
           metaDescZh: itemMeta.descriptionZh,
           contributions: itemMeta.contributions || [],
+          communityOpenRankDetails,
         });
         setLoading(false);
         scrollBodyTop();
@@ -159,17 +183,18 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
     setView({
       item,
       trendData: null,
-      trendMode: 'month',
+      trendMode: timeType,
       metaLabels: [],
       metaRepos: [],
       metaLabelType: null,
       metaDesc: null,
       metaDescZh: null,
       contributions: [],
+      communityOpenRankDetails: null,
     });
     setLoading(false);
     return;
-  }, [open, item, unitName, lang]);
+  }, [open, item, unitName, lang, timeType]);
 
   const loadLabelWithPush = useCallback(
     (rawItem: LeaderboardItem, snapshot: DetailViewState) => {
@@ -178,30 +203,31 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
       setView(null);
       void (async () => {
         const labelId = (rawItem.id || '').slice(1);
-        let labelTrendData: RepoTrendMap | null = null;
-        const itemMeta = await fetchItemMeta('label', rawItem);
-        try {
-          labelTrendData = await fetchLabelTrendData(labelId);
-        } catch {
-          labelTrendData = {};
-        }
+        const [itemMeta, labelTrendData, communityOpenRankDetails] = await Promise.all([
+          fetchItemMeta('label', rawItem),
+          fetchLabelTrendData(labelId)
+            .then((m) => m ?? {})
+            .catch((): RepoTrendMap => ({})),
+          fetchCommunityOpenRankDetails(labelId),
+        ]);
         const enrichedItem = enrichLabelItemWithMeta(rawItem, itemMeta);
         setView({
           item: enrichedItem,
           trendData: labelTrendData,
-          trendMode: 'month',
+          trendMode: timeType,
           metaLabels: itemMeta.labels,
           metaRepos: itemMeta.repos,
           metaLabelType: itemMeta.labelType,
           metaDesc: itemMeta.description,
           metaDescZh: itemMeta.descriptionZh,
           contributions: itemMeta.contributions || [],
+          communityOpenRankDetails,
         });
         setLoading(false);
         scrollBodyTop();
       })();
     },
-    [],
+    [timeType],
   );
 
   useEffect(() => {
@@ -239,6 +265,10 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
 
   const setTrendMode = (mode: 'month' | 'year') => {
     if (!view) return;
+    const base = sectionTimeValue || timeValue;
+    if (base) {
+      setSectionTimeValue(computeInitialTimeValue(mode, meta, base));
+    }
     setView({ ...view, trendMode: mode });
   };
 
@@ -383,6 +413,10 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
     const timeKey =
       (influenceTrend?.months?.length ? influenceTrend.months[influenceTrend.months.length - 1] : '') || '';
     const contributionDetailRows = preprocessContributions(v.contributions);
+    const showCommunityRank = Boolean(
+      isLabel && v.communityOpenRankDetails && (sectionTimeValue || timeValue),
+    );
+    const showContributionMap = contributionDetailRows.length > 0;
 
     return (
       <div className="flex flex-col gap-6">
@@ -490,6 +524,8 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
           </div>
         )}
 
+        {(isRepo || isLabel) && <DetailSectionDivider />}
+
         <div className="flex flex-col gap-4">
           <h4 className="text-sm font-mono font-semibold text-slate-300">
             {t('detailHistoricalTrendHeading')}
@@ -530,7 +566,23 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
           </div>
         </div>
 
-        {isLabel && contributionDetailRows.length > 0 && (
+        {isLabel && (showCommunityRank || showContributionMap) && <DetailSectionDivider />}
+
+        {showCommunityRank && v.communityOpenRankDetails ? (
+          <CommunityDeveloperOpenRank
+            details={v.communityOpenRankDetails}
+            meta={meta}
+            timeType={v.trendMode}
+            sectionTimeValue={sectionTimeValue || timeValue}
+            onSectionTimeChange={setSectionTimeValue}
+            lang={lang}
+            t={t}
+          />
+        ) : null}
+
+        {showCommunityRank && showContributionMap && <DetailSectionDivider />}
+
+        {isLabel && showContributionMap && (
           <div>
             <h4 className="text-sm font-mono font-semibold text-slate-300 mb-2">
               {t('detailContributionMapHeading')}
@@ -705,6 +757,16 @@ export function DetailOverlay({ open, onClose, item, unitName }: Props) {
   );
 }
 
+function DetailSectionDivider() {
+  return (
+    <div
+      className="shrink-0 border-t border-dark-600"
+      role="separator"
+      aria-orientation="horizontal"
+    />
+  );
+}
+
 function StatCard({
   icon,
   iconBg,
@@ -743,8 +805,8 @@ function StatCard({
 function ContributionTable({ contributions }: { contributions: ContributionRow[] }) {
   const { lang, t } = useI18n();
   const processed = preprocessContributions(contributions);
-  const top10 = processed.slice().sort((a, b) => b.openrank - a.openrank).slice(0, 30);
-  if (top10.length === 0) {
+  const rowsSorted = processed.slice().sort((a, b) => b.openrank - a.openrank);
+  if (rowsSorted.length === 0) {
     return <p className="text-slate-500 text-sm py-4 text-center">{t('noData')}</p>;
   }
   const colName = t('contributionTableCountry');
@@ -760,7 +822,7 @@ function ContributionTable({ contributions }: { contributions: ContributionRow[]
         </tr>
       </thead>
       <tbody>
-        {top10.map((c, i) => {
+        {rowsSorted.map((c, i) => {
           const countryDisplay = lang === 'zh' ? c.displayNameZh : c.displayNameEn;
           const flagHtml = c.countryCode ? (
             <img

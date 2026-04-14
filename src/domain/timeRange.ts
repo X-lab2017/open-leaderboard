@@ -1,12 +1,20 @@
 import type { Lang, LeaderboardMeta } from '../types/api';
 import { translations } from '../i18n/translations';
 
-export function getTimeBounds(meta: LeaderboardMeta | null) {
+export type TimeBounds = {
+  minYear: number;
+  maxYear: number;
+  minMonth: string;
+  maxMonth: string;
+};
+
+export function getTimeBounds(meta: LeaderboardMeta | null): TimeBounds {
   const baseDate = meta?.updatedAt ? new Date(meta.updatedAt) : new Date();
   baseDate.setMonth(baseDate.getMonth() - 1);
   return {
     minYear: 2015,
     maxYear: baseDate.getFullYear(),
+    minMonth: '2015-01',
     maxMonth: `${baseDate.getFullYear()}-${String(baseDate.getMonth() + 1).padStart(2, '0')}`,
   };
 }
@@ -40,7 +48,7 @@ export function computeInitialTimeValue(
       const parsed = previousValue.includes('-')
         ? parseInt(previousValue.split('-')[0], 10)
         : parseInt(previousValue, 10);
-      if (!isNaN(parsed) && parsed >= 2015 && parsed <= bounds.maxYear) yearVal = String(parsed);
+      if (!isNaN(parsed) && parsed >= bounds.minYear && parsed <= bounds.maxYear) yearVal = String(parsed);
     }
     return yearVal;
   }
@@ -52,7 +60,7 @@ export function computeInitialTimeValue(
   } else {
     monthVal = getLastMonth(meta?.updatedAt || null);
   }
-  if (monthVal < '2015-01') monthVal = '2015-01';
+  if (monthVal < bounds.minMonth) monthVal = bounds.minMonth;
   if (monthVal > bounds.maxMonth) monthVal = bounds.maxMonth;
   return monthVal;
 }

@@ -154,6 +154,14 @@
   display: block;
 }
 
+.page-dropdown-menu--dense {
+  max-height: 160px;
+}
+.page-dropdown-menu--dense .page-dropdown-item {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
 .page-dropdown-item {
   padding: 0.5rem 1rem;
   cursor: pointer;
@@ -251,6 +259,13 @@
 }
 .time-picker-dropdown.show {
   display: block;
+}
+.time-picker-dropdown--dense {
+  padding: 0.5rem;
+}
+.time-picker-dropdown--dense .time-picker-month-btn {
+  padding: 0.25rem 0.125rem;
+  font-size: 0.6875rem;
 }
 .time-picker-month-btn {
   width: calc(33.333% - 0.25rem);

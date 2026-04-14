@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Lang, LeaderboardMeta } from '../../types/api';
 import { MONTH_SHORT_NAMES } from '../../i18n/translations';
-import { formatTimeDisplay, getTimeBounds } from '../../domain/timeRange';
+import { formatTimeDisplay, getTimeBounds, type TimeBounds } from '../../domain/timeRange';
 
 type Props = {
   meta: LeaderboardMeta | null;
@@ -12,13 +12,30 @@ type Props = {
   t: (k: string) => string;
   onValueChange: (v: string) => void;
   onCommit: () => void;
+  /** Hide the calendar icon + "Time selection" label row (e.g. embedded in detail panel header). */
+  hideOuterLabel?: boolean;
+  /** Smaller control height and text (e.g. contributor list toolbar). */
+  dense?: boolean;
+  /** When set (e.g. community detail JSON keys), min/max selectable range follows this instead of global meta. */
+  boundsOverride?: TimeBounds | null;
 };
 
-export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueChange, onCommit }: Props) {
+export function TimeRangePicker({
+  meta,
+  timeType,
+  timeValue,
+  lang,
+  t,
+  onValueChange,
+  onCommit,
+  hideOuterLabel = false,
+  dense = false,
+  boundsOverride = null,
+}: Props) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const bounds = meta ? getTimeBounds(meta) : getTimeBounds(null);
+  const bounds: TimeBounds = boundsOverride ?? getTimeBounds(meta);
 
   const closeOnOutside = useCallback(
     (e: MouseEvent) => {
@@ -32,11 +49,12 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
 
   useEffect(() => {
     if (open) {
-      setTimeout(() => document.addEventListener('click', closeOnOutside), 0);
+      // Capture phase: detail panels often call stopPropagation on content, which blocks bubble to document.
+      setTimeout(() => document.addEventListener('click', closeOnOutside, true), 0);
     } else {
-      document.removeEventListener('click', closeOnOutside);
+      document.removeEventListener('click', closeOnOutside, true);
     }
-    return () => document.removeEventListener('click', closeOnOutside);
+    return () => document.removeEventListener('click', closeOnOutside, true);
   }, [open, closeOnOutside]);
 
   const stepTime = (delta: number) => {
@@ -47,12 +65,12 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
       onValueChange(String(ny));
  } else {
       const val = timeValue || bounds.maxMonth;
-      if ((delta < 0 && val <= '2015-01') || (delta > 0 && val >= bounds.maxMonth)) return;
+      if ((delta < 0 && val <= bounds.minMonth) || (delta > 0 && val >= bounds.maxMonth)) return;
       const [y, m] = val.split('-').map(Number);
       const date = new Date(y, m - 1, 1);
       date.setMonth(date.getMonth() + delta);
       let nval = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      if (nval < '2015-01') nval = '2015-01';
+      if (nval < bounds.minMonth) nval = bounds.minMonth;
       if (nval > bounds.maxMonth) nval = bounds.maxMonth;
       onValueChange(nval);
     }
@@ -71,7 +89,7 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
       const ny = Math.max(bounds.minYear, Math.min(bounds.maxYear, y + delta));
       let val = `${ny}-${String(m).padStart(2, '0')}`;
       if (val > bounds.maxMonth) val = bounds.maxMonth;
-      if (val < '2015-01') val = '2015-01';
+      if (val < bounds.minMonth) val = bounds.minMonth;
       onValueChange(val);
     }
     onCommit();
@@ -81,7 +99,7 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
     const year = (timeValue || bounds.maxMonth).split('-')[0];
     const m = String(month).padStart(2, '0');
     const val = `${year}-${m}`;
-    if (val < '2015-01' || val > bounds.maxMonth) return;
+    if (val < bounds.minMonth || val > bounds.maxMonth) return;
     onValueChange(val);
     setOpen(false);
     onCommit();
@@ -90,7 +108,7 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
   const prevDisabled =
     timeType === 'year'
       ? parseInt(timeValue || String(bounds.maxYear), 10) <= bounds.minYear
-      : (timeValue || bounds.maxMonth) <= '2015-01';
+      : (timeValue || bounds.maxMonth) <= bounds.minMonth;
 
   const nextDisabled =
     timeType === 'year'
@@ -109,12 +127,18 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
 
   return (
     <div>
-      <label className="flex items-center gap-2 text-sm font-medium mb-2 text-slate-400">
-        <Icon icon="mdi:calendar" className="text-base" />
-        <span>{t('timeSelection')}</span>
-      </label>
+      {!hideOuterLabel ? (
+        <label
+          className={`flex items-center gap-2 font-medium mb-2 text-slate-400 ${dense ? 'text-xs' : 'text-sm'}`}
+        >
+          <Icon icon="mdi:calendar" className={dense ? 'text-sm' : 'text-base'} />
+          <span>{t('timeSelection')}</span>
+        </label>
+      ) : null}
       <div ref={wrapRef} className="relative">
-        <div className="flex items-center bg-dark-700 border border-dark-600 rounded-lg overflow-hidden">
+        <div
+          className={`flex items-center bg-dark-700 border border-dark-600 overflow-hidden ${dense ? 'rounded-md' : 'rounded-lg'}`}
+        >
           <button
             type="button"
             aria-label={t('timePrev')}
@@ -123,9 +147,9 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
               e.stopPropagation();
               stepTime(-1);
             }}
-            className="time-picker-arrow flex items-center justify-center w-9 h-10 flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
+            className={`time-picker-arrow flex items-center justify-center flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset ${dense ? 'w-7 h-7' : 'w-9 h-10'}`}
           >
-            <Icon icon="mdi:chevron-left" className="text-lg" aria-hidden />
+            <Icon icon="mdi:chevron-left" className={dense ? 'text-sm' : 'text-lg'} aria-hidden />
           </button>
           <button
             type="button"
@@ -133,7 +157,7 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
               e.stopPropagation();
               setOpen((o) => !o);
             }}
-            className="flex-1 flex items-center justify-center min-w-0 px-3 py-2.5 text-sm text-slate-200 hover:bg-dark-600/50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
+            className={`flex-1 flex items-center justify-center min-w-0 text-slate-200 hover:bg-dark-600/50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset ${dense ? 'px-2 py-1 text-xs' : 'px-3 py-2.5 text-sm'}`}
           >
             <span className="truncate">{formatTimeDisplay(timeValue, timeType, lang)}</span>
           </button>
@@ -145,13 +169,13 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
               e.stopPropagation();
               stepTime(1);
             }}
-            className="time-picker-arrow flex items-center justify-center w-9 h-10 flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
+            className={`time-picker-arrow flex items-center justify-center flex-shrink-0 text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset ${dense ? 'w-7 h-7' : 'w-9 h-10'}`}
           >
-            <Icon icon="mdi:chevron-right" className="text-lg" aria-hidden />
+            <Icon icon="mdi:chevron-right" className={dense ? 'text-sm' : 'text-lg'} aria-hidden />
           </button>
         </div>
-        <div className={`time-picker-dropdown ${open ? 'show' : ''}`}>
-          <div className="flex items-center justify-between gap-2 mb-3">
+        <div className={`time-picker-dropdown ${open ? 'show' : ''}${dense ? ' time-picker-dropdown--dense' : ''}`}>
+          <div className={`flex items-center justify-between gap-2 ${dense ? 'mb-2' : 'mb-3'}`}>
             <button
               type="button"
               aria-label={t('ariaPickerPreviousYear')}
@@ -160,11 +184,11 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
                 e.stopPropagation();
                 stepYearInPicker(-1);
               }}
-              className="time-picker-arrow flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent"
+              className={`time-picker-arrow flex items-center justify-center rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent ${dense ? 'w-6 h-6' : 'w-8 h-8'}`}
             >
-              <Icon icon="mdi:chevron-left" className="text-lg" aria-hidden />
+              <Icon icon="mdi:chevron-left" className={dense ? 'text-sm' : 'text-lg'} aria-hidden />
             </button>
-            <span className="text-sm font-medium text-slate-200 flex-1 text-center">
+            <span className={`font-medium text-slate-200 flex-1 text-center ${dense ? 'text-xs' : 'text-sm'}`}>
               {timeType === 'year' ? timeValue : (timeValue || bounds.maxMonth).split('-')[0]}
             </span>
             <button
@@ -175,9 +199,9 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
                 e.stopPropagation();
                 stepYearInPicker(1);
               }}
-              className="time-picker-arrow flex items-center justify-center w-8 h-8 rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent"
+              className={`time-picker-arrow flex items-center justify-center rounded text-slate-400 hover:text-accent hover:bg-dark-600 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent ${dense ? 'w-6 h-6' : 'w-8 h-8'}`}
             >
-              <Icon icon="mdi:chevron-right" className="text-lg" aria-hidden />
+              <Icon icon="mdi:chevron-right" className={dense ? 'text-sm' : 'text-lg'} aria-hidden />
             </button>
           </div>
           {timeType === 'month' && (
@@ -185,7 +209,7 @@ export function TimeRangePicker({ meta, timeType, timeValue, lang, t, onValueCha
               {monthNames.map((nm, i) => {
                 const month = i + 1;
                 const val = `${yearForGrid}-${String(month).padStart(2, '0')}`;
-                const isInRange = val >= '2015-01' && val <= bounds.maxMonth;
+                const isInRange = val >= bounds.minMonth && val <= bounds.maxMonth;
                 const isActive = month === currentMonth;
                 return (
                   <button

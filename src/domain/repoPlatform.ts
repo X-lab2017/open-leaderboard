@@ -37,6 +37,17 @@ export function getRepoUrlByPlatform(platform: unknown, name: string): string {
   return `https://github.com/${name}`;
 }
 
+/** User profile URL (login may be `user` or `user/...`; path uses first segment). */
+export function getDeveloperProfileUrlByPlatform(platform: unknown, login: string): string {
+  const handle = (login || '').split('/')[0]?.trim() || '';
+  if (!handle) return '#';
+  const p = normalizeRepoPlatform(platform);
+  if (p === 'gitlab') return `https://gitlab.com/${handle}`;
+  if (p === 'atomgit') return `https://atomgit.com/${handle}`;
+  if (p === 'gitee') return `https://gitee.com/${handle}`;
+  return `https://github.com/${handle}`;
+}
+
 export function inferLabelAvatarUrl(labelIdFull: string | null | undefined): string {
   if (!labelIdFull || typeof labelIdFull !== 'string') return '';
   const path = labelIdFull.startsWith(':') ? labelIdFull.slice(1) : labelIdFull;
