@@ -10,7 +10,7 @@ describe('buildDataUrl', () => {
         timeType: 'month',
         timeValue: '2024-03',
       }),
-    ).toBe('https://oss.open-digger.cn/open_leaderboard/global/project/month/20243/data.json');
+    ).toBe('https://selfoss.open-digger.cn/open_leaderboard/global/project/month/20243/data.json');
   });
 
   it('builds year URL', () => {
@@ -21,6 +21,6 @@ describe('buildDataUrl', () => {
         timeType: 'year',
         timeValue: '2023',
       }),
-    ).toBe('https://oss.open-digger.cn/open_leaderboard/global/repo/year/2023/data.json');
+    ).toBe('https://selfoss.open-digger.cn/open_leaderboard/global/repo/year/2023/data.json');
   });
 });
