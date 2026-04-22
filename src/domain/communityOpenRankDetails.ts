@@ -1,4 +1,5 @@
 import type { LeaderboardMeta } from '../types/api';
+import { normalizeRepoPlatform } from './repoPlatform';
 import { getTimeBounds, type TimeBounds } from './timeRange';
 
 /** Raw JSON: period key -> [platform, id, login, score][] */
@@ -48,6 +49,30 @@ export function communityOpenRankAvatarUrl(row: CommunityOpenRankRow): string {
     return `https://atomgit.com/${login}.png`;
   }
   return '';
+}
+
+/**
+ * 当 LeaderboardItem 无 avatar（例如 ?dashboard= 深链仅含 platform/login）时，按平台推断头像 URL。
+ * GitLab 需要 OpenDigger user meta 中的数字 id；其余平台仅用 login 即可。
+ */
+export function inferredDeveloperAvatarUrl(
+  platform: unknown,
+  login: string,
+  ossNumericUserId?: string | null,
+): string {
+  const handle = (login || '').split('/')[0]?.trim() || '';
+  if (!handle) return '';
+  const slug = normalizeRepoPlatform(platform);
+  if (slug === 'gitlab') {
+    const id = String(ossNumericUserId ?? '').trim();
+    if (!id) return '';
+  }
+  return communityOpenRankAvatarUrl({
+    platform: slug,
+    id: String(ossNumericUserId ?? '').trim(),
+    login: handle,
+    score: 0,
+  });
 }
 
 export function communityOpenRankPeriodKey(timeType: 'month' | 'year', timeValue: string): string {

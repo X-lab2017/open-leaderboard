@@ -14,7 +14,8 @@ function decodeParam(raw: string): string {
 
 /**
  * 解析 ?dashboard= 参数：标签须以 `:` 开头且后面有非空 id；
- * 仓库须为 platform/owner/repo（至少两段 `/` 分隔出三段），且 platform 归一化后为已知平台。
+ * 开发者为 platform/login（两段）；
+ * 仓库须为 platform/owner/repo（三段及以上），且 platform 归一化后为已知平台。
  */
 export function parseDashboardLeaderboardItem(paramValue: string | null): LeaderboardItem | null {
   if (paramValue == null) return null;
@@ -28,10 +29,16 @@ export function parseDashboardLeaderboardItem(paramValue: string | null): Leader
   }
 
   const parts = v.split('/').map((s) => s.trim()).filter((s) => s.length > 0);
-  if (parts.length < 3) return null;
+  if (parts.length < 2) return null;
 
   const platform = normalizeRepoPlatform(parts[0]);
   if (!KNOWN_PLATFORMS.has(platform)) return null;
+
+  if (parts.length === 2) {
+    const login = parts[1];
+    if (!login) return null;
+    return { platform, login, name: login, itemType: 'developer' };
+  }
 
   const name = parts.slice(1).join('/');
   if (!name) return null;

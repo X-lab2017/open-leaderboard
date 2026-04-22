@@ -123,8 +123,7 @@ export function ContributionMap({ contributions }: Props) {
         chart.setOption(option);
         setMapReady(true);
       })
-      .catch((err) => {
-        console.error('Failed to load world map:', err);
+      .catch(() => {
         if (!cancelled) setLoadError(true);
       });
 

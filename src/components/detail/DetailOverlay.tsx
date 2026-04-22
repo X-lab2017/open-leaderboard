@@ -29,7 +29,10 @@ import { ContributionMap } from './ContributionMap';
 import { RepoPlatformIcon } from './RepoPlatformIcon';
 import { CommunityDeveloperOpenRank } from './CommunityDeveloperOpenRank';
 import { useI18n } from '../../i18n/I18nProvider';
-import type { CommunityOpenRankDetailsFile } from '../../domain/communityOpenRankDetails';
+import {
+  inferredDeveloperAvatarUrl,
+  type CommunityOpenRankDetailsFile,
+} from '../../domain/communityOpenRankDetails';
 
 type DetailViewState = {
   item: LeaderboardItem;
@@ -429,12 +432,15 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
         ? userPanel.ossMeta.info.name.trim()
         : '';
     const readyTitle = metaName || fallbackTitle;
+    const ossUserId = userPanel?.phase === 'ready' ? userPanel.ossMeta.id : undefined;
+    const avatarSrc =
+      (it.avatar || '').trim() || inferredDeveloperAvatarUrl(it.platform, login, ossUserId);
     const profileUrl =
       it.url || it.html_url || (login ? getDeveloperProfileUrlByPlatform(it.platform, login) : '#');
     return (
       <div className="flex items-center gap-4">
         <div className="flex-shrink-0 w-20 h-20 relative">
-          <LeaderboardAvatar avatar={it.avatar || ''} displayName={readyTitle} sizeClass="w-20 h-20" />
+          <LeaderboardAvatar avatar={avatarSrc} displayName={readyTitle} sizeClass="w-20 h-20" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-xl font-mono font-bold text-slate-100 mb-2 min-w-0 flex flex-wrap items-baseline gap-x-1.5 gap-y-0">
@@ -492,36 +498,69 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
     const actPrev = getPrev(activityTrend);
     const infPct = getChangePct(infLatest, infPrev);
     const actPct = getChangePct(actLatest, actPrev);
+    const openIssueTrend = getTrend('openIssue') ?? EMPTY_TREND;
+    const issueCommentTrend = getTrend('issueComment') ?? EMPTY_TREND;
+    const openPullTrend = getTrend('openPull') ?? EMPTY_TREND;
+    const reviewCommentTrend = getTrend('reviewComment') ?? EMPTY_TREND;
+    const oiLatest = getLatest(openIssueTrend);
+    const oiPrev = getPrev(openIssueTrend);
+    const icLatest = getLatest(issueCommentTrend);
+    const icPrev = getPrev(issueCommentTrend);
+    const opLatest = getLatest(openPullTrend);
+    const opPrev = getPrev(openPullTrend);
+    const rcLatest = getLatest(reviewCommentTrend);
+    const rcPrev = getPrev(reviewCommentTrend);
+    const oiPct = getChangePct(oiLatest, oiPrev);
+    const icPct = getChangePct(icLatest, icPrev);
+    const opPct = getChangePct(opLatest, opPrev);
+    const rcPct = getChangePct(rcLatest, rcPrev);
     const timeKey =
       (influenceTrend?.months?.length ? influenceTrend.months[influenceTrend.months.length - 1] : '') || '';
     const info = ossMeta.info;
+    const profileLocation = info?.location?.trim() ?? '';
+    const profileCompany = info?.company?.trim() ?? '';
+    const profileBio = info?.bio?.trim() ?? '';
+    const hasUserProfileDetails = Boolean(profileLocation || profileCompany || profileBio);
 
     return (
       <div className="flex flex-col gap-6">
-        {info ? (
+        {hasUserProfileDetails ? (
           <div className="rounded-lg border border-dark-600 bg-dark-800/40 p-4 space-y-2 text-sm">
-            {info.location ? (
-              <div className="flex gap-2 items-start">
-                <span className="text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
-                  {t('detailUserFieldLocation')}
-                </span>
-                <span className="text-slate-300 min-w-0 leading-normal">{info.location}</span>
+            {profileLocation || profileCompany ? (
+              <div className="flex flex-nowrap items-start gap-x-3">
+                {profileLocation ? (
+                  <div className="flex gap-2 items-start min-w-0 shrink">
+                    <span className="flex items-center gap-1.5 text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
+                      <Icon icon="mdi:map-marker" className="w-4 h-4 shrink-0 opacity-90" aria-hidden />
+                      {t('detailUserFieldLocation')}
+                    </span>
+                    <span className="text-slate-300 min-w-0 leading-normal truncate">{profileLocation}</span>
+                  </div>
+                ) : null}
+                {profileLocation && profileCompany ? (
+                  <span
+                    className="shrink-0 self-center w-px h-3.5 bg-slate-600 mx-0.5"
+                    aria-hidden
+                  />
+                ) : null}
+                {profileCompany ? (
+                  <div className="flex gap-2 items-start min-w-0 shrink">
+                    <span className="flex items-center gap-1.5 text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
+                      <Icon icon="mdi:domain" className="w-4 h-4 shrink-0 opacity-90" aria-hidden />
+                      {t('detailUserFieldCompany')}
+                    </span>
+                    <span className="text-slate-300 min-w-0 leading-normal truncate">{profileCompany}</span>
+                  </div>
+                ) : null}
               </div>
             ) : null}
-            {info.company ? (
+            {profileBio ? (
               <div className="flex gap-2 items-start">
-                <span className="text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
-                  {t('detailUserFieldCompany')}
-                </span>
-                <span className="text-slate-300 min-w-0 leading-normal">{info.company}</span>
-              </div>
-            ) : null}
-            {info.bio ? (
-              <div className="flex gap-2 items-start">
-                <span className="text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
+                <span className="flex items-center gap-1.5 text-slate-500 shrink-0 font-mono text-sm leading-normal pt-px">
+                  <Icon icon="mdi:card-text-outline" className="w-4 h-4 shrink-0 opacity-90" aria-hidden />
                   {t('detailUserFieldBio')}
                 </span>
-                <span className="text-slate-300 min-w-0 leading-relaxed">{info.bio}</span>
+                <span className="text-slate-300 min-w-0 leading-relaxed">{profileBio}</span>
               </div>
             ) : null}
           </div>
@@ -569,6 +608,44 @@ export function DetailOverlay({ open, onClose, item, unitName, meta, timeType, t
               pct={actPct}
               delta={getStatDelta(activityTrend, actLatest, actPrev)}
               subtitle={`${t('detailStatActivity')}${timeKey ? ` (${timeKey})` : ''}`}
+            />
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+            <StatCard
+              icon="mdi:clipboard-alert-outline"
+              iconBg="bg-amber-500/20"
+              iconColor="text-amber-400"
+              value={oiLatest}
+              pct={oiPct}
+              delta={getStatDelta(openIssueTrend, oiLatest, oiPrev)}
+              subtitle={`${t('detailStatOpenIssue')}${timeKey ? ` (${timeKey})` : ''}`}
+            />
+            <StatCard
+              icon="mdi:comment-outline"
+              iconBg="bg-sky-500/20"
+              iconColor="text-sky-400"
+              value={icLatest}
+              pct={icPct}
+              delta={getStatDelta(issueCommentTrend, icLatest, icPrev)}
+              subtitle={`${t('detailStatIssueComment')}${timeKey ? ` (${timeKey})` : ''}`}
+            />
+            <StatCard
+              icon="mdi:source-pull"
+              iconBg="bg-indigo-500/20"
+              iconColor="text-indigo-400"
+              value={opLatest}
+              pct={opPct}
+              delta={getStatDelta(openPullTrend, opLatest, opPrev)}
+              subtitle={`${t('detailStatOpenPull')}${timeKey ? ` (${timeKey})` : ''}`}
+            />
+            <StatCard
+              icon="mdi:comment-check-outline"
+              iconBg="bg-rose-500/20"
+              iconColor="text-rose-400"
+              value={rcLatest}
+              pct={rcPct}
+              delta={getStatDelta(reviewCommentTrend, rcLatest, rcPrev)}
+              subtitle={`${t('detailStatReviewComment')}${timeKey ? ` (${timeKey})` : ''}`}
             />
           </div>
         </div>

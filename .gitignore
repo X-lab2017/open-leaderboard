@@ -1,8 +1,16 @@
 node_modules/
 dist/
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 # Cursor
-.cursor/
+.cursor
+
+# Claude
+.claude
 
 # Scripts (local deployment)
 publish.sh

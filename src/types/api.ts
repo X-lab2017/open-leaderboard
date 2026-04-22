@@ -74,7 +74,15 @@ export interface TrendDataBundle {
   yearly: TrendSeries;
 }
 
-export type RepoTrendKey = 'influence' | 'activity' | 'participants' | 'issuePr';
+export type RepoTrendKey =
+  | 'influence'
+  | 'activity'
+  | 'participants'
+  | 'issuePr'
+  | 'openIssue'
+  | 'issueComment'
+  | 'openPull'
+  | 'reviewComment';
 
 export type RepoTrendMap = Partial<Record<RepoTrendKey, TrendDataBundle>>;
 

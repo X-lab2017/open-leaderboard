@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAvatarColor, getInitial } from '../../domain/leaderboard';
 
 export function LeaderboardAvatar({
@@ -14,6 +14,9 @@ export function LeaderboardAvatar({
   circular?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setFailed(false);
+  }, [avatar]);
   const initial = getInitial(displayName);
   const avatarColor = getAvatarColor(displayName);
   const isFlagCdn = typeof avatar === 'string' && avatar.includes('flagcdn.com');

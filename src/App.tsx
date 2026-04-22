@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react/offline';
 import { fetchLeaderboardData, fetchLeaderboardMeta } from './api/openLeaderboard';
-import { probeItemMetaExists } from './api/openDiggerTrend';
+import { probeItemMetaExists, probeUserMetaExists } from './api/openDiggerTrend';
 import { buildDataUrl, ITEMS_PER_PAGE } from './domain/leaderboard';
 import { computeInitialTimeValue } from './domain/timeRange';
 import { defaultScopeValue, defaultUnitValue, filterGroupTypesForUnitDropdown } from './domain/meta';
@@ -91,12 +91,18 @@ export default function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const stub = parseDashboardLeaderboardItem(params.get('dashboard'));
-    if (!stub?.itemType || (stub.itemType !== 'repo' && stub.itemType !== 'label')) return;
+    if (!stub?.itemType) return;
     const kind = stub.itemType;
     let cancelled = false;
-    void probeItemMetaExists(kind, stub).then((ok) => {
-      if (!cancelled && ok) setDetailItem(stub);
-    });
+    if (kind === 'repo' || kind === 'label') {
+      void probeItemMetaExists(kind, stub).then((ok) => {
+        if (!cancelled && ok) setDetailItem(stub);
+      });
+    } else if (kind === 'developer') {
+      void probeUserMetaExists(stub).then((ok) => {
+        if (!cancelled && ok) setDetailItem(stub);
+      });
+    }
     return () => {
       cancelled = true;
     };

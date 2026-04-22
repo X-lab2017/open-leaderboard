@@ -48,7 +48,7 @@ export async function fetchLabelTrendData(labelId: string): Promise<RepoTrendMap
   });
 }
 
-/** User directory on OSS: only influence + activity JSONs. */
+/** User directory on OSS: openrank/activity plus issue & PR activity JSONs. */
 export async function fetchUserTrendData(platform: unknown, login: string): Promise<RepoTrendMap | null> {
   const handle = (login || '').split('/')[0]?.trim() || '';
   if (!handle) return null;
@@ -57,6 +57,10 @@ export async function fetchUserTrendData(platform: unknown, login: string): Prom
   return fetchTrendDataByUrls({
     influence: base + 'openrank.json',
     activity: base + 'activity.json',
+    openIssue: base + 'open_issue.json',
+    issueComment: base + 'issue_comment.json',
+    openPull: base + 'open_pull.json',
+    reviewComment: base + 'review_comment.json',
   });
 }
 
@@ -132,6 +136,20 @@ export async function probeItemMetaExists(itemType: 'repo' | 'label', item: Lead
   if (!metaUrl) return false;
   try {
     const res = await fetch(metaUrl);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/** 与 fetchUserMeta 同源路径：用于 ?dashboard= 深链打开前探测开发者是否存在。 */
+export async function probeUserMetaExists(item: LeaderboardItem): Promise<boolean> {
+  const handle = ((item.login ?? item.name) || '').split('/')[0]?.trim() || '';
+  if (!handle) return false;
+  const p = normalizeRepoPlatform(item.platform || 'github');
+  const url = `${TREND_DATA_BASE}${p}/${handle}/meta.json`;
+  try {
+    const res = await fetch(url);
     return res.ok;
   } catch {
     return false;
